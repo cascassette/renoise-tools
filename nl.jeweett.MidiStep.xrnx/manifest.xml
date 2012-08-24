@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Midi Step</Name>
+  <Id>nl.jeweett.MidiStep</Id>
+  <Version>1</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>jeweett | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>DSP Insertion</Category>
+  <Description>Set Edit Step in logical steps: 0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64.</Description>
+  <Homepage>http://tools.renoise.com</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>

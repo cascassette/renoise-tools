@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>KB Mixer</Name>
+  <Id>nl.jeweett.KbMixer</Id>
+  <Version>1</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Track Muting</Category>
+  <Description>Keyboard shortcuts for muting track #1-8 when on the master track, or subgroup-track #1-8 when in an instrument track. Also solo (and unmute/unsolo all keeys)</Description>
+  <Homepage>http://tools.renoise.com</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>

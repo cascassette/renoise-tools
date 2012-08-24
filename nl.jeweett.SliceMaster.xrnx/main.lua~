@@ -1,0 +1,195 @@
+--[[============================================================================
+main.lua
+============================================================================]]--
+
+-- Placeholder for the dialog
+local dialog = nil
+
+-- Placeholder to expose the ViewBuilder outside the show_dialog() function
+local vb = nil
+
+local optnames = { "Off", "Forward", "Backward", "PingPong" }
+
+local MIN = renoise.Sample.LOOP_MODE_OFF
+local MAX = renoise.Sample.LOOP_MODE_PING_PONG
+
+-- Infos
+--[[
+renoise.Sample.LOOP_MODE_OFF
+renoise.Sample.LOOP_MODE_FORWARD
+renoise.Sample.LOOP_MODE_REVERSE
+renoise.Sample.LOOP_MODE_PING_PONG
+--]]
+
+--[[
+-- Read from the manifest.xml file.
+class "RenoiseScriptingTool" (renoise.Document.DocumentNode)
+  function RenoiseScriptingTool:__init()    
+    renoise.Document.DocumentNode.__init(self) 
+    self:add_property("Name", "Untitled Tool")
+    self:add_property("Id", "Unknown Id")
+  end
+
+local manifest = RenoiseScriptingTool()
+local ok,err = manifest:load_from("manifest.xml")
+local tool_name = manifest:property("Name").value
+local tool_id = manifest:property("Id").value
+--]]
+
+
+--------------------------------------------------------------------------------
+-- Main functions
+--------------------------------------------------------------------------------
+
+--local function set_sliced_settings(vol, pan, txp, fit, nna, lpm, ixp, syn, son)
+--end
+
+local function re_copy()
+  local base = renoise.song().selected_instrument:sample(1)
+  local vol = base.volume
+  local pan = base.panning
+  local txp = base.transpose
+  local fit = base.fine_tune
+  local nna = base.new_note_action
+  local lpm = base.loop_mode
+  local ixp = base.interpolation_mode
+  local syn = base.beat_sync_lines
+  local son = base.beat_sync_enabled
+  for i, slice in ipairs(renoise.song().selected_instrument.samples) do
+    slice.loop_mode = lpm
+  end
+end
+
+local function set_loopmode(lpm)
+  for _, slice in pairs(renoise.song().selected_instrument.samples) do
+    slice.loop_mode = lpm
+  end
+end
+
+local function toint(v)
+  return math.floor(v)
+end
+
+local function tostr(v)
+  return optnames[toint(v)]
+end
+
+
+--------------------------------------------------------------------------------
+-- GUI
+--------------------------------------------------------------------------------
+
+local function close_dialog()
+  if ( dialog and dialog.visible ) then
+    dialog:close()
+  end
+end
+
+local function key_dialog(d,k)
+  if ( k.name == "up" ) and vb.views.loopmode.value < MAX then
+    vb.views.loopmode.value = vb.views.loopmode.value + 1
+    vb.views.disp.value = vb.views.loopmode.value
+  elseif ( k.name == "down" ) and vb.views.loopmode.value > MIN then
+    vb.views.loopmode.value = vb.views.loopmode.value - 1
+    vb.views.disp.value = vb.views.loopmode.value
+--[[  elseif ( k.name == "left" ) then
+    vb.views.parts.value = vb.views.parts.value / 2
+  elseif ( k.name == "right" ) then
+    vb.views.parts.value = vb.views.parts.value * 2  --]]
+  elseif ( k.name == "return" ) then
+    set_loopmode(vb.views.loopmode.value)
+    close_dialog()
+  elseif ( k.name == "esc" ) then
+    close_dialog()
+  else
+    return k
+  end
+end
+
+local function show_dialog()
+  vb = renoise.ViewBuilder()
+  close_dialog()
+  local vb_loopmode = vb:rotary { min = MIN, max = MAX, value = MIN, id = "loopmode" }
+  local vb_loopmode_display = vb:valuefield { min = MIN, max = MAX, value = MIN, id = "disp", tonumber = toint, tostring = tostr, active = false }
+  local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
+  local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
+  local dialog_content = vb:column {
+    style = "border",
+    margin = DDM,
+    spacing = CS,
+    width = 200,
+    vb:row {
+      spacing = 3 * CS,
+      vb_loopmode,
+      vb:column{
+        margin = 8,
+        style = "plain",
+        vb_loopmode_display,
+      }
+    },
+    --[[vb:button {
+      text = "Close",
+      released = close_dialog,
+    },--]]
+  }
+  
+  if not ( dialog and dialog.visible ) then
+    dialog = renoise.app():show_custom_dialog( "Set slice loop mode", dialog_content, key_dialog )
+  end
+end
+
+
+--------------------------------------------------------------------------------
+-- Menu entries
+--------------------------------------------------------------------------------
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:Tools:Slice loop mode...",
+  invoke = show_dialog  
+}
+
+
+--------------------------------------------------------------------------------
+-- Key Binding
+--------------------------------------------------------------------------------
+
+renoise.tool():add_keybinding {
+  name = "Global:SliceMaster:Loop Mode...",
+  invoke = show_dialog
+}
+
+renoise.tool():add_keybinding {
+  name = "Global:SliceMaster:ReMaster...",
+  invoke = re_copy
+}
+
+
+--------------------------------------------------------------------------------
+-- MIDI Mapping
+--------------------------------------------------------------------------------
+
+--[[
+renoise.tool():add_midi_mapping {
+  name = tool_id..":Show Dialog...",
+  invoke = show_dialog
+}
+--]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_AUTO_RELOAD_DEBUG = function()
+  
+end

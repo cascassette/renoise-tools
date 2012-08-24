@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Play and Loop Pattern</Name>
+  <Id>nl.jeweett.PlayAndLoopPattern</Id>
+  <Version>0.1</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Pattern Editor, Pattern Loop</Category>
+  <Description>Provides a keyboard shortcut and a midi trigger following the behaviour of the block loop key (NumPad Enter), but for pattern loop.</Description>
+  <Homepage>http://tools.renoise.com</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>

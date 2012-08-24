@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Layer all samples on every key</Name>
+  <Id>nl.jeweett.LayerAll</Id>
+  <Version>0.2</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Casper</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Instruments/Samples</Category>
+  <Description>Layer every sample in an instrument directly with every sample's root key at C-4 (or key used by first sample mapping).</Description>
+  <Homepage>http://music.jeweett.nl</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>

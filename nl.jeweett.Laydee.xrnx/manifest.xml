@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Laydee</Name>
+  <Id>nl.jeweett.Laydee</Id>
+  <Version>0.2</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Delay Column, Track, Mixer, Track Delay</Category>
+  <Description>Helps 'skewing' tracks back in sync if you're used to editing drum patterns with e.g. 80 on every line in delay column, by adjusting the track output delay negatively. Keyboard shortcut is called "AutoLaydee", there's also a GUI version in the Tools menu.</Description>
+  <Homepage>http://tools.renoise.com</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>

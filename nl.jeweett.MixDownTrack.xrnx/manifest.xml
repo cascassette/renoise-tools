@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>MixDown Track</Name>
+  <Id>nl.jeweett.MixDownTrack</Id>
+  <Version>0.2</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Mixer</Category>
+  <Description>This tool has several options to create a 'sub-master' track in the mixer. Having this approach has several advantages:
+      * Do mid-side processing, multiband compressing, etc. directly in the same renoise song file as the composition
+      * No need for a 'clean out' send track whilst designing sounds (e.g. comparing fx with no proper dry/wet mixing)
+      * Rendering patterns will render them how you hear them
+      * "Force" option will make sure every track gets routed to the MixDown track and even adjust the send amount values along with the post-vol faders
+  
+      Cas Marrav
+  2012</Description>
+  <Homepage/>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>

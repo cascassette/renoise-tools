@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Change Edit Step with help of the LPB</Name>
+  <Id>nl.jeweett.EditStepTools</Id>
+  <Version>2.8</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Transport</Category>
+  <Description>This tool will add possible keybindings for setting the edit step to LPB, LPB/2, LPB/3, LPB*8 etc. It's recommended to also switch the shortcuts for "Jump 16 Rows Up/Down" and "Go To Next/Previous Line With Edit Step", too.
+  
+      Cas Marrav
+  2012</Description>
+  <Homepage/>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>

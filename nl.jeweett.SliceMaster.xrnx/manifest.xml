@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Slice Master</Name>
+  <Id>nl.jeweett.SliceMaster</Id>
+  <Version>1</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Sample Editor</Category>
+  <Description>For when you forget setting loop or transpose things before slicing.</Description>
+  <Homepage>http://tools.renoise.com</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>
