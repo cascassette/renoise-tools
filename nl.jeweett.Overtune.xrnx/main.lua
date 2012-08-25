@@ -386,8 +386,9 @@ function render_overtune( load, settings )
                   "local bi = function(x) return x*2-1 end " ..
                   -- distort (clip, fold, crush, noise) functions
                   "local clip = function(x, y) return max(min(x, y), -y) end " ..
-                  "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
                   "local semiclip = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
+                  "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
+                  "local semifold = function(x, y, z) return fold(x, y)*z + (1-z)*x end " ..
                   "local crush = function(x, y) return flr(x*y)/y end " ..
                   "local noise = function(x, y, p) return x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
                   -- supermin/supermax type 'clip' functions
@@ -395,6 +396,7 @@ function render_overtune( load, settings )
                   "local supermin = function(x, y) if x >= 0 then return min(x,y) else return max(x,y) end end " ..
                   -- morph between two functions
                   "local morph = function(x, y, z) return ((1-z)*x+z*y) end " ..
+                  --"local mix = function(x, ztab, functab) local factor = 0 if #ztab ~= #functab then return 0 else for _,f in ztab do factor = factor + f end local res = 0 for i = 1, #ztab do print(''..i..'. type: '..type(functab[i])) if type(functab[i]) == 'function' then res = res + ztab[i] * functab[i](x) elseif (#functab[i]) == 1 then res = res + ztab[i] * functab[i][1](x) else res = res + ztab[i] * functab[i][1](x, unpack(functab[i][2])) end end return res/factor end end  " ..
                   -- unary [0..1] pulse from/to
                   "local upft = function(x, f, t) if x < f or x >= t then return 0 else return 1 end end " ..
                   "local upf = function(x, f) if x < f then return 0 else return 1 end end " ..
@@ -434,6 +436,25 @@ function render_overtune( load, settings )
       end
     end
     return y
+  end]]
+--[[  local mix = function(x, ztab, functab)
+    local factor = 0
+    if #ztab ~= #functab then return 0
+    else
+      for _,f in ztab do factor = factor + f end
+      local res = 0
+      for i = 1, #ztab do
+        print(''..i..'. type: '..type(functab[i]))
+        if type(functab[i]) == 'function' then
+          res = res + ztab[i] * functab[i](x)
+        elseif (#functab[i]) == 1 then
+          res = res + ztab[i] * functab[i][1](x)
+        else
+          res = res + ztab[i] * functab[i][1](x, unpack(functab[i][2]))
+        end
+      end
+      return res/factor
+    end
   end]]
   local sb        -- shortcut for sample buffers
   --local rk = 9    -- A-0 for crispness
