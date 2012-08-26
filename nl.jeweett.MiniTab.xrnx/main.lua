@@ -13,7 +13,25 @@ local function minitabl()
   local nnci
   local neci
   if nci ~= 0 then
-    if nci > 1 then
+    if rs.selected_track.collapsed then
+      -- find rightmost column in prev track
+      if sti > 1 then
+        local fx = true
+        if --[[got effect columns]] rs:track(sti-1).visible_effect_columns > 0 then
+          neci = rs:track(sti-1).visible_effect_columns
+        else
+          nnci = rs:track(sti-1).visible_note_columns
+          fx = false
+        end
+        rs.selected_track_index = sti - 1
+        if fx then rs.selected_effect_column_index = neci else rs.selected_note_column_index = nnci end
+      else
+        rs.selected_track_index = #rs.tracks
+        rs.selected_effect_column_index = rs.selected_track.visible_effect_columns
+      end
+    elseif rs.selected_sub_column_type ~= renoise.Song.SUB_COLUMN_NOTE then
+      rs.selected_note_column_index = nci
+    elseif nci > 1 then
       rs.selected_note_column_index = nci - 1
     else
       -- find rightmost column in prev track
@@ -33,7 +51,17 @@ local function minitabl()
       end
     end
   elseif eci ~= 0 then
-    if eci > 1 then
+    if rs.selected_track.collapsed then
+      local fx = true
+      if --[[got effect columns]] rs:track(sti-1).visible_effect_columns > 0 then
+        neci = rs:track(sti-1).visible_effect_columns
+      else
+        nnci = rs:track(sti-1).visible_note_columns
+        fx = false
+      end
+      rs.selected_track_index = sti - 1
+      if fx then rs.selected_effect_column_index = neci else rs.selected_note_column_index = nnci end
+    elseif eci > 1 then
       rs.selected_effect_column_index = eci - 1
     else
       if rs.selected_track.type == renoise.Track.TRACK_TYPE_SEQUENCER then
@@ -58,7 +86,9 @@ local function minitabr()
   local sti = rs.selected_track_index
   local nci = rs.selected_note_column_index
   local eci = rs.selected_effect_column_index
-  if nci ~= 0 then
+  if rs.selected_track.collapsed then
+    rs.selected_track_index = sti + 1
+  elseif nci ~= 0 then
     if nci < rs.selected_track.visible_note_columns then
       rs.selected_note_column_index = nci + 1
     else

@@ -1,6 +1,6 @@
---[[============================================================================
-main.lua
-============================================================================]]--
+-------------------------------------------------------------
+-- Laydee v0.2 by Cas Marrav (for Renoise 2.8)             --
+-------------------------------------------------------------
 
 local rs
 local MSPM = 60000
@@ -40,10 +40,16 @@ end
 
 local function key_dialog(d,k)
   if ( k.name == "up" ) then
-    vb.views.laydee.value = vb.views.laydee.value + 1
+    vb.views.laydee.value = vb.views.laydee.value - 1
     dedelaytrack()
   elseif ( k.name == "down" ) then
-    vb.views.laydee.value = vb.views.laydee.value - 1
+    vb.views.laydee.value = vb.views.laydee.value + 1
+    dedelaytrack()
+  elseif ( k.name == "left" ) then
+    vb.views.laydee.value = vb.views.laydee.value - 16
+    dedelaytrack()
+  elseif ( k.name == "right" ) then
+    vb.views.laydee.value = vb.views.laydee.value + 16
     dedelaytrack()
   elseif ( k.name == "return" ) then
     dedelaytrack()
@@ -71,13 +77,11 @@ local function laydee_dialog()
   end
   
   vb = renoise.ViewBuilder()
-  --local vb_steplist = vb:popup { items = { "Edit Step", "LPB/4", "LPB/2", "LPB", "LPB*2", "LPB*4" }, value = 1, active = false }
   local vb_pushback = vb:valuebox { min = -DPL, max = DPL, value = delay, id = "laydee" }
   local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
   local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
   local dialog_content = vb:column {
     vb:row {
-      --vb_steplist,
       vb_pushback,
     },
     vb:button {
