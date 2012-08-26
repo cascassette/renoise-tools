@@ -73,14 +73,14 @@ local function pushback_delay_column(mm)
     if column >= 1 and column <= 12 then -- instrument track
       rs:track(track).delay_column_visible = true
       local x = line % step
-      if x < 1 then x = x + step end
+      if x < 1 then x = line end
       for l = x, rs:pattern(pattern).number_of_lines, step do
         rs:pattern(pattern):track(track):line(l):note_column(column).delay_value = nv
       end
     elseif tracktype == 1 then
       rs:track(track).delay_column_visible = true
       local x = line % step
-      if x < 1 then x = x + step end
+      if x < 1 then x = line end
       for l = x, rs:pattern(pattern).number_of_lines, step do
         for c = 1, rs:track(track).visible_note_columns do
           rs:pattern(pattern):track(track):line(l):note_column(c).delay_value = nv
@@ -90,7 +90,7 @@ local function pushback_delay_column(mm)
       for _, t in pairs(rs:track(track).leaves_indexes) do
         rs:track(t).delay_column_visible = true
         local x = line % step
-        if x < 1 then x = x + step end
+        if x < 1 then x = line end
         for l = x, rs:pattern(pattern).number_of_lines, step do
           for c = 1, rs:track(t).visible_note_columns do
             rs:pattern(pattern):track(t):line(l):note_column(c).delay_value = nv
@@ -151,7 +151,7 @@ local function pushback_volume_column(mm)
     if column >= 1 and column <= 12 then -- instrument track
       rs:track(track).volume_column_visible = true
       local x = line % step
-      if x < 1 then x = x + step end
+      if x < 1 then x = line end
       for l = x, rs:pattern(pattern).number_of_lines, step do
         if not str then
           rs:pattern(pattern):track(track):line(l):note_column(column).volume_value = nv
@@ -160,7 +160,7 @@ local function pushback_volume_column(mm)
     elseif tracktype == 1 then
       rs:track(track).volume_column_visible = true
       local x = line % step
-      if x < 1 then x = x + step end
+      if x < 1 then x = line end
       for l = x, rs:pattern(pattern).number_of_lines, step do
         for c = 1, rs:track(track).visible_note_columns do
           if not str then
@@ -172,7 +172,7 @@ local function pushback_volume_column(mm)
       for _, t in pairs(rs:track(track).leaves_indexes) do
         rs:track(t).volume_column_visible = true
         local x = line % step
-        if x < 1 then x = x + step end
+        if x < 1 then x = line end
         for l = x, rs:pattern(pattern).number_of_lines, step do
           for c = 1, rs:track(t).visible_note_columns do
             if not str then
@@ -233,7 +233,7 @@ local function pushback_panning_column(mm)
     if column >= 1 and column <= 12 then -- instrument track
       rs:track(track).panning_column_visible = true
       local x = line % step
-      if x < 1 then x = x + step end
+      if x < 1 then x = line end
       for l = x, rs:pattern(pattern).number_of_lines, step do
         if not str then
           rs:pattern(pattern):track(track):line(l):note_column(column).panning_value = nv
@@ -242,7 +242,7 @@ local function pushback_panning_column(mm)
     elseif tracktype == 1 then
       rs:track(track).panning_column_visible = true
       local x = line % step
-      if x < 1 then x = x + step end
+      if x < 1 then x = line end
       for l = x, rs:pattern(pattern).number_of_lines, step do
         for c = 1, rs:track(track).visible_note_columns do
           if not str then
@@ -254,7 +254,7 @@ local function pushback_panning_column(mm)
       for _, t in pairs(rs:track(track).leaves_indexes) do
         rs:track(t).panning_column_visible = true
         local x = line % step
-        if x < 1 then x = x + step end
+        if x < 1 then x = line end
         for l = x, rs:pattern(pattern).number_of_lines, step do
           for c = 1, rs:track(t).visible_note_columns do
             if not str then
