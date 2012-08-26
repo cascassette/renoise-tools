@@ -1,11 +1,8 @@
---[[============================================================================
-main.lua
-============================================================================]]--
+-------------------------------------------------------------
+-- Dancealot v2.0 by Cas Marrav (for Renoise 2.8)          --
+-------------------------------------------------------------
 
--- Placeholder for the dialog
 local dialog = nil
-
--- Placeholder to expose the ViewBuilder outside the show_dialog() function
 local vb = nil
 
 -- Renoise.Song thingy that you use all the time
@@ -21,11 +18,18 @@ local vpre = nil   -- Preset (not possible right now)
 local vtab = nil   -- Left/Right category select
 
 local vinfotxt = nil
+local vqtxt = nil
 
 local avdev = nil
 local track_names = {}
 local device_names = {}
 local position_names = {}
+
+local q=""
+local found_subset = {}
+local found_subset_indexes = {}
+
+local tracktype = nil
 
 -- For native only selection dialog
 local NATIVE_SWITCH = "native"
@@ -61,6 +65,22 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
   end
 end
 
+local function dev_find(query, devices, device_indexes)
+  query = query:lower()
+  local res_names = table.create()
+  local res_indexes = table.create()
+  local len = #query
+  local c = 1
+  for k,v in ipairs(devices) do
+    if v:sub(1,len):lower() == query then
+      res_names[c] = v
+      res_indexes[c] = device_indexes[k]
+      c = c + 1
+    end
+  end
+  return res_names, res_indexes
+end
+
 
 --------------------------------------------------------------------------------
 -- GUI
@@ -70,11 +90,8 @@ local function updateinfo()
   -- update info txt
   local actstr = ""
   if not vact.value then actstr = " and instantly deactivate it" end
---  print("==PRE==   key " .. kname)
---  oprint(vinfotxt.text)
-  vinfotxt.text = "Insert a " .. device_names[vdsp.value] .. " on track# " .. vtrk.value .. " " .. track_names[vtrk.value] .. " at pos " .. vpos.value .. " (after " .. position_names[vpos.value] .. ")" .. actstr .. "?"
---  print("==POST==")
---  oprint(vinfotxt.text)
+  vinfotxt.text = "Insert a " .. device_names[found_subset_indexes[vdsp.value]] .. " on track# " .. vtrk.value .. " " .. track_names[vtrk.value] .. " at pos " .. vpos.value .. " (after " .. position_names[vpos.value] .. ")" .. actstr .. "?"
+  vqtxt.text = q
 end
 
 local function key_dialog(d, k)
@@ -83,38 +100,78 @@ local function key_dialog(d, k)
     d:close()
   elseif k.name == "down" then
     if tab == 1 then
-      vtrk.value = vtrk.value + 1
-      -- TODO: refresh avdev and positions
+      local nv = vtrk.value + 1
+      if nv > #rs.tracks then nv = 1 end
+      vtrk.value = nv
+      if rs:track(vtrk.value).type ~= tracktype then
+        -- TODO: refresh avdev and positions
+      end
     elseif tab == 2 then
-      vdsp.value = vdsp.value + 1
+      vdsp.value = math.min(vdsp.value + 1, #vdsp.items)
     elseif tab == 3 then
-      vpos.value = vpos.value + 1
+      vpos.value = math.min(vpos.value + 1, #rs.selected_track.devices)
     elseif tab == 4 then
       vact.value = not vact.value
     elseif tab == 5 then
     end
   elseif k.name == "up" then
     if tab == 1 then
-      vtrk.value = vtrk.value - 1
-      -- TODO: refresh avdev and positions
+      local nv = vtrk.value - 1
+      if nv < 1 then nv = #rs.tracks end
+      vtrk.value = nv
+      if rs:track(vtrk.value).type ~= tracktype then
+        -- TODO: refresh avdev and positions
+      end
     elseif tab == 2 then
-      vdsp.value = vdsp.value - 1
+      vdsp.value = math.max(vdsp.value - 1, 1)
     elseif tab == 3 then
-      vpos.value = vpos.value - 1
+      vpos.value = math.max(vpos.value - 1, 1)
     elseif tab == 4 then
       vact.value = not vact.value
     elseif tab == 5 then
     end
   elseif k.name == "left" then
-    vtab.value = tab - 1
+    if vtab.value > 1 then
+      vtab.value = tab - 1
+    else vtab.value = #vtab.items
+    end
   elseif k.name == "right" then
-    vtab.value = tab + 1
+    if vtab.value < #vtab.items then
+      vtab.value = tab + 1
+    else vtab.value = 1
+    end
   elseif k.name == "space" then
     vact.value = not vact.value
   elseif k.name == "return" then
-    insertfx(vtrk.value, avdev[vdsp.value], vpos.value, vact.value, vpre.value)
+    insertfx(vtrk.value, avdev[found_subset_indexes[vdsp.value]], vpos.value, vact.value, vpre.value)
     d:close()
-  elseif k.name == "backspace" then
+  elseif k.name == "back" then
+    local len = #q - 1
+    if len >= 0 then
+      q = q:sub(1,len)
+      found_subset = device_names
+      for i = 1, #device_names do found_subset_indexes[i] = i end
+      found_subset, found_subset_indexes = dev_find(q, found_subset, found_subset_indexes)
+      vdsp.items = found_subset
+      vdsp.value = 1
+    end
+  elseif k.name == "del" then
+    q = ""
+    found_subset = device_names
+    for i = 1, #device_names do found_subset_indexes[i] = i end
+    vdsp.items = found_subset
+    vdsp.value = 1
+  elseif k.character ~= nil then
+    local nuq = q .. k.character
+    local nu_found_subset, nu_found_subset_indexes
+    nu_found_subset, nu_found_subset_indexes = dev_find(nuq, found_subset, found_subset_indexes)
+    if #nu_found_subset > 0 then
+      found_subset = nu_found_subset
+      found_subset_indexes = nu_found_subset_indexes
+      vdsp.items = found_subset
+      q = nuq
+      vdsp.value = 1
+    end
   else
   end
   updateinfo()
@@ -137,9 +194,10 @@ local function show_dialog(which)    -- 'which' can be "native" for native only
     track_names[i] = t.name
   end
   
+  tracktype = rs.selected_track.type
   avdev = rs.selected_track.available_devices
   if NATIVE then
-    for i = 1, 39 do
+    for i = 1, 38 do
       local s = avdev[i]
       device_names[i] = s:sub(-s:reverse():find("/")+1)
     end
@@ -154,6 +212,10 @@ local function show_dialog(which)    -- 'which' can be "native" for native only
   for i = 1, positions do
     position_names[i] = rs.selected_track:device(i).display_name
   end
+  
+  q = ""
+  found_subset = device_names
+  for i = 1, #device_names do found_subset_indexes[i] = i end
   
   vtab = vb:switch {
     width = "100%",
@@ -173,7 +235,7 @@ local function show_dialog(which)    -- 'which' can be "native" for native only
   vpos = vb:popup {
     width = 100,
     items = position_names,
-    value = positions,
+    value = math.max(rs.selected_device_index, 1),
   }
   vact = vb:checkbox {
     width = 100,
@@ -186,6 +248,7 @@ local function show_dialog(which)    -- 'which' can be "native" for native only
   }
   
   vinfotxt = vb:text { text = "Info", width = "100%", }
+  vqtxt = vb:text { text = "" }
   
   local dialog_content =
     vb:column {
@@ -216,7 +279,12 @@ local function show_dialog(which)    -- 'which' can be "native" for native only
       vb:row {
         style = "border",
         margin = DDM, spacing = CS, width = "100%",
-        vinfotxt
+        vinfotxt,
+      },
+      vb:horizontal_aligner {
+        mode = "right",
+        margin = 2, spacing = 0, width = "100%", height = 16,
+        vqtxt,
       }
     }
     
