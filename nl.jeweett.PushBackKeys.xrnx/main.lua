@@ -324,19 +324,28 @@ local function show_dialog(column_type)
     line = rs.transport.edit_pos.line
     step = rs.transport.edit_step
     track = rs.selected_track_index
+    tracktype = rs.selected_track.type
     column = rs.selected_note_column_index
+    local nc = nil  -- notecolumn to get info from
+    if column >= 1 and column <= 12 then
+      nc = rs:pattern(pattern):track(track):line(line):note_column(column)
+    elseif tracktype == 1 then
+      nc = rs:pattern(pattern):track(track):line(line):note_column(1)
+    elseif tracktype == 4 then
+      nc = rs:pattern(pattern):track(rs:track(track).leaves_indexes[1]):line(line):note_column(1)
+    end
     local val, min, max
     if dialog_type == COLUMN_TYPE_VOL then
       min = 0 max = 128
-      val = rs:pattern(pattern):track(track):line(line):note_column(column).volume_value
+      val = nc.volume_value
       if val == 256 then val = 128 end
     elseif dialog_type == COLUMN_TYPE_PAN then
       min = -64 max = 64
-      val = rs:pattern(pattern):track(track):line(line):note_column(column).panning_value - 64
+      val = nc.panning_value - 64
       if val == 191 then val = 0 end
     elseif dialog_type == COLUMN_TYPE_DEL then
       min = 0 max = 256
-      val = rs:pattern(pattern):track(track):line(line):note_column(column).delay_value
+      val = nc.delay_value
     end
     
     vb = renoise.ViewBuilder()
