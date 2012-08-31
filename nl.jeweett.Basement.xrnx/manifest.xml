@@ -4,11 +4,11 @@
   <Id>nl.jeweett.Basement</Id>
   <Version>5</Version>
   <ApiVersion>3</ApiVersion>
-  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <Author>Cas</Author>
   <AutoUpgraded>false</AutoUpgraded>
   <Category>MIDI | Track DSPs</Category>
   <Description>Doing everything with 8 knobs and 16 pads.</Description>
-  <Homepage>http://tools.renoise.com</Homepage>
+  <Homepage>http://music.jeweet.nl</Homepage>
   <Platform/>
   <Icon/>
 </RenoiseScriptingTool>

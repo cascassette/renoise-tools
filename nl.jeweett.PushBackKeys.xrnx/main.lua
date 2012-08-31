@@ -338,7 +338,7 @@ local function show_dialog(column_type)
     if dialog_type == COLUMN_TYPE_VOL then
       min = 0 max = 128
       val = nc.volume_value
-      if val == 256 then val = 128 end
+      if val > 128 then val = 128 end
     elseif dialog_type == COLUMN_TYPE_PAN then
       min = -64 max = 64
       val = nc.panning_value - 64
