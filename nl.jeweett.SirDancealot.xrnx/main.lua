@@ -72,7 +72,7 @@ local function dev_find(query, devices, device_indexes)
   local len = #query
   local c = 1
   for k,v in ipairs(devices) do
-    if v:sub(1,len):lower() == query or (v:sub(2,len+1):lower() == query and (v:sub(1,1) == "#" or v:sub(1,1) == "#")) then
+    if v:sub(1,len):lower() == query or (v:sub(2,len+1):lower() == query and (v:sub(1,1) == "#" or v:sub(1,1) == "*")) then
       res_names[c] = v
       res_indexes[c] = device_indexes[k]
       c = c + 1
