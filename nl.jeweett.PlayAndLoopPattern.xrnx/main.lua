@@ -18,6 +18,7 @@ local function play_pattern()
   if rs.transport.playing then
     rs.transport.loop_pattern = not rs.transport.loop_pattern
   else
+    rs.transport.loop_pattern = true
     rs.transport:start(renoise.Transport.PLAYMODE_RESTART_PATTERN)
     rs.transport.loop_pattern = true
   end

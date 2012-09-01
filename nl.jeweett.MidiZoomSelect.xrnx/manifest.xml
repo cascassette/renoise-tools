@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Midi Zoom Select</Name>
   <Id>nl.jeweett.MidiZoomSelect</Id>
-  <Version>0.1</Version>
+  <Version>1</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas | casmarrav@gmail.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
