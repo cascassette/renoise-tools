@@ -37,7 +37,18 @@ local basement_active_view = BASEMENT_VIEW_NONE
 local PAD_CC  = { 116, 117, 118, 119, 112, 113, 114, 115, 124, 125, 126, 127, 120, 121, 122, 123 }
 --local mpk_out = renoise.Midi.create_output_device(renoise.Midi.available_output_devices()[3])
 --local mpk_out = renoise.Midi.create_output_device("MPK mini MIDI 1")
-local mpk_out = renoise.Midi.create_output_device("MPK mini")
+function try_and_bind_mpk()
+  local res = nil
+  local list = renoise.Midi.available_output_devices()
+  for i,v in pairs (list) do
+    if v:sub(1,8) == "MPK mini" then
+      res = renoise.Midi.create_output_device(v)
+      break
+    end
+  end
+  return res
+end
+local mpk_out = try_and_bind_mpk()
 
 --------------------------------------------------------------------------------
 -- Placeholders for GUI fields accessible in MIDI callback procedures
@@ -3235,8 +3246,9 @@ local function init()
 end
 renoise.tool().app_new_document_observable:add_notifier(init)
 
-
 -- Do this when saving file
 _AUTO_RELOAD_DEBUG = function()
-  init()
+  if mpk_out ~= nil then
+    init()
+  end
 end
