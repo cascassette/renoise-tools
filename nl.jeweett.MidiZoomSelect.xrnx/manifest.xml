@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Midi Zoom Select</Name>
+  <Id>nl.jeweett.MidiZoomSelect</Id>
+  <Version>0.1</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Sample Editor</Category>
+  <Description>Select / Zoom sample with midi knob.</Description>
+  <Homepage>http://tools.renoise.com</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>
