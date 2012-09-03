@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Best Views v0.1 by Cas Marrav (for Renoise 2.8)         --
+-- Best Views v1.0 by Cas Marrav (for Renoise 2.8)         --
 -------------------------------------------------------------
 
 -- globs
@@ -15,6 +15,11 @@ local function lfr()
   if lf > 4 then lf = 1 end
   renoise.app().window.active_lower_frame = lf
 end
+local function cfr()
+  local mf = renoise.app().window.active_middle_frame + 1
+  if mf > 4 then mf = 1 end
+  renoise.app().window.active_middle_frame = mf
+end
 local function ufrr()
   local uf = renoise.app().window.active_upper_frame - 1
   if uf < 1 then uf = 4 end
@@ -24,6 +29,11 @@ local function lfrr()
   local lf = renoise.app().window.active_lower_frame - 1
   if lf < 1 then lf = 4 end
   renoise.app().window.active_lower_frame = lf
+end
+local function cfrr()
+  local mf = renoise.app().window.active_middle_frame - 1
+  if mf < 1 then mf = 4 end
+  renoise.app().window.active_middle_frame = mf
 end
 
 local function cv()
@@ -217,12 +227,20 @@ renoise.tool():add_keybinding {
   invoke = lfr
 }
 renoise.tool():add_keybinding {
+  name = "Global:View:Best View Middle Frame Rotate",
+  invoke = cfr
+}
+renoise.tool():add_keybinding {
   name = "Global:View:Best View Upper Frame Rotate Reverse",
   invoke = ufrr
 }
 renoise.tool():add_keybinding {
   name = "Global:View:Best View Lower Frame Rotate Reverse",
   invoke = lfrr
+}
+renoise.tool():add_keybinding {
+  name = "Global:View:Best View Middle Frame Rotate Reverse",
+  invoke = cfrr
 }
 
 
