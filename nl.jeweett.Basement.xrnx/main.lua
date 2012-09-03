@@ -50,6 +50,8 @@ function try_and_bind_mpk()
 end
 local mpk_out = try_and_bind_mpk()
 
+if mpk_out ~= nil then -- don't do anything if mpk not found
+
 --------------------------------------------------------------------------------
 -- Placeholders for GUI fields accessible in MIDI callback procedures
 --------------------------------------------------------------------------------
@@ -3245,6 +3247,8 @@ local function init()
   add_hooks()
 end
 renoise.tool().app_new_document_observable:add_notifier(init)
+
+end --if mpk_out ~= nil
 
 -- Do this when saving file
 _AUTO_RELOAD_DEBUG = function()
