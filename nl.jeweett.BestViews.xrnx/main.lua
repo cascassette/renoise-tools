@@ -42,6 +42,26 @@ local function cv()
   rw.upper_frame_is_visible = false
 end
 
+local function sfr()
+  rw = renoise.app().window
+  rw.lower_frame_is_visible = not rw.lower_frame_is_visible
+  rw.upper_frame_is_visible = not rw.upper_frame_is_visible
+--[[  if rw.lower_frame_is_visible then
+    rw.lower_frame_is_visible = false
+    rw.upper_frame_is_visible = true
+  else
+    rw.lower_frame_is_visible = true
+    rw.upper_frame_is_visible = false
+  end]]
+end
+
+local function db()
+  rw = renoise.app().window
+  rw.upper_frame_is_visible = true
+  rw.active_upper_frame = 1
+  rw.disk_browser_is_expanded = true
+end
+
 local function pe()
   rw = renoise.app().window
   if rw.active_middle_frame ~= renoise.ApplicationWindow.MIDDLE_FRAME_PATTERN_EDITOR then
@@ -209,6 +229,14 @@ renoise.tool():add_keybinding {
 renoise.tool():add_keybinding {
   name = "Global:View:Best View ClearView",
   invoke = cv
+}
+renoise.tool():add_keybinding {
+  name = "Global:View:Best View DiskBrowser",
+  invoke = db
+}
+renoise.tool():add_keybinding {
+  name = "Global:View:Best View Switch Upper/Lower Frame",
+  invoke = sfr
 }
 renoise.tool():add_keybinding {
   name = "Global:View:Best View Upper Frame",
