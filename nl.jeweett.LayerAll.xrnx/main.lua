@@ -1,5 +1,5 @@
 --main
-function main()
+local function main()
   local rs = renoise.song()
   local ci = rs.selected_instrument
   local rk = 48
@@ -23,9 +23,7 @@ for _,menu in pairs {"Instrument Box", "Sample List"} do
   renoise.tool():add_menu_entry {
     name = menu .. ":Layer all samples",
     active = multi_instr_selected,
-    invoke = function()
-      main()
-    end
+    invoke = main
   }
 end
 
