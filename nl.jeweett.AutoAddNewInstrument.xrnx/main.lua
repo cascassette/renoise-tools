@@ -4,18 +4,18 @@
 
 
 -- Main --
-local function plus()
+local function plusins()
   local rs = renoise.song()
-  local sti = rs.selected_instrument_index
-  if sti < #rs.instruments then
-    rs.selected_instrument_index = sti + 1
-  elseif rs:instrument(sti):sample(1).sample_buffer.has_sample_data then
-    rs:insert_instrument_at(sti + 1)
-    rs.selected_instrument_index = sti + 1
+  local sii = rs.selected_instrument_index
+  if sii < #rs.instruments then
+    rs.selected_instrument_index = sii + 1
+  elseif rs:instrument(sii):sample(1).sample_buffer.has_sample_data then
+    rs:insert_instrument_at(sii + 1)
+    rs.selected_instrument_index = sii + 1
   end
 end
 
-local function minus()
+local function minusins()
   local rs = renoise.song()
   local sti = rs.selected_instrument_index
   if sti > 1 then
@@ -26,25 +26,51 @@ local function minus()
   end
 end
 
+local function plussmp()
+  local rs = renoise.song()
+  local ssi = rs.selected_sample_index
+  local sc = #rs.selected_instrument.samples
+  if ssi < sc then
+    rs.selected_sample_index = ssi + 1
+  elseif rs.selected_instrument:sample(sc).sample_buffer.has_sample_data then
+    rs.selected_instrument:insert_sample_at(sc + 1)
+    rs.selected_sample_index = ssi + 1
+  end
+end
+
+local function minussmp()
+  local rs = renoise.song()
+  local ssi = rs.selected_sample_index
+  local empty = not rs.selected_sample.sample_buffer.has_sample_data
+  local sc = #rs.selected_instrument.samples
+  if ssi > 1 then
+    rs.selected_sample_index = ssi - 1
+    if ssi == sc and empty then
+      rs.selected_instrument:delete_sample_at(ssi)
+    end
+  end
+end
+
 
 -- Keys --
 renoise.tool():add_keybinding {
   name = "Global:Instruments:Select or add Next Instrument",
-  invoke = plus
+  invoke = plusins
 }
 renoise.tool():add_keybinding {
   name = "Global:Instruments:Select or remove Prev. Instrument",
-  invoke = minus
+  invoke = minusins
+}
+renoise.tool():add_keybinding {
+  name = "Global:Instruments:Select or add Next Sample",
+  invoke = plussmp
+}
+renoise.tool():add_keybinding {
+  name = "Global:Instruments:Select or remove Prev. Sample",
+  invoke = minussmp
 }
 
 
--- Midi --
---[[
-renoise.tool():add_midi_mapping {
-  name = tool_id..":Show Dialog...",
-  invoke = show_dialog
-}
-]]
 
 _AUTO_RELOAD_DEBUG = function()
   
