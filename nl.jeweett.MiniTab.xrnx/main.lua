@@ -124,6 +124,15 @@ renoise.tool():add_keybinding {
   invoke = minitabr
 }
 
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Navigation:MiniTab Jump Left 2",
+  invoke = minitabl
+}
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Navigation:MiniTab Jump Right 2",
+  invoke = minitabr
+}
+
 
 -- MIDI Mapping
 -------------------------------------------------------------
