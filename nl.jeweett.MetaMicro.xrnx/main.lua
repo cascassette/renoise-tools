@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- MetaMicro v0.1 by Cas Marrav (for Renoise 2.8)          --
+-- MetaMicro v0.2 by Cas Marrav (for Renoise 2.8)          --
 -------------------------------------------------------------
 
 local dialog = nil
@@ -118,6 +118,21 @@ end
 -- GUI functions
 --------------------------------------------------------------------------------
 
+local function q()
+  local tab = vtab.value
+  if tab == TAB_TRK then
+    return q_trk
+  elseif tab == TAB_DSP then
+    return q_dsp
+  elseif tab == TAB_PMT then
+    return q_pmt
+  elseif tab == TAB_MIN then
+    return q_min
+  elseif tab == TAB_MAX then
+    return q_max
+  end
+end
+
 local function seltrk(obj)
   if obj then
     return renoise.song():track(found_subset_indices_trk[vtrk.value])
@@ -157,7 +172,7 @@ local function updateinfo()
   elseif tab == TAB_MAX then
     qstr = q_max
   end
-  vqtxt = qstr
+  vqtxt.text = qstr
   --vinfotxt.text = "..."
   vinfotxt.text = "Set Mod Destination for "..rs.selected_device.display_name.." to trk "..seltrk(false)..". "..seltrk(true).name.." dsp "..seldsp(false)..". "..seldsp(true).name.." pmt "..selpmt(false)..". "..selpmt(true).name.."?"
 end
@@ -187,20 +202,23 @@ local function reset_q()
 end
 
 local function chtrk()
-  for i,d in ipairs(rs:track(vtrk.value).devices) do
+  for i,d in ipairs(seltrk().devices) do
     dsp_names[i] = d.name
   end
+  vdsp.value = 1
   vdsp.items = dsp_names
-  for i,p in ipairs(rs:track(vtrk.value):device(vdsp.value).parameters) do
+  for i,p in ipairs(seldsp().parameters) do
     pmt_names[i] = p.name
   end
+  vpmt.value = 1
   vpmt.items = pmt_names
 end
 
 local function chdsp()
-  for i,p in ipairs(rs:track(vtrk.value):device(found_subset_indices[vdsp.value]).parameters) do
+  for i,p in ipairs(seldsp().parameters) do
     pmt_names[i] = p.name
   end
+  vpmt.value = 1
   vpmt.items = pmt_names
 end
 
@@ -221,7 +239,7 @@ local function chval()
 end
 
 local function chtab()
-  reset_q()
+  --reset_q()
 end
 
 local function key_dialog(d, k)
@@ -257,28 +275,41 @@ local function key_dialog(d, k)
     chval()
   elseif k.name == "space" then
     -- reset min & max? reset all??
+    -- mode switch:
+    --   if LFO > min/max to mid/ddev
+    --   if XY / Hydra > cycle dest. number
   elseif k.name == "return" then
     bind(rs.selected_device, seltrk(), seldsp(), selpmt(), vmin.value, vmax.value)
     d:close()
   elseif k.name == "back" then
-    local len = #q - 1
+    local len = #q() - 1
     if len > 0 then
-      if tab >= TAB_MIN --[[or tab == TAB_MAX]] and ((k.character >= "0" and k.character <= "9") or k.character == ".") then
-        local new_q = q:sub(1, #q-1)
+      if tab >= TAB_MIN --[[or tab == TAB_MAX]] then
+        local new_q = q():sub(1, #q()-1)
         local num = tonumber(new_q)
         if num >= vlookup[tab].min and num <= vlookup[tab].max then
-          q = new_q
+          if tab == TAB_MIN then
+            q_min = new_q
+          elseif tab == TAB_MAX then
+            q_max = new_q
+          end
           vlookup[tab].value = num
         end
       else
-        local new_q = q:sub(1, len)
+        local new_q = q():sub(1, len)
         local new_found_subset, new_found_subset_indices
         reset_q()
         new_found_subset, new_found_subset_indices = find_objnames(new_q, found_subset, found_subset_indices, MM_SEARCH)
         found_subset = new_found_subset
         found_subset_indices = new_found_subset_indices
         vlookup[tab].items = found_subset
-        q = new_q
+        if tab == TAB_TRK then
+          q_trk = new_q
+        elseif tab == TAB_DSP then
+          q_dsp = new_q
+        elseif tab == TAB_PMT then
+          q_pmt = new_q
+        end
         vlookup[tab].value = 1
       end
       if tab == TAB_TRK then chtrk()

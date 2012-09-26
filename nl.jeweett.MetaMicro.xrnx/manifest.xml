@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Meta Micro</Name>
   <Id>nl.jeweett.MetaMicro</Id>
-  <Version>1</Version>
+  <Version>0.2</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas | casmarrav@gmail.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
