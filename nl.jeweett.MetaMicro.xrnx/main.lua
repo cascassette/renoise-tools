@@ -91,9 +91,16 @@ local function bind(metadev, trkno, dspno, pmtno, min, max)
     print ("max  : " .. max )
   end
   if not DRY_RUN then
-    metadev:parameter(1).value = trkno-1
-    metadev:parameter(2).value = dspno-1
-    metadev:parameter(3).value = pmtno-1
+    local add = 0
+    if metadev.name == "*Formula" then add = 3 end
+    --Destination
+    if not (metadev.name == "*Hydra" or metadev.name == "*XY Pad") then
+      metadev:parameter(1+add).value = trkno-1
+      metadev:parameter(2+add).value = dspno-1
+      metadev:parameter(3+add).value = pmtno-1
+    else
+    end
+    --Scaling
     min = min / 100.0
     max = max / 100.0
     if metadev.name == "*LFO" then
@@ -105,10 +112,11 @@ local function bind(metadev, trkno, dspno, pmtno, min, max)
       end
       metadev:parameter(4).value = dev -- amplitude
       metadev:parameter(5).value = mid
-    elseif metadev.name == "*Hydra" or metadev.name == "*XY Pad" or metadev.name == "*Formula" then
+    elseif metadev.name == "*Hydra" or metadev.name == "*XY Pad" then
+      -- TODO: mode func arg
     else
-      metadev:parameter(4).value = min
-      metadev:parameter(5).value = max
+      metadev:parameter(4+add).value = min
+      metadev:parameter(5+add).value = max
     end
   end
 end
@@ -278,6 +286,7 @@ local function key_dialog(d, k)
     -- mode switch:
     --   if LFO > min/max to mid/ddev
     --   if XY / Hydra > cycle dest. number
+    --   if sigfol etc > nothing
   elseif k.name == "return" then
     bind(rs.selected_device, seltrk(), seldsp(), selpmt(), vmin.value, vmax.value)
     d:close()
