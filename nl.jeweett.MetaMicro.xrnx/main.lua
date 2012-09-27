@@ -210,12 +210,12 @@ local function reset_q()
 end
 
 local function chtrk()
-  for i,d in ipairs(seltrk().devices) do
+  for i,d in ipairs(seltrk(true).devices) do
     dsp_names[i] = d.name
   end
   vdsp.value = 1
   vdsp.items = dsp_names
-  for i,p in ipairs(seldsp().parameters) do
+  for i,p in ipairs(seldsp(true).parameters) do
     pmt_names[i] = p.name
   end
   vpmt.value = 1
@@ -223,7 +223,7 @@ local function chtrk()
 end
 
 local function chdsp()
-  for i,p in ipairs(seldsp().parameters) do
+  for i,p in ipairs(seldsp(true).parameters) do
     pmt_names[i] = p.name
   end
   vpmt.value = 1
@@ -431,7 +431,7 @@ local function show_dialog()
     vtab = vb:switch {
       width = "100%",
       items = { "Track", "Effect", "Parameter", "Min", "Max" },
-      value = TAB_TRK,
+      value = TAB_PMT,
     }
     vtrk = vb:popup {
       width = 100,
