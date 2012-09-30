@@ -29,6 +29,6 @@ end
 
 --keys
 renoise.tool():add_keybinding {
-  name = "Global:Tools:Duplicate Sample",
+  name = "Global:Tools:Layer all samples",
   invoke = main
 }
