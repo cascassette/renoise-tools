@@ -27,7 +27,7 @@ local delete_obsolete_samples_on_render = false
 -------------------------------------------------------------
 
 --[[ other possible options:
-   * require shift modifier for fields
+   * require shift modifier for fields   (done)
    * custom functions
    * custom (named) presets
                                                          --]]
