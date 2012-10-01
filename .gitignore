@@ -9,6 +9,7 @@
 *.*.*.xrnx/
 !nl.jeweett.*.xrnx/
 nl.jeweett.TestGui.xrnx/
+nl.jeweett.TestKeys.xrnx/
 XRNX/
 .directory
 docs
