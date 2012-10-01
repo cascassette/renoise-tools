@@ -339,10 +339,15 @@ function render_overtune( load, settings )
   --local tl = 1604
   local tl = math.floor(SAMPLE_RATE/(BASE_FREQ*(SEMITONE_FACTOR^(settings.base_note-BASE_NOTE)))+.5)
   local sl = tl*settings.times
-  local otfuncs = -- variables
+  local otvars =  -- variables
                   "local tl = "..tl.." " ..    -- needed for saw
+                  "local sr = "..SAMPLE_RATE.." "..
+                  "local bf = "..BASE_FREQ.." "..
+                  "local sf = "..SEMITONE_FACTOR.." "..
+                  "local bn = "..BASE_NOTE.." "..
                   "local pi = math.pi " ..
-                  -- basics
+                  "local lowrnd_buf = 0 local lowrnd_step = 0 "
+  local otfuncs = -- basics
                   "local sin = math.sin " ..
                   "local cos = math.cos " ..
                   "local tan = math.tan " ..
@@ -390,7 +395,9 @@ function render_overtune( load, settings )
                   "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
                   "local semifold = function(x, y, z) return fold(x, y)*z + (1-z)*x end " ..
                   "local crush = function(x, y) return flr(x*y)/y end " ..
+                  "local semicrush = function(x, y, z) return (flr(x*y)/y)*z + (1-z)*x end " ..
                   "local noise = function(x, y, p) return x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
+                  "local lowrnd = function ( t, skip ) if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) return lowrnd_buf end " ..
                   -- supermin/supermax type 'clip' functions
                   "local supermax = function(x, y) if x >= 0 then return max(x,y) else return min(x,y) end end " ..
                   "local supermin = function(x, y) if x >= 0 then return min(x,y) else return max(x,y) end end " ..
@@ -437,7 +444,7 @@ function render_overtune( load, settings )
     end
     return y
   end]]
---[[  local mix = function(x, ztab, functab)
+--[[  local mix = function(x, ztab, functab)         --- THIS FAILS (just so you know)
     local factor = 0
     if #ztab ~= #functab then return 0
     else
@@ -455,6 +462,15 @@ function render_overtune( load, settings )
       end
       return res/factor
     end
+  end]]
+--[[  local lowrnd_buf = 0
+  local lowrnd_step = 0
+  local lowrnd = function ( t, skip )
+    if lowrnd_step == 0 then
+      lowrnd_buf = rnd()
+    end
+    lowrnd_step = mod( lowrnd_step + 1, skip )
+    return lowrnd_buf
   end]]
   local sb        -- shortcut for sample buffers
   --local rk = 9    -- A-0 for crispness
@@ -506,7 +522,7 @@ function render_overtune( load, settings )
     formulastr = formulastr .. "+" .. settings.stepn:gsub("N", i)
   end
   --formulastr = "("..formulastr..")/"..settings.steps
-  formula = loadstring("return function(X, XX, O, T) ".. otfuncs .."return ".. formulastr .." end")()
+  formula = loadstring(otvars.." return function(X, XX, O, T) ".. otfuncs .."return ".. formulastr .." end")()
   local buffer = {}
   for c = 1, settings.times do
     --for i = 1, tl do
