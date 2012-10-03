@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Overtune v2.5 by Cas Marrav (for Renoise 2.8)           --
+-- Overtune v2.6 by Cas Marrav (for Renoise 2.8)           --
 -------------------------------------------------------------
 
 -- cycle length calculation
