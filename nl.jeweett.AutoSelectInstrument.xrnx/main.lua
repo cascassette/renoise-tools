@@ -70,6 +70,7 @@ local function switchitonem()
   autoselect = not autoselect
   if autoselect then
     renoise.app():show_status("AutoSelect On")
+    adjust_inst()
   else
     renoise.app():show_status("AutoSelect Off")
   end
