@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>ShowParams</Name>
   <Id>nl.jeweett.ShowParams</Id>
-  <Version>0.01</Version>
+  <Version>2</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas | Casper</Author>
   <AutoUpgraded>false</AutoUpgraded>
