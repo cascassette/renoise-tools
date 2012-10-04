@@ -34,7 +34,7 @@ renoise.tool():add_menu_entry {
 
 -- Keys --
 renoise.tool():add_keybinding {
-  name = "Global:Tools:PDub",
+  name = "Pattern Editor:Pattern Operations:PDub",
   invoke = pdub
 }
 
