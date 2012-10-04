@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Overtune v2.6 by Cas Marrav (for Renoise 2.8)           --
+-- Overtune v2.5.90 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 -- cycle length calculation
@@ -514,7 +514,7 @@ function show_edit_dialog()
   local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
   local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
   
-  vb_step1 = vb:textfield { value = options.step1.value, width = 600 }
+  vb_step1 = vb:textfield { value = "crush(Y*sin(X*35), 10)"--[[options.step1.value]], width = 600 }
   vb_power = vb:checkbox { value = options.power.value }
   --vb_base_note = vb:valuebox { min = 0, max = 119, value = 9, width = 64, tostring = note_number_to_string, tonumber = string_to_note_number }
   --vb_base_noteshow = vb:textfield

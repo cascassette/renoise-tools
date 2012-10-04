@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Overtune 2</Name>
   <Id>nl.jeweett.Overtune</Id>
-  <Version>2.6</Version>
+  <Version>2.5.90</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas Marrav | Casper</Author>
   <AutoUpgraded>false</AutoUpgraded>
