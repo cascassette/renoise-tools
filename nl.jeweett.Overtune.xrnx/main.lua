@@ -49,7 +49,8 @@ local otfuncs = -- basics
                 "local btoi = function(b) if b then return 1 else return 0 end end " ..
                 "local itob = function(i) if i<=0 then return false else return true end end " ..
                 -- other basic waveforms
-                "local saw = function(x) return math.mod(((x-(1/tl))+pi)/pi, 2)-1 end " ..
+                --"local saw = function(x) return math.mod(((x-(1/tl))+pi)/pi, 2)-1 end " ..
+                "local saw = function(x) return atan(tan(x/2))/pi end " ..
                 "local squ = function(x) return (flr(sin(x)/2+1)*2-1) end " ..
                 "local tri = function(x) return abs(1-mod((x+1.5*pi)/pi,2))*2-1 end " ..
                 "local pls = function(x) return (flr(x/2+1)*2-1) end " ..                   -- that is: pulsify
