@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Duplicate Sample</Name>
+  <Id>nl.jeweett.DuplicateSample</Id>
+  <Version>1</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Addons</Category>
+  <Description>Duplicate Sample (keyboard shortcut, midi bind, osc call?).</Description>
+  <Homepage>http://tools.renoise.com</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>
