@@ -42,6 +42,17 @@ local function cv()
   rw.upper_frame_is_visible = false
 end
 
+local function hud()
+  rw = renoise.app().window
+  if rw.lower_frame_is_visible and rw.upper_frame_is_visible then
+    rw.lower_frame_is_visible = false
+    rw.upper_frame_is_visible = false
+  else
+    rw.lower_frame_is_visible = true
+    rw.upper_frame_is_visible = true
+  end
+end
+
 local function sfr()
   rw = renoise.app().window
   rw.lower_frame_is_visible = not rw.lower_frame_is_visible
@@ -193,6 +204,16 @@ local function uf()
   end
 end
 
+local function uf2()
+  rw = renoise.app().window
+  if not rw.upper_frame_is_visible then
+    rw.upper_frame_is_visible = true
+    rw.lower_frame_is_visible = false
+  else
+    ufr()
+  end
+end
+
 local function lf()
   rw = renoise.app().window
   rw.lower_frame_is_visible = not rw.lower_frame_is_visible
@@ -206,6 +227,16 @@ local function lf()
     elseif renoise.ApplicationWindow.MIDDLE_FRAME_SAMPLE_EDITOR then
       rw.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_TRACK_DSPS
     end
+  end
+end
+
+local function lf2()
+  rw = renoise.app().window
+  if not rw.lower_frame_is_visible then
+    rw.lower_frame_is_visible = true
+    rw.upper_frame_is_visible = false
+  else
+    lfr()
   end
 end
 
@@ -231,6 +262,10 @@ renoise.tool():add_keybinding {
   invoke = cv
 }
 renoise.tool():add_keybinding {
+  name = "Global:View:Best View Head Up Display",
+  invoke = hud
+}
+renoise.tool():add_keybinding {
   name = "Global:View:Best View DiskBrowser",
   invoke = db
 }
@@ -245,6 +280,14 @@ renoise.tool():add_keybinding {
 renoise.tool():add_keybinding {
   name = "Global:View:Best View Lower Frame",
   invoke = lf
+}
+renoise.tool():add_keybinding {
+  name = "Global:View:Best View Upper Frame 2",
+  invoke = uf2
+}
+renoise.tool():add_keybinding {
+  name = "Global:View:Best View Lower Frame 2",
+  invoke = lf2
 }
 renoise.tool():add_keybinding {
   name = "Global:View:Best View Upper Frame Rotate",

@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Reorganize Env</Name>
   <Id>nl.jeweett.ReorganizeEnv</Id>
-  <Version>1</Version>
+  <Version>1.01</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
   <AutoUpgraded>false</AutoUpgraded>

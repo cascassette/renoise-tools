@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Best Views</Name>
-  <Id>nl.jeweett.BestViews</Id>
+  <Name>Shove Back</Name>
+  <Id>nl.jeweett.ShoveBack</Id>
   <Version>1.1</Version>
   <ApiVersion>3</ApiVersion>
-  <Author>Cas | casmarrav@gmail.com</Author>
+  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
-  <Category>Views</Category>
-  <Description>Best views.</Description>
+  <Category>Midi</Category>
+  <Description>Shove back the delay column values using edit step</Description>
   <Homepage>http://tools.renoise.com</Homepage>
   <Platform/>
   <Icon/>

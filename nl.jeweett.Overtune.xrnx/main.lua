@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Overtune v2.5 by Cas Marrav (for Renoise 2.8)           --
+-- Overtune v2.5.90 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 -- cycle length calculation
@@ -8,6 +8,7 @@ local SEMITONE_FACTOR = (2^(1/12))
 local BASE_FREQ = 440               -- A-4
 local BASE_NOTE = 57
 
+-- ot gui
 local load
 local vb_step1
 local vb_stepn
@@ -22,12 +23,147 @@ local dialog
 local focus
 local delete_obsolete_samples_on_render = false
 
+-- ot builtins
+local otvars =  -- variables
+                --"local tl = "..tl.." " ..    -- needed for saw; now inserted at use time
+                "local pi = math.pi " ..
+                "local lowrnd_buf = 0 local lowrnd_step = 0 " ..
+                "local lownoi_buf = 0 local lownoi_step = 0 "
+local otfuncs = -- basics
+                "local sin = math.sin " ..
+                "local cos = math.cos " ..
+                "local tan = math.tan " ..
+                "local asin = math.asin " ..
+                "local acos = math.acos " ..
+                "local atan = math.atan " ..
+                "local sqrt = math.sqrt " ..
+                "local max = math.max " ..
+                "local min = math.min " ..
+                "local mod = math.mod " ..
+                "local rnd = math.random " ..
+                "local flr = math.floor " ..
+                "local abs = math.abs " ..
+                "local equ = function(x) return x end " ..
+                -- logic
+                "local ite = function(i, t, e) if i then return t else return e end end " ..
+                "local btoi = function(b) if b then return 1 else return 0 end end " ..
+                "local itob = function(i) if i<=0 then return false else return true end end " ..
+                -- other basic waveforms
+                --"local saw = function(x) return math.mod(((x-(1/tl))+pi)/pi, 2)-1 end " ..
+                "local saw = function(x) return 2*atan(tan(x/2))/pi end " ..
+                "local squ = function(x) return (flr(sin(x)/2+1)*2-1) end " ..
+                "local tri = function(x) return abs(1-mod((x+1.5*pi)/pi,2))*2-1 end " ..
+                "local pls = function(x) return (flr(x/2+1)*2-1) end " ..                   -- that is: pulsify
+                "local ltan = function(x, y) return max(min(tan(x), y), -y)/y end " ..      -- limit tan
+                -- exponential sine, saw, tri
+                "local expsin = function(x, p) if p>1 then return (squ(x)^(1-p%2))*sin(x)^p else return squ(x)*abs(sin(x))^p end end " ..
+                "local expsaw = function(x, p) if p>1 then return (squ(x)^(1-p%2))*saw(x)^p else return squ(x)*abs(saw(x))^p end end " ..
+                "local exptri = function(x, p) if p>1 then return (squ(x)^(1-p%2))*tri(x)^p else return squ(x)*abs(tri(x))^p end end " ..
+                -- sine-made (recursive formula) waveforms
+                "local sinsin sinsin = function(x, p) if p>1 then return sinsin(sin(x), p-1) else return sin(x) end end " ..
+                "local sinsaw sinsaw = function(x, p) if p>1 then return sin(x*p)/p+sinsaw(x, p-1) else return sin(x) end end " ..
+                "local sftsaw sftsaw = function(x, p) if p>1 then return sin(x*p)/(2^p)+sftsaw(x, p-1) else return sin(x) end end " ..
+                "local sinsqu sinsqu = function(x, p) if p>1 then local v = p*2-1 return sin(x*v)/v+sinsqu(x, p-1) else return sin(x) end end " ..
+                -- square root sine, saw, tri
+                "local sqtfunhelp sqtfunhelp = function(fun, x, p) if p>1 then return sqrt(sqtfunhelp(fun, x, p-1)) else return abs(fun(x)) end end " ..
+                "local sqtsin = function(x, p) return squ(x)*sqtfunhelp(sin, x, p) end " ..
+                "local sqtsaw = function(x, p) return squ(x)*sqtfunhelp(saw, x, p) end " ..
+                "local sqttri = function(x, p) return squ(x)*sqtfunhelp(tri, x, p) end " ..
+                -- range [0..1] to [-1..1] and vice versa (ac/dc, [0..1] is good for modulating)
+                "local un = function(x) return (x+1)/2 end " ..
+                "local bi = function(x) return x*2-1 end " ..
+                -- distort (clip, fold, crush, noise) functions
+                "local clip = function(x, y) return max(min(x, y), -y) end " ..
+                "local semiclip = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
+                "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
+                "local semifold = function(x, y, z) return fold(x, y)*z + (1-z)*x end " ..
+                "local crush = function(x, y) return flr(x*y)/y end " ..
+                "local semicrush = function(x, y, z) return (flr(x*y)/y)*z + (1-z)*x end " ..
+                "local noise = function(x, y, p) return x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
+                "local lowrnd = function ( t, skip ) if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) return lowrnd_buf end " ..
+                "local lownoise = function ( t, part ) if lownoi_step ~= flr(t*part) then lownoi_buf = rnd() end lownoi_step = flr(t*part) return lownoi_buf end " ..
+                -- supermin/supermax type 'clip' functions
+                "local supermax = function(x, y) if x >= 0 then return max(x,y) else return min(x,y) end end " ..
+                "local supermin = function(x, y) if x >= 0 then return min(x,y) else return max(x,y) end end " ..
+                -- morph between two functions
+                "local morph = function(x, y, z) return ((1-z)*x+z*y) end " ..
+                --"local mix = function(x, ztab, functab) local factor = 0 if #ztab ~= #functab then return 0 else for _,f in ztab do factor = factor + f end local res = 0 for i = 1, #ztab do print(''..i..'. type: '..type(functab[i])) if type(functab[i]) == 'function' then res = res + ztab[i] * functab[i](x) elseif (#functab[i]) == 1 then res = res + ztab[i] * functab[i][1](x) else res = res + ztab[i] * functab[i][1](x, unpack(functab[i][2])) end end return res/factor end end  " ..
+                -- unary [0..1] pulse from/to
+                "local upft = function(x, f, t) if x < f or x >= t then return 0 else return 1 end end " ..
+                "local upf = function(x, f) if x < f then return 0 else return 1 end end " ..
+                "local upt = function(x, t) if x >= t then return 0 else return 1 end end " ..
+                -- ramps
+                "local sqrtsqrt = function(x, p) return sqtfunhelp(equ, x, p) end " ..
+                "local ru = function(t, p) return t^p end " ..                   -- ramp (exp)
+                "local rd = function(t, p) return (1-t)^p end " ..
+                "local aru = function(t, p) return 1-(1-t)^p end " ..            -- anti-ramp
+                "local ard = function(t, p) return 1-t^p end " ..
+                "local rru = function(t, p) return 1-sqrtsqrt(1-t, p) end " ..   -- root ramp
+                "local rrd = function(t, p) return 1-sqrtsqrt(t, p) end " ..
+                "local raru = function(t, p) return sqrtsqrt(t, p) end " ..      -- root anti-ramp
+                "local rard = function(t, p) return sqrtsqrt(1-t, p) end " ..
+                -- envelope
+                "local env = function(x, t) local y = 0 local pc local pn = nil for i = 1, #t-1 do if pn ~= nil then pc = pn else pc = t[i] end pn = t[i+1] if x < pn[1] and x >= pc[1] then if pn[3] == nil or pn[4] == nil then y = ((x-pc[1])/(pn[1]-pc[1]))*(pn[2]-pc[2])+pc[2] else y = pn[3](((x-pc[1])/(pn[1]-pc[1])),pn[4])*(pn[2]-pc[2])+pc[2] end break end end return y end " ..
+                -- signal duplication
+                "local dup = function(x, a, b) return a(x)+b(x) end "       -- not working! too bad we can't 'local xyz = function' in formulastring and still keep this whole environment
+--[[local env = function(x, t)
+  local y = 0
+  local pc
+  local pn = nil
+  for i = 1, #t-1 do
+    if pn ~= nil then
+      pc = pn
+    else
+      pc = t[i]
+    end
+    pn = t[i+1]
+    if x < pn[1] and x >= pc[1] then
+      if pn[3] == nil or pn[4] == nil then
+        y = ((x-pc[1])/(pn[1]-pc[1]))*(pn[2]-pc[2])+pc[2]
+      else
+        y = pn[3](((x-pc[1])/(pn[1]-pc[1])),pn[4])*(pn[2]-pc[2])+pc[2]
+      end
+      break
+    end
+  end
+  return y
+end]]
+--[[local mix = function(x, ztab, functab)         --- THIS FAILS (just so you know)
+  local factor = 0
+  if #ztab ~= #functab then return 0
+  else
+    for _,f in ztab do factor = factor + f end
+    local res = 0
+    for i = 1, #ztab do
+      print(''..i..'. type: '..type(functab[i]))
+      if type(functab[i]) == 'function' then
+        res = res + ztab[i] * functab[i](x)
+      elseif (#functab[i]) == 1 then
+        res = res + ztab[i] * functab[i][1](x)
+      else
+        res = res + ztab[i] * functab[i][1](x, unpack(functab[i][2]))
+      end
+    end
+    return res/factor
+  end
+end]]
+--[[local lowrnd_buf = 0
+local lowrnd_step = 0
+local lowrnd = function ( t, skip )
+  if lowrnd_step == 0 then
+    lowrnd_buf = rnd()
+  end
+  lowrnd_step = mod( lowrnd_step + 1, skip )
+  return lowrnd_buf
+end]]
+
+
 -------------------------------------------------------------
 -- Preferences                                             --
 -------------------------------------------------------------
 
 --[[ other possible options:
-   * require shift modifier for fields
+   * require shift modifier for fields   (done)
    * custom functions
    * custom (named) presets
                                                          --]]
@@ -326,12 +462,118 @@ function show_dialog()
   focus = 1
 end
 
+function key_handler_edit(d, k)
+  local pass = false
+  if not k.repeated then
+    if k.name == "1" and k.modifiers == "shift" then
+      vb_step1.edit_mode = true
+      focus = 1
+    elseif k.name == "2" and k.modifiers == "shift" then
+      vb_power.value = not vb_power.value
+      focus = 5
+    elseif k.name == "return" then
+      if k.modifiers == "" then
+        edit_overtune( renoise.song().selected_sample, { step1=vb_step1.value, power=vb_power.value } )
+        if dialog and dialog.visible then dialog:close() end
+--[[      elseif k.modifiers == "shift" then
+        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, base_note=vb_base_note.value } )
+        --vb_step1.edit_mode = true
+        --focus = 1
+      elseif k.modifiers == "alt" then
+        options.step1.value = vb_step1.value
+        options.stepn.value = vb_stepn.value
+        options.steps.value = vb_stepsshow.value
+        options.times.value = vb_timesshow.value
+        options.power.value = vb_power.value]]
+      end
+--[[    elseif k.name == "space" then
+      if k.modifiers == "" then
+        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, base_note=vb_base_note.value } )
+      elseif k.modifiers == "shift" then
+        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, base_note=vb_base_note.value } )
+        if dialog and dialog.visible then dialog:close() end
+      end]]
+    elseif k.name == "esc" then
+      if dialog and dialog.visible then dialog:close() end
+    else--[[if k.note ~= nil then]]
+      pass = true
+    end
+  end
+  if pass then
+    return k
+  end
+end
+
+function show_edit_dialog()
+  if dialog and dialog.visible then
+    --[[vb_step1.edit_mode = true
+    vb_step1.edit_mode = false]]
+    dialog:close()
+  end
+
+  local vb = renoise.ViewBuilder()
+  local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
+  local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
+  
+  vb_step1 = vb:textfield { value = "crush(Y*sin(X*35), 10)"--[[options.step1.value]], width = 600 }
+  vb_power = vb:checkbox { value = options.power.value }
+  --vb_base_note = vb:valuebox { min = 0, max = 119, value = 9, width = 64, tostring = note_number_to_string, tonumber = string_to_note_number }
+  --vb_base_noteshow = vb:textfield
+
+--[[  local vb_stepsrow = vb:row { vb_steps, vb_stepsshow }
+  vb_steps:add_notifier(function() vb_stepsshow.value = math.floor(vb_steps.value) end)
+  local vb_timesrow = vb:row { vb_times, vb_timesshow }
+  vb_times:add_notifier(function() vb_timesshow.value = math.floor(vb_times.value) end)
+]]
+
+  local vb_dialog =
+    vb:column {
+      margin = DDM,
+      vb:row {
+        vb:horizontal_aligner {
+          --margin = DDM,
+          spacing = CS,
+          vb:column {
+            vb:text { text = "Edit 1:" },
+            vb:text { text = "Power :" },
+          },
+          vb:column {
+            vb_step1,
+            vb_power,
+          },
+        },
+      },
+      vb:row { height = 6 },
+      vb:row {
+        style = "group",
+        width = "100%",
+        vb:horizontal_aligner {
+          margin = DDM/2,
+          width = "100%",
+          mode = "justify",
+          vb:bitmap {
+            mode = "transparent",
+            bitmap = "overtune.bmp"
+          },
+          vb:column { width = 390 },
+          vb:bitmap {
+            mode = "transparent",
+            bitmap = "by-cas.bmp"
+          },
+        },
+      },
+    }
+  dialog = renoise.app():show_custom_dialog("Overtune! [EDIT MODE]", vb_dialog, key_handler_edit)
+  vb_step1.edit_mode = true
+  focus = 1
+end
+
 -------------------------------------------------------------
 -- Main: render_overtune() function                        --
 -------------------------------------------------------------
 
 function render_overtune( load, settings )
-  local vb = renoise.ViewBuilder()
+  --local vb = renoise.ViewBuilder()
   local rs = renoise.song()
   local ci = rs.selected_instrument
   local cs = rs.selected_sample
@@ -339,123 +581,6 @@ function render_overtune( load, settings )
   --local tl = 1604
   local tl = math.floor(SAMPLE_RATE/(BASE_FREQ*(SEMITONE_FACTOR^(settings.base_note-BASE_NOTE)))+.5)
   local sl = tl*settings.times
-  local otfuncs = -- variables
-                  "local tl = "..tl.." " ..    -- needed for saw
-                  "local pi = math.pi " ..
-                  -- basics
-                  "local sin = math.sin " ..
-                  "local cos = math.cos " ..
-                  "local tan = math.tan " ..
-                  "local asin = math.asin " ..
-                  "local acos = math.acos " ..
-                  "local atan = math.atan " ..
-                  "local sqrt = math.sqrt " ..
-                  "local max = math.max " ..
-                  "local min = math.min " ..
-                  "local mod = math.mod " ..
-                  "local rnd = math.random " ..
-                  "local flr = math.floor " ..
-                  "local abs = math.abs " ..
-                  "local equ = function(x) return x end " ..
-                  -- logic
-                  "local ite = function(i, t, e) if i then return t else return e end end " ..
-                  "local btoi = function(b) if b then return 1 else return 0 end end " ..
-                  "local itob = function(i) if i<=0 then return false else return true end end " ..
-                  -- other basic waveforms
-                  "local saw = function(x) return math.mod(((x-(1/tl))+pi)/pi, 2)-1 end " ..
-                  "local squ = function(x) return (flr(sin(x)/2+1)*2-1) end " ..
-                  "local tri = function(x) return abs(1-mod((x+1.5*pi)/pi,2))*2-1 end " ..
-                  "local pls = function(x) return (flr(x/2+1)*2-1) end " ..                   -- that is: pulsify
-                  "local ltan = function(x, y) return max(min(tan(x), y), -y)/y end " ..      -- limit tan
-                  -- exponential sine, saw, tri
-                  "local expsin = function(x, p) if p>1 then return (squ(x)^(1-p%2))*sin(x)^p else return squ(x)*abs(sin(x))^p end end " ..
-                  "local expsaw = function(x, p) if p>1 then return (squ(x)^(1-p%2))*saw(x)^p else return squ(x)*abs(saw(x))^p end end " ..
-                  "local exptri = function(x, p) if p>1 then return (squ(x)^(1-p%2))*tri(x)^p else return squ(x)*abs(tri(x))^p end end " ..
-                  -- sine-made (recursive formula) waveforms
-                  "local sinsin sinsin = function(x, p) if p>1 then return sinsin(sin(x), p-1) else return sin(x) end end " ..
-                  "local sinsaw sinsaw = function(x, p) if p>1 then return sin(x*p)/p+sinsaw(x, p-1) else return sin(x) end end " ..
-                  "local sftsaw sftsaw = function(x, p) if p>1 then return sin(x*p)/(2^p)+sftsaw(x, p-1) else return sin(x) end end " ..
-                  "local sinsqu sinsqu = function(x, p) if p>1 then local v = p*2-1 return sin(x*v)/v+sinsqu(x, p-1) else return sin(x) end end " ..
-                  -- square root sine, saw, tri
-                  "local sqtfunhelp sqtfunhelp = function(fun, x, p) if p>1 then return sqrt(sqtfunhelp(fun, x, p-1)) else return abs(fun(x)) end end " ..
-                  "local sqtsin = function(x, p) return squ(x)*sqtfunhelp(sin, x, p) end " ..
-                  "local sqtsaw = function(x, p) return squ(x)*sqtfunhelp(saw, x, p) end " ..
-                  "local sqttri = function(x, p) return squ(x)*sqtfunhelp(tri, x, p) end " ..
-                  -- range [0..1] to [-1..1] and vice versa (ac/dc, [0..1] is good for modulating)
-                  "local un = function(x) return (x+1)/2 end " ..
-                  "local bi = function(x) return x*2-1 end " ..
-                  -- distort (clip, fold, crush, noise) functions
-                  "local clip = function(x, y) return max(min(x, y), -y) end " ..
-                  "local semiclip = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
-                  "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
-                  "local semifold = function(x, y, z) return fold(x, y)*z + (1-z)*x end " ..
-                  "local crush = function(x, y) return flr(x*y)/y end " ..
-                  "local noise = function(x, y, p) return x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
-                  -- supermin/supermax type 'clip' functions
-                  "local supermax = function(x, y) if x >= 0 then return max(x,y) else return min(x,y) end end " ..
-                  "local supermin = function(x, y) if x >= 0 then return min(x,y) else return max(x,y) end end " ..
-                  -- morph between two functions
-                  "local morph = function(x, y, z) return ((1-z)*x+z*y) end " ..
-                  --"local mix = function(x, ztab, functab) local factor = 0 if #ztab ~= #functab then return 0 else for _,f in ztab do factor = factor + f end local res = 0 for i = 1, #ztab do print(''..i..'. type: '..type(functab[i])) if type(functab[i]) == 'function' then res = res + ztab[i] * functab[i](x) elseif (#functab[i]) == 1 then res = res + ztab[i] * functab[i][1](x) else res = res + ztab[i] * functab[i][1](x, unpack(functab[i][2])) end end return res/factor end end  " ..
-                  -- unary [0..1] pulse from/to
-                  "local upft = function(x, f, t) if x < f or x >= t then return 0 else return 1 end end " ..
-                  "local upf = function(x, f) if x < f then return 0 else return 1 end end " ..
-                  "local upt = function(x, t) if x >= t then return 0 else return 1 end end " ..
-                  -- ramps
-                  "local sqrtsqrt = function(x, p) return sqtfunhelp(equ, x, p) end " ..
-                  "local ru = function(t, p) return t^p end " ..                   -- ramp (exp)
-                  "local rd = function(t, p) return (1-t)^p end " ..
-                  "local aru = function(t, p) return 1-(1-t)^p end " ..            -- anti-ramp
-                  "local ard = function(t, p) return 1-t^p end " ..
-                  "local rru = function(t, p) return 1-sqrtsqrt(1-t, p) end " ..   -- root ramp
-                  "local rrd = function(t, p) return 1-sqrtsqrt(t, p) end " ..
-                  "local raru = function(t, p) return sqrtsqrt(t, p) end " ..      -- root anti-ramp
-                  "local rard = function(t, p) return sqrtsqrt(1-t, p) end " ..
-                  -- envelope
-                  "local env = function(x, t) local y = 0 local pc local pn = nil for i = 1, #t-1 do if pn ~= nil then pc = pn else pc = t[i] end pn = t[i+1] if x < pn[1] and x >= pc[1] then if pn[3] == nil or pn[4] == nil then y = ((x-pc[1])/(pn[1]-pc[1]))*(pn[2]-pc[2])+pc[2] else y = pn[3](((x-pc[1])/(pn[1]-pc[1])),pn[4])*(pn[2]-pc[2])+pc[2] end break end end return y end " ..
-                  -- signal duplication
-                  "local dup = function(x, a, b) return a(x)+b(x) end "       -- not working! too bad we can't 'local xyz = function' in formulastring and still keep this whole environment
---[[  local env = function(x, t)
-    local y = 0
-    local pc
-    local pn = nil
-    for i = 1, #t-1 do
-      if pn ~= nil then
-        pc = pn
-      else
-        pc = t[i]
-      end
-      pn = t[i+1]
-      if x < pn[1] and x >= pc[1] then
-        if pn[3] == nil or pn[4] == nil then
-          y = ((x-pc[1])/(pn[1]-pc[1]))*(pn[2]-pc[2])+pc[2]
-        else
-          y = pn[3](((x-pc[1])/(pn[1]-pc[1])),pn[4])*(pn[2]-pc[2])+pc[2]
-        end
-        break
-      end
-    end
-    return y
-  end]]
---[[  local mix = function(x, ztab, functab)
-    local factor = 0
-    if #ztab ~= #functab then return 0
-    else
-      for _,f in ztab do factor = factor + f end
-      local res = 0
-      for i = 1, #ztab do
-        print(''..i..'. type: '..type(functab[i]))
-        if type(functab[i]) == 'function' then
-          res = res + ztab[i] * functab[i](x)
-        elseif (#functab[i]) == 1 then
-          res = res + ztab[i] * functab[i][1](x)
-        else
-          res = res + ztab[i] * functab[i][1](x, unpack(functab[i][2]))
-        end
-      end
-      return res/factor
-    end
-  end]]
   local sb        -- shortcut for sample buffers
   --local rk = 9    -- A-0 for crispness
   local formulastr = settings.step1
@@ -470,6 +595,7 @@ function render_overtune( load, settings )
   local lpe
   local o_times = false
   local name = settings.name
+  rs:describe_undo("Render Overtune")
   -- possibly remove old samples with settings
   if delete_obsolete_samples_on_render then
     for i=2,#ci.samples do
@@ -506,7 +632,7 @@ function render_overtune( load, settings )
     formulastr = formulastr .. "+" .. settings.stepn:gsub("N", i)
   end
   --formulastr = "("..formulastr..")/"..settings.steps
-  formula = loadstring("return function(X, XX, O, T) ".. otfuncs .."return ".. formulastr .." end")()
+  formula = loadstring(otvars.." return function(X, XX, O, T) ".. "local tl = ".. tl .. " " .. otfuncs .."return ".. formulastr .." end")()
   local buffer = {}
   for c = 1, settings.times do
     --for i = 1, tl do
@@ -564,6 +690,62 @@ function render_overtune( load, settings )
   end
 end
 
+function edit_overtune ( sp, settings )            -- sp = sample pointer
+  --local vb = renoise.ViewBuilder()
+  local rs = renoise.song()
+  local ci = rs.selected_instrument
+  local cs = rs.selected_sample
+  local csi = rs.selected_sample_index
+  local tl = sp.sample_buffer.number_of_frames
+  local sb
+  --local sl = tl*settings.times
+  --local rk = 9    -- A-0 for crispness
+  local formulastr = settings.step1
+  local formula
+  local md = 0    -- max deviation from 0 kept and used for re-scaling ('normalising')
+  local vol
+  local pan
+  local txp
+  local fit
+  local lpm
+  local lps
+  local lpe
+  local o_times = false
+  local name = settings.name
+  rs:describe_undo("Render Overtune")
+  if ci.name == "" then ci.name = "Overtuned" end
+  formula = loadstring(otvars.." return function(X, T, Y, C) ".. "local tl = ".. tl .. " " .. otfuncs .. "return ".. formulastr .." end")()
+  local buffer = {table.create(), table.create()}
+  for c = 1, cs.sample_buffer.number_of_channels do
+    for i = 0, tl-1 do
+      local old_y = sp.sample_buffer:sample_data(c, i+1)
+      local t = i/tl
+      local x = t*2*math.pi
+      local y = formula(x, t, old_y, c-1)
+      if settings.power then md = math.max(md, math.abs(y)) end
+      buffer[c][1+i] = y
+    end
+  end
+  if settings.power then
+    local pf = 1 / md
+    for c = 1, cs.sample_buffer.number_of_channels do
+      for i = 1, tl do
+        buffer[c][i] = buffer[c][i]*pf
+      end
+    end
+  end
+  -- build instrument sample #1
+  sb = sp.sample_buffer
+  --sb:create_sample_data( SAMPLE_RATE, 32, 1, tl )
+  sb:prepare_sample_data_changes()
+  for c = 1, cs.sample_buffer.number_of_channels do
+    for i = 1, tl do
+      sb:set_sample_data( c, i, buffer[c][i] )
+    end
+  end
+  sb:finalize_sample_data_changes()
+end
+
 --------------------------------------------------------------------------------
 -- Menu, Key Binding
 --------------------------------------------------------------------------------
@@ -576,6 +758,16 @@ renoise.tool():add_menu_entry {
 renoise.tool():add_keybinding {
   name = "Global:Tools:Overtune...",
   invoke = show_dialog
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:Tools:CasTools:Overtune Edit...",
+  invoke = show_edit_dialog
+}
+
+renoise.tool():add_keybinding {
+  name = "Global:Tools:Overtune Edit...",
+  invoke = show_edit_dialog
 }
 
 --renoise.song().overtune = show_dialog

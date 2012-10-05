@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Best Views</Name>
-  <Id>nl.jeweett.BestViews</Id>
-  <Version>1.1</Version>
+  <Name>Meta Micro</Name>
+  <Id>nl.jeweett.MetaMicro</Id>
+  <Version>0.2</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas | casmarrav@gmail.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
-  <Category>Views</Category>
-  <Description>Best views.</Description>
+  <Category>Workflow</Category>
+  <Description>Select *Meta device CV destination with keyboard.</Description>
   <Homepage>http://tools.renoise.com</Homepage>
   <Platform/>
   <Icon/>
