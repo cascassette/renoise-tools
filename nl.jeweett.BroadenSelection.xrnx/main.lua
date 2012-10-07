@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Broaden Selection v0.1 by Cas Marrav (for Renoise 2.8)    --
+-- Broaden Selection v0.1 by Cas Marrav (for Renoise 2.8)  --
 -------------------------------------------------------------
 
 function set_selection_bounds_h(l, r, solo)
