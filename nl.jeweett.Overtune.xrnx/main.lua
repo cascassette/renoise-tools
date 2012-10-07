@@ -287,6 +287,8 @@ function key_handler(d, k)
     elseif k.name == "5" and k.modifiers == "shift" then
       vb_power.value = not vb_power.value
       focus = 5
+    elseif k.name == "6" and k.modifiers == "shift" then
+      focus = 6
     elseif k.name == "return" then
       if k.modifiers == "" then
         render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, base_note=vb_base_note.value } )
@@ -323,6 +325,8 @@ function key_handler(d, k)
     elseif focus == 4 then
       vb_timesshow.value = math.min(vb_timesshow.value+1, vb_timesshow.max)
       vb_times.value = vb_timesshow.value
+    elseif focus == 6 then
+      vb_base_note.value = math.min(vb_base_note.value+1, vb_base_note.max)
     end
     pass = false
   elseif k.name == "left" then
@@ -332,6 +336,8 @@ function key_handler(d, k)
     elseif focus == 4 then
       vb_timesshow.value = math.max(vb_timesshow.value-1, vb_timesshow.min)
       vb_times.value = vb_timesshow.value
+    elseif focus == 6 then
+      vb_base_note.value = math.max(vb_base_note.value-1, vb_base_note.min)
     end
     pass = false
   elseif k.name == "up" then
@@ -341,6 +347,8 @@ function key_handler(d, k)
     elseif focus == 4 then
       vb_timesshow.value = math.min(vb_timesshow.value*2, vb_timesshow.max)
       vb_times.value = vb_timesshow.value
+    elseif focus == 6 then
+      vb_base_note.value = math.min(vb_base_note.value+12, vb_base_note.max)
     end
     pass = false
   elseif k.name == "down" then
@@ -350,6 +358,8 @@ function key_handler(d, k)
     elseif focus == 4 then
       vb_timesshow.value = math.max(math.floor(vb_timesshow.value/2), vb_timesshow.min)
       vb_times.value = vb_timesshow.value
+    elseif focus == 6 then
+      vb_base_note.value = math.max(vb_base_note.value-12, vb_base_note.min)
     end
     pass = false
   end
