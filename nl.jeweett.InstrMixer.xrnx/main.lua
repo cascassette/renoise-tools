@@ -15,6 +15,8 @@
 
 -- BIG TO-DO:
 --[[
+   * Small 'headers' indicating slider meaning
+   * Multi-solo by mixing with mute key
    * Basic mouse slider action
    * Backup params before dialog opens => esc to undo
    ...
