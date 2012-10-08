@@ -79,6 +79,7 @@ local function restore()
 end
 ]]
 
+-- Solo & Mute
 local function solo_backup_volumes()
   volbackup = table.create()
   for i, s in ipairs(renoise.song():instrument(instno).samples) do
@@ -119,9 +120,33 @@ local function mute()
 end
 
 
+-- Hooks (selected_instrument)
+local function hook_si(notification)
+  --rprint(notification)
+  --oprint(notification)
+  if ( dialog and dialog.visible ) then
+    dialog:close()
+    show_dialog()
+  end
+end
+
+local function inst_hook()
+  if not renoise.song().selected_instrument_index_observable:has_notifier(hook_si) then
+    renoise.song().selected_instrument_index_observable:add_notifier(hook_si)
+  end
+end
+
+local function deinst_hook()
+  if renoise.song().selected_instrument_index_observable:has_notifier(hook_si) then
+    renoise.song().selected_instrument_index_observable:remove_notifier(hook_si)
+  end
+end
+
+
 -- GUI / Control
 local function close_dialog()
   if ( dialog and dialog.visible ) then
+    deinst_hook()
     dialog:close()
   end
 end
@@ -185,6 +210,10 @@ local function key_dialog(d,k)
   elseif k.character == "a" then
     mute()
     update_volumes_gui()
+  elseif k.name == "numpad +" then
+    renoise.song().selected_instrument_index = math.min(renoise.song().selected_instrument_index + 1, #renoise.song().instruments)
+  elseif k.name == "numpad -" then
+    renoise.song().selected_instrument_index = math.max(renoise.song().selected_instrument_index - 1, 1)
   elseif k.name == "space" then
     -- apply to all???
   elseif k.name == "return" then
@@ -244,6 +273,7 @@ function show_dialog()
     init_or_refresh_window()
   end
   update_sel()
+  inst_hook()
 end
 
 local function init_vars()
