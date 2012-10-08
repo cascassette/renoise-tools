@@ -9,13 +9,14 @@
       * currently selected sample
       * volume, panning, loop mode, nna, transpose, finetune
    * Simple mute/solo sample functions (same keys: 1 and a)
+   * Simple instrument change listen + support
+   * Sample add/dupe support
 --]]
 
 -- BIG TO-DO:
 --[[
+   * Basic mouse slider action
    * Backup params before dialog opens => esc to undo
-   * Simple instrument change listen + support
-   * Sample add/dupe support
    ...
    * Faders better increments? Support for >0 dB?
    * Think about visibility of increments / diff in txp/fit/pan
@@ -51,6 +52,43 @@ local inc_amounts = { vol = .05,      pan = .05      , lpm = 1,           ctm = 
 local snaps =       { vol =   1,      pan = 0.5      ,                                                                fit = 0  } --- not used yet
 
 
+-- Hooks (selected_instrument)
+local function hook_si()
+  if dialog then
+    dialog:close()
+    --show_dialog()
+    instrmixer()
+  end
+end
+
+local function hook_ss()
+  selected = renoise.song().selected_sample_index
+  for i, s in ipairs(sliders) do
+    s.style = "body"
+  end
+  sliders[selected].style = "panel"
+  renoise.app():show_status(renoise.song().selected_sample.name)
+end
+
+local function inst_hook()
+  if not renoise.song().selected_instrument_index_observable:has_notifier(hook_si) then
+    renoise.song().selected_instrument_index_observable:add_notifier(hook_si)
+  end
+  if not renoise.song().selected_sample_index_observable:has_notifier(hook_ss) then
+    renoise.song().selected_sample_index_observable:add_notifier(hook_ss)
+  end
+end
+
+local function deinst_hook()
+  if renoise.song().selected_instrument_index_observable:has_notifier(hook_si) then
+    renoise.song().selected_instrument_index_observable:remove_notifier(hook_si)
+  end
+  if renoise.song().selected_sample_index_observable:has_notifier(hook_ss) then
+    renoise.song().selected_sample_index_observable:remove_notifier(hook_ss)
+  end
+end
+
+
 -- Backup/Restore
 --[[
 local function backup()
@@ -78,6 +116,47 @@ local function restore()
   end
 end
 ]]
+
+
+-- Sample Dupe/Delete (with added functionality to not fuckup notifiers)
+local function dubsmp(kz)
+  local rs = renoise.song()
+  rs:describe_undo("Duplicate Sample")
+  local csi = rs.selected_sample_index
+  local ci = rs.selected_instrument
+  ci:insert_sample_at(csi+1)
+  ci:sample(csi+1):copy_from(ci:sample(csi))
+  if kz then
+    local layers = {}
+    local count = 0
+    for i,l in ipairs(ci.sample_mappings[1]) do
+      if l.sample_index == csi then
+        count = count + 1
+        layers[count] = { base_note = l.base_note,
+                      map_velocity_to_volume = l.map_velocity_to_volume,
+                      note_range = l.note_range,
+                      use_envelopes = l.use_envelopes,
+                      velocity_range = l.velocity_range }
+      end
+    end
+    for i = 1, #layers do
+      local sm = ci:insert_sample_mapping( 1, csi+1, layers[i].base_note )
+      sm.use_envelopes = layers[i].use_envelopes
+      sm.map_velocity_to_volume = layers[i].map_velocity_to_volume
+      sm.note_range = layers[i].note_range
+      sm.velocity_range = layers[i].velocity_range
+    end
+  end
+  hook_si()
+  rs.selected_sample_index = csi+1
+end
+
+local function delsmp()
+  renoise.song():describe_undo("Delete Sample")
+  renoise.song().selected_instrument:delete_sample_at(rs.selected_sample_index)
+  hook_si()
+end
+
 
 -- Solo & Mute
 local function solo_backup_volumes()
@@ -116,29 +195,6 @@ local function mute()
   else
     renoise.song():instrument(instno):sample(selected).volume = volbackup_mute[selected]
     volbackup_mute[selected] = nil
-  end
-end
-
-
--- Hooks (selected_instrument)
-local function hook_si(notification)
-  --rprint(notification)
-  --oprint(notification)
-  if ( dialog and dialog.visible ) then
-    dialog:close()
-    show_dialog()
-  end
-end
-
-local function inst_hook()
-  if not renoise.song().selected_instrument_index_observable:has_notifier(hook_si) then
-    renoise.song().selected_instrument_index_observable:add_notifier(hook_si)
-  end
-end
-
-local function deinst_hook()
-  if renoise.song().selected_instrument_index_observable:has_notifier(hook_si) then
-    renoise.song().selected_instrument_index_observable:remove_notifier(hook_si)
   end
 end
 
@@ -214,6 +270,10 @@ local function key_dialog(d,k)
     renoise.song().selected_instrument_index = math.min(renoise.song().selected_instrument_index + 1, #renoise.song().instruments)
   elseif k.name == "numpad -" then
     renoise.song().selected_instrument_index = math.max(renoise.song().selected_instrument_index - 1, 1)
+  elseif k.character == "d" then
+    dubsmp(not (k.modifiers == "shift"))
+  elseif k.character == "x" then
+    delsmp()
   elseif k.name == "space" then
     -- apply to all???
   elseif k.name == "return" then
@@ -270,7 +330,6 @@ function show_dialog()
     dialog = renoise.app():show_custom_dialog( "InstruMix", stuff, key_dialog )
   elseif dialog then
     dialog:show()
-    init_or_refresh_window()
   end
   update_sel()
   inst_hook()
@@ -281,16 +340,11 @@ local function init_vars()
   sampcount = #rs.selected_instrument.samples
 end
 
-local function init_or_refresh_window()
-end
-
-local function instrmixer()
+function instrmixer()
   rs = renoise.song()
   renoise.app().window.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_INSTRUMENT_PROPERTIES
   init_vars()
   show_dialog()
-  init_or_refresh_window()
-  -- something like: rs.selected_instrument_observable:add_notifier(init_or_refresh_window)
 end
 
 
