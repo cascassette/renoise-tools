@@ -17,11 +17,11 @@ end
 
 local function minusins()
   local rs = renoise.song()
-  local sti = rs.selected_instrument_index
-  if sti > 1 then
-    rs.selected_instrument_index = sti - 1
-    if sti == #rs.instruments and not rs:instrument(sti):sample(1).sample_buffer.has_sample_data then
-      rs:delete_instrument_at(sti)
+  local sii = rs.selected_instrument_index
+  if sii > 1 then
+    rs.selected_instrument_index = sii - 1
+    if sii == #rs.instruments and not rs:instrument(sii):sample(1).sample_buffer.has_sample_data and #rs.instruments>10 then
+      rs:delete_instrument_at(sii)
     end
   end
 end
