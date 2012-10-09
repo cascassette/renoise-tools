@@ -8,19 +8,26 @@
    * Arrow keys and other keys easy to memorize, to control:
       * currently selected sample
       * volume, panning, loop mode, nna, transpose, finetune
+      * ←/→ change sample
+      * ↑/↓ change volume
+      * I/O change panning
+      * K/L change transpose
+      * ,/. change finetune
+      * P/[ change loop mode
+      * ;/' change cut mode
    * Simple mute/solo sample functions (same keys: 1 and a)
    * Simple instrument change listen + support
    * Sample add/dupe support
+   * Basic mouse slider action (select sample on value change)
+   * Volume >0dB support
 --]]
 
--- BIG TO-DO:
+-- To do:
 --[[
    * Small 'headers' indicating slider meaning
    * Multi-solo by mixing with mute key
-   * Basic mouse slider action
    * Backup params before dialog opens => esc to undo
    ...
-   * Faders better increments? Support for >0 dB?
    * Think about visibility of increments / diff in txp/fit/pan
       maybe still again an 'infotxt' box
 --]]
@@ -70,6 +77,11 @@ local function hook_ss()
   end
   sliders[selected].style = "panel"
   renoise.app():show_status(renoise.song().selected_sample.name)
+end
+
+local function select(i)
+  selected = i
+  update_sel()
 end
 
 local function inst_hook()
@@ -297,16 +309,32 @@ function make_sliders()
   local smp
   for i = 1, sampcount do
     smp = renoise.song().selected_instrument:sample(i)
-    if smp.volume > 1 then smp.volume = 1 end
+    --if smp.volume > 1 then smp.volume = 1 end
     sliders[i] = 
       vb:column {
-        vb:slider { id = "vol"..i, min = 0, max = 1, value = smp.volume, height = 150, width = 40 },
-        vb:minislider { id = "pan"..i, min =    0, max =   1, value = smp.panning        , height = 20, width = 40 },
-        vb:minislider { id = "txp"..i, min = -120, max = 120, value = smp.transpose      , height = 20, width = 40 },
-        vb:minislider { id = "fit"..i, min = -127, max = 127, value = smp.fine_tune      , height = 20, width = 40 },
-        vb:popup      { id = "lpm"..i, items = LOOP_MODES   , value = smp.loop_mode      , height = 20, width = 40 },
-        vb:popup      { id = "ctm"..i, items = CUT_MODES    , value = smp.new_note_action, height = 20, width = 40 },
+        vb:slider { id = "vol"..i, min = 0, max = 4, value = smp.volume, height = 150, width = 40,
+                    notifier=function(val) select(i) renoise.song():instrument(instno):sample(i).volume = val end },
+                    
+        vb:minislider { id = "pan"..i, min =    0, max =   1, value = smp.panning        , height = 20, width = 40,
+                    notifier=function(val) select(i) renoise.song():instrument(instno):sample(i).panning = val end },
+                    
+        vb:minislider { id = "txp"..i, min = -120, max = 120, value = smp.transpose      , height = 20, width = 40,
+                    notifier=function(val) select(i) renoise.song():instrument(instno):sample(i).transpose = val end },
+                    
+        vb:minislider { id = "fit"..i, min = -127, max = 127, value = smp.fine_tune      , height = 20, width = 40,
+                    notifier=function(val) select(i) renoise.song():instrument(instno):sample(i).fine_tune = val end },
+                    
+        vb:popup      { id = "lpm"..i, items = LOOP_MODES   , value = smp.loop_mode      , height = 20, width = 40,
+                    notifier=function(val) select(i) renoise.song():instrument(instno):sample(i).loop_mode = val end },
+                    
+        vb:popup      { id = "ctm"..i, items = CUT_MODES    , value = smp.new_note_action, height = 20, width = 40,
+                    notifier=function(val) select(i) renoise.song():instrument(instno):sample(i).new_note_action = val end },
       }
+--[[for _,pmt in ipairs({'vol','pan','txp','fit','lpm','ctm'}) do
+      vb.views[pmt..i]:add_notifier(function() 
+                                      loadstring("renoise.song().selected_instrument:sample("..i..")."..pmtname[pmt].." = "..vb.views[pmt..i].value)()
+                                    end)
+    end]]
     vb.views['matrix']:add_child(sliders[i])
   end
   return res
