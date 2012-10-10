@@ -2,9 +2,21 @@
 -- Dancealot v2.0 by Cas Marrav (for Renoise 2.8)          --
 -------------------------------------------------------------
 
+--[[ TODO
+  * add different shortcut for Native + Deprecated?
+    * add Audio/Effects/Native/*Formula
+    * add Audio/Effects/Native/Stutter
+    * add Audio/Effects/Native/Distortion 1
+    * add Audio/Effects/Native/mpReverb 1
+    * add Audio/Effects/Native/Shaper ???
+    * add Audio/Effects/Native/LofiMat 1 ???
+    * add Audio/Effects/Native/Filter 1 ???
+    * add Audio/Effects/Native/Filter 2 ???
+  ]]
+
+-- Vars
 local dialog = nil
 local vb = nil
-
 -- Renoise.Song thingy that you use all the time
 local rs = nil
 
@@ -31,6 +43,7 @@ local found_subset_indexes = {}
 
 local tracktype = nil
 
+-- Const
 -- For native only selection dialog
 local NATIVE_SWITCH = "native"
 
@@ -40,6 +53,7 @@ local TAB_EFFECT = 2
 local TAB_POSITION = 3
 local TAB_ACTIVE = 4
 local TAB_PRESET = 5
+local DEPRECATED = { "Audio/Effects/Native/*Formula", "Audio/Effects/Native/Stutter", "Audio/Effects/Native/Distortion 1", "Audio/Effects/Native/mpReverb 1", "Audio/Effects/Native/Shaper", "Audio/Effects/Native/LofiMat 1", "Audio/Effects/Native/Filter 1", "Audio/Effects/Native/Filter 2" }
 
 
 --------------------------------------------------------------------------------
@@ -183,23 +197,23 @@ local function close_dialog()
   end
 end
 
-local function show_dialog(which)    -- 'which' can be "native" for native only
-  rs = renoise.song()
-  vb = renoise.ViewBuilder()
-  local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
-  local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
-  local NATIVE = (which == NATIVE_SWITCH)
-  
-  for i,t in ipairs(rs.tracks) do
-    track_names[i] = t.name
-  end
-  
+local function init_avdev(which)
   tracktype = rs.selected_track.type
   avdev = rs.selected_track.available_devices
+  local NATIVE = (which == NATIVE_SWITCH)
   if NATIVE then
     for i = 1, 38 do
       local s = avdev[i]
       device_names[i] = s:sub(-s:reverse():find("/")+1)
+    end
+    local i = 39
+    for _,dn in ipairs(DEPRECATED) do
+      avdev[i] = dn
+      device_names[i] = dn:sub(-dn:reverse():find("/")+1)
+      i = i + 1
+    end
+    for uh = i, #avdev do
+      avdev[uh] = nil
     end
   else
     for i = 1, #avdev do
@@ -207,6 +221,19 @@ local function show_dialog(which)    -- 'which' can be "native" for native only
       device_names[i] = s:sub(-s:reverse():find("/")+1)
     end
   end
+end
+
+local function show_dialog(which)    -- 'which' can be "native" for native only
+  rs = renoise.song()
+  vb = renoise.ViewBuilder()
+  local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
+  local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
+  
+  for i,t in ipairs(rs.tracks) do
+    track_names[i] = t.name
+  end
+  
+  init_avdev(which)
   
   local positions = #rs.selected_track.devices
   for i = 1, positions do
