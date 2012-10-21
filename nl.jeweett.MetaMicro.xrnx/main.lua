@@ -2,6 +2,11 @@
 -- MetaMicro v0.2 by Cas Marrav (for Renoise 2.8)          --
 -------------------------------------------------------------
 
+--[[ TODO:                                                 --
+--                                                         --
+--     * load current settings (if any)                    --
+--                                                       ]]--
+
 local dialog = nil
 local vb = nil
 
