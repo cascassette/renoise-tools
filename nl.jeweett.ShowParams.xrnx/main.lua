@@ -2,6 +2,12 @@
 -- ShowParams v2 by Cas Marrav (for Renoise 2.8)           --
 -------------------------------------------------------------
 
+-- lil To Do list thing
+-- * Selector for the controlled option:
+--     " controlled by LFOs only
+--     " everything but LFO reset param
+-- * Option to hide all but the default gain related params
+
 -- GUI: show_dialog() function                             --
 function show_dialog()
   local vb = renoise.ViewBuilder()
