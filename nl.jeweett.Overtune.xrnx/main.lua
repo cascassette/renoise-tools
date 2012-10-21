@@ -1,6 +1,14 @@
 -------------------------------------------------------------
--- Overtune v2.5.90 by Cas Marrav (for Renoise 2.8)        --
+-- Overtune v2.5.92 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
+
+--[[ Overtune 2.6 todo                                     --
+--    * improve edit function                              --
+--   Overtune 2.7 ideas                                    --
+--    * render multiple samples for different notes        --
+--    * add real ms decay type variables                   --
+--                                                         --
+                                                           ]]
 
 -- cycle length calculation
 local SAMPLE_RATE = 44100
