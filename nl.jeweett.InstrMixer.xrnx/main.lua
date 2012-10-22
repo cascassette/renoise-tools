@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- InstrMixer v1 by Cas Marrav (for Renoise 2.8)           --
+-- InstrMixer v1.11 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 -- Implemented:
@@ -20,13 +20,16 @@
    * Sample add/dupe support
    * Basic mouse slider action (select sample on value change)
    * Volume >0dB support
+   * Basic 'All' mode to mod all samples at once
+   * Small 'legend' indicating slider meaning, maybe collapsible
 --]]
 
 -- To do:
 --[[
-   * Small 'headers' indicating slider meaning
-   * Multi-solo by mixing with mute key
-   * Backup params before dialog opens => esc to undo
+   * Fix for all_mode s.t. all get set to same as currently selected
+   * Make all mode work with mouse obviously..
+   * Multi-solo by mixing with mute key ?
+   * Backup params before dialog opens => esc to undo ?
    ...
    * Think about visibility of increments / diff in txp/fit/pan
       maybe still again an 'infotxt' box
@@ -44,21 +47,25 @@ local selected
 local instno
 local sampcount
 
+local all_mode = false
+
 --local bak
 local volbackup = {}
 local volbackup_mute = table.create()
 
 
 -- Const --
-local CUT_MODES = { "ᐭ", "ᐅ", "ᐴ" }
+local CUT_MODES = { "ᐭᕁ", "ᗚᙆ", "ᗙᔓ" }
+--local CUT_MODES = { "ᐭ", "ᑊᐈᗚ", "ᔓᗙ" }
+--local CUT_MODES = { "ᐭ", "ᐅ", "ᐴ" }
 local LOOP_MODES = { "ᐅ", "ᐅᐆ", "ᐅᐋ", "ᐆᐋ" }
 --local CUT_MODES = { "Cut", "Note Off", "Continue" }
 --local LOOP_MODES = { "»×", "»»", "««", "»«" }
 --local LOOP_MODES = { "ᐅ", "ᐆᐆ", "ᐋᐋ", "ᐆᐋ" }
 
 local pmtname     = { vol = "volume", pan = "panning", lpm = "loop_mode", ctm = "new_note_action", txp = "transpose", fit = "fine_tune" }
-local inc_amounts = { vol = .05,      pan = .05      , lpm = 1,           ctm = 1                , txp = 1,           fit = 16 }
-local snaps =       { vol =   1,      pan = 0.5      ,                                                                fit = 0  } --- not used yet
+local inc_amounts = { vol = .05,      pan = .01      , lpm = 1,           ctm = 1                , txp = 1,           fit = 1 }
+local snaps =       { vol =   1,      pan = 0.5      ,                                                                fit = 0 } --- not used yet
 
 
 -- Hooks (selected_instrument)
@@ -73,9 +80,9 @@ end
 local function hook_ss()
   selected = renoise.song().selected_sample_index
   for i, s in ipairs(sliders) do
-    s.style = "body"
+    s.style = "panel"
   end
-  sliders[selected].style = "panel"
+  sliders[selected].style = "group"
   renoise.app():show_status(renoise.song().selected_sample.name)
 end
 
@@ -226,15 +233,30 @@ local function get_selected(str, num)
 end
 
 local function mod_func(str, factor)
-  local ctrl = get_selected(str, selected)
-  if str == "lpm" then
-    ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], 1 ), #LOOP_MODES )
-  elseif str == "ctm" then
-    ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], 1 ), #CUT_MODES )
+  if not all_mode then
+    local ctrl = get_selected(str, selected)
+    if str == "lpm" then
+      ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], 1 ), #LOOP_MODES )
+    elseif str == "ctm" then
+      ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], 1 ), #CUT_MODES )
+    else
+      ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], ctrl.min ), ctrl.max )
+    end
+    loadstring("renoise.song().selected_instrument:sample("..selected..")."..pmtname[str].." = "..ctrl.value)()
   else
-    ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], ctrl.min ), ctrl.max )
+    -- behaviour is now inc/dec for every parameter in all mode; good in volume, not handy in most other cases..
+    for i=1, #renoise.song().selected_instrument.samples do
+      local ctrl = get_selected(str, i)
+      if str == "lpm" then
+        ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], 1 ), #LOOP_MODES )
+      elseif str == "ctm" then
+        ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], 1 ), #CUT_MODES )
+      else
+        ctrl.value = math.min( math.max( ctrl.value + factor*inc_amounts[str], ctrl.min ), ctrl.max )
+      end
+      loadstring("renoise.song().selected_instrument:sample("..i..")."..pmtname[str].." = "..ctrl.value)()
+    end
   end
-  loadstring("renoise.song().selected_instrument:sample("..selected..")."..pmtname[str].." = "..ctrl.value)()
 end
 
 local function update_volumes_gui()
@@ -280,6 +302,10 @@ local function key_dialog(d,k)
   elseif k.character == "a" then
     mute()
     update_volumes_gui()
+  elseif k.character == "z" then
+    all_mode = not all_mode
+    if all_mode then renoise.app():show_status("Apply to All: ON")
+                else renoise.app():show_status("Apply to All: OFF") end
   elseif k.name == "numpad +" then
     renoise.song().selected_instrument_index = math.min(renoise.song().selected_instrument_index + 1, #renoise.song().instruments)
   elseif k.name == "numpad -" then
@@ -306,6 +332,14 @@ function make_sliders()
   local res = vb:column {
     vb:row { id = "matrix" },
   }
+  local legend = vb:column {
+                               margin = 3,
+                               vb:bitmap {
+                                 mode = "transparent",
+                                 bitmap = "legend.bmp",
+                               }
+                           }
+  vb.views.matrix:add_child(legend)
   local smp
   for i = 1, sampcount do
     smp = renoise.song().selected_instrument:sample(i)
@@ -342,12 +376,16 @@ end
 
 function update_sel()
   for i, s in ipairs(sliders) do
-    s.style = "body"
+    s.style = "group"
   end
   sliders[selected].style = "panel"
+  
+  deinst_hook()
   renoise.song().selected_sample_index = selected
+  inst_hook()
+  
   --vb.views['smpname'].text = renoise.song().selected_sample.name
-  renoise.app():show_status(renoise.song().selected_sample.name)
+  renoise.app():show_status(""..selected..": "..renoise.song().selected_sample.name)
 end
 
 function show_dialog()
@@ -382,6 +420,20 @@ end
 renoise.tool():add_keybinding {
   name = "Global:Tools:Show Instrument Mixer...",
   invoke = instrmixer
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:Tools:CasTools:InstruMix test bitmap loading",
+  invoke = function()
+    local vb = renoise.ViewBuilder()
+    local legend = vb:column {
+                                 vb:bitmap {
+                                   mode = "transparent",
+                                   bitmap = "legend2.bmp",
+                                 }
+                             }
+    renoise.app():show_custom_dialog("BMPTest", legend)
+  end
 }
 
 
