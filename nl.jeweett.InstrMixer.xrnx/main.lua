@@ -70,7 +70,7 @@ local snaps =       { vol =   1,      pan = 0.5      ,                          
 
 -- Hooks (selected_instrument)
 local function hook_si()
-  if dialog then
+  if dialog and dialog.visible then
     dialog:close()
     --show_dialog()
     instrmixer()
@@ -334,6 +334,7 @@ function make_sliders()
   }
   local legend = vb:column {
                                margin = 3,
+                               style = "plain",
                                vb:bitmap {
                                  mode = "transparent",
                                  bitmap = "legend.bmp",
@@ -420,20 +421,6 @@ end
 renoise.tool():add_keybinding {
   name = "Global:Tools:Show Instrument Mixer...",
   invoke = instrmixer
-}
-
-renoise.tool():add_menu_entry {
-  name = "Main Menu:Tools:CasTools:InstruMix test bitmap loading",
-  invoke = function()
-    local vb = renoise.ViewBuilder()
-    local legend = vb:column {
-                                 vb:bitmap {
-                                   mode = "transparent",
-                                   bitmap = "legend2.bmp",
-                                 }
-                             }
-    renoise.app():show_custom_dialog("BMPTest", legend)
-  end
 }
 
 

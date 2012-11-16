@@ -7,12 +7,10 @@
 local function plusins()
   local rs = renoise.song()
   local sii = rs.selected_instrument_index
-  if sii < #rs.instruments then
-    rs.selected_instrument_index = sii + 1
-  elseif rs:instrument(sii):sample(1).sample_buffer.has_sample_data or #rs.instruments<10 then
+  if sii == #rs.instruments then
     rs:insert_instrument_at(sii + 1)
-    rs.selected_instrument_index = sii + 1
   end
+  rs.selected_instrument_index = sii + 1
 end
 
 local function minusins()

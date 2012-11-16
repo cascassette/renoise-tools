@@ -73,7 +73,7 @@ end
 local function show_dialog()
   rs = renoise.song()
   vb = renoise.ViewBuilder()
-  local vb_slices = vb:valuebox { min = 0, max = 64, value = #renoise.song().selected_sample.slice_markers, id = "parts", --[[tonumber = toint, tostring = tostr--]] }
+  local vb_slices = vb:valuebox { min = 0, max = 1024, value = #renoise.song().selected_sample.slice_markers, id = "parts", --[[tonumber = toint, tostring = tostr--]] }
   local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
   local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
   local dialog_content = vb:column {

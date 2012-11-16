@@ -48,7 +48,7 @@ local TAB_MAX = 5
 
 local MM_SEARCH = false
 
-local DEBUG = true
+local DEBUG = false
 local DRY_RUN = false
 
 

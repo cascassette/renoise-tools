@@ -7,6 +7,8 @@
 --   Overtune 2.7 ideas                                    --
 --    * render multiple samples for different notes        --
 --    * add real ms decay type variables                   --
+--   Overtune 3.0 ideas                                    --
+--    * reusable code / envelopes / wave cycles            --
 --                                                         --
                                                            ]]
 
@@ -33,10 +35,10 @@ local delete_obsolete_samples_on_render = false
 
 -- ot builtins
 local otvars =  -- variables
-                --"local tl = "..tl.." " ..    -- needed for saw; now inserted at use time
                 "local pi = math.pi " ..
                 "local lowrnd_buf = 0 local lowrnd_step = 0 " ..
-                "local lownoi_buf = 0 local lownoi_step = 0 "
+                "local lownoi_buf = 0 local lownoi_step = 0 " ..
+                "local sf = " .. SEMITONE_FACTOR
 local otfuncs = -- basics
                 "local sin = math.sin " ..
                 "local cos = math.cos " ..
@@ -72,6 +74,12 @@ local otfuncs = -- basics
                 "local sinsaw sinsaw = function(x, p) if p>1 then return sin(x*p)/p+sinsaw(x, p-1) else return sin(x) end end " ..
                 "local sftsaw sftsaw = function(x, p) if p>1 then return sin(x*p)/(2^p)+sftsaw(x, p-1) else return sin(x) end end " ..
                 "local sinsqu sinsqu = function(x, p) if p>1 then local v = p*2-1 return sin(x*v)/v+sinsqu(x, p-1) else return sin(x) end end " ..
+                -- awesomesines etc
+                --"local awehelp = function() end " ..
+                --"local awesin = function(x, d, c, rdf) end " ..
+                --"local awesin awesin = function(x, c) if c <= 1 then return sin(x) else local pdec=(sf-1)^c return (0.2^c)*(sin(x*(1+pdec))+sin(x*(1-pdec)))+awesin(x, c-1) end end " ..
+                --"local awesin awesin = function(x, c, d) if c <= 1 then return sin(x) else local pdec=d*(sf-1)^c return (0.5^c)*(sin(x*(1+pdec))+sin(x/(1+pdec)))+awesin(x, c-1, d) end end " ..
+                --"local awesaw awesaw = function(x, c) if c <= 1 then return saw(x) else local pdec=(sf-1)^c return (0.2^c)*(saw(x*(1+pdec))+saw(x*(1-pdec)))+awesaw(x, c-1) end end " ..
                 -- square root sine, saw, tri
                 "local sqtfunhelp sqtfunhelp = function(fun, x, p) if p>1 then return sqrt(sqtfunhelp(fun, x, p-1)) else return abs(fun(x)) end end " ..
                 "local sqtsin = function(x, p) return squ(x)*sqtfunhelp(sin, x, p) end " ..
