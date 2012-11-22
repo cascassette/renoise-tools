@@ -4,6 +4,7 @@
 
 --[[ Overtune 2.6 todo                                     --
 --    * improve edit function                              --
+--    * run edit function over selection only              --
 --   Overtune 2.7 ideas                                    --
 --    * render multiple samples for different notes        --
 --    * add real ms decay type variables                   --
