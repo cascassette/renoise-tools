@@ -12,6 +12,7 @@
     * add Audio/Effects/Native/LofiMat 1 ???
     * add Audio/Effects/Native/Filter 1 ???
     * add Audio/Effects/Native/Filter 2 ???
+  * search (q) functions for Track, Param fields, analogous to MetaMicro
   ]]
 
 -- Vars

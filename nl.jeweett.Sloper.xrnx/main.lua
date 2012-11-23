@@ -1,18 +1,19 @@
 --[[=======================================================-\
 --||                                                       ||
---||     Sloper v0.2 by Cas Marrav (for Renoise 2.8)       ||
+--||     Sloper v0.3 by Cas Marrav (for Renoise 2.8)       ||
 --||                                                       ||
 --||                                                       ||
 --\-=======================================================]]
 
 -------------------------------------------------------------
--- Sloper v0.1 list                                        --
+-- Sloper todo list                                        --
 --                                                         --
 --:Must haves                                              --
--- * normal operation with some different slope types      --
--- * usable GUI + keyboard operation                       --
+-- * context menu entry                                    --
+-- * mouse operation: change tab function                  --
 --:Should haves                                            --
--- * keep window open option                               --
+-- * keep window open option (alt+enter?)                  --
+-- * settings document plus saving on exit option          --
 --:Could haves                                             --
 -- * undo last edit                                        --
 -- * save hi/lo positions, default slope type              --
@@ -112,6 +113,12 @@ local function reset_q()
   vqtxt.text = ""
 end
 
+local function close_dialog()
+  if ( dialog and dialog.visible ) then
+    dialog:close()
+  end
+end
+
 local function key_dialog(d,k)
   local tab = vtab.value
   local vctl = vlookup[tab]
@@ -164,7 +171,32 @@ local function key_dialog(d,k)
       vio.value = (vio.value+2)%2+1
     elseif k.name == "return" then
       slope(vst.value, vsp.value, vlo.value, vhi.value, vio.value)
-    --elseif k.name == "back" then
+      if k.modifiers == "shift" then
+        close_dialog()
+      end
+    elseif k.name == "back" then
+      local old_q = q(tab)
+      local len = #old_q - 1
+      if len > 0 then
+        if tab == TAB_ST then
+        elseif tab <= TAB_HI then
+          local new_q = old_q:sub(1, len)
+          local num = tonumber(new_q)
+          if num >= vctl.min and num <= vctl.max then
+            if tab == TAB_SP then
+              q_sp = new_q
+            elseif tab == TAB_LO then
+              q_lo = new_q
+            elseif tab == TAB_HI then
+              q_hi = new_q
+            end
+            vctl.value = num
+            vqtxt.text = new_q
+          end
+        end
+      else
+        reset_q()
+      end
     elseif k.name == "del" then
       reset_q()
     elseif k.character ~= nil then
@@ -198,10 +230,7 @@ local function key_dialog(d,k)
   end
 end
 
-local function close_dialog()
-  if ( dialog and dialog.visible ) then
-    dialog:close()
-  end
+local function chtab(index)
 end
 
 local function show_dialog(out)
@@ -221,11 +250,12 @@ local function show_dialog(out)
     width = "100%",
     items = { "Slope Type", "Param./Shape", "Low", "High", "Direction" },
     value = TAB_ST,
+    notifier = chtab,
   }
   vst = vb:popup {
     width = 100,
     items = SLOPE_NAMES,
-    value = 1,
+    value = 2,
   }
   vsp = vb:valuefield {
     width = 100,
@@ -291,19 +321,31 @@ local function show_dialog(out)
 end
 
 -- Menu --
+--[[renoise.tool():add_menu_entry {
+  name = "Sample Editor:Process:Sloper In...",
+  invoke = function() show_dialog(false) end
+}
 renoise.tool():add_menu_entry {
-  name = "Main Menu:Tools:CasTools:Sloper",
+  name = "Sample Editor:Process:Sloper Out...",
+  invoke = function() show_dialog(true) end
+}]]
+renoise.tool():add_menu_entry {
+  name = "Sample Editor:Sloper In...",
+  invoke = function() show_dialog(false) end
+}
+renoise.tool():add_menu_entry {
+  name = "Sample Editor:Sloper Out...",
   invoke = function() show_dialog(true) end
 }
 
 -- Keys --
 renoise.tool():add_keybinding {
-  name = "Sample Editor:Fade:Sloper (out)",
-  invoke = function() show_dialog(true) end
+  name = "Sample Editor:Fade:Sloper In",
+  invoke = function() show_dialog(false) end
 }
 renoise.tool():add_keybinding {
-  name = "Sample Editor:Fade:Sloper (in)",
-  invoke = function() show_dialog(false) end
+  name = "Sample Editor:Fade:Sloper Out",
+  invoke = function() show_dialog(true) end
 }
 
 -- Midi --

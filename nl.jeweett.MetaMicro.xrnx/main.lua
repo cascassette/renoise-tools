@@ -298,7 +298,7 @@ local function key_dialog(d, k)
   elseif k.name == "back" then
     local len = #q() - 1
     if len > 0 then
-      if tab >= TAB_MIN --[[or tab == TAB_MAX]] then
+      if tab >= TAB_MIN then
         local new_q = q():sub(1, #q()-1)
         local num = tonumber(new_q)
         if num >= vlookup[tab].min and num <= vlookup[tab].max then
@@ -328,7 +328,7 @@ local function key_dialog(d, k)
       end
       if tab == TAB_TRK then chtrk()
       elseif tab == TAB_DSP then chdsp() end
-    elseif len == 0 then
+    else--if len == 0 then
       reset_q()
     end
   elseif k.name == "del" then

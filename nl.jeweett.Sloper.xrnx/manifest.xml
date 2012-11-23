@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Sloper</Name>
   <Id>nl.jeweett.Sloper</Id>
-  <Version>0.2</Version>
+  <Version>0.3</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
