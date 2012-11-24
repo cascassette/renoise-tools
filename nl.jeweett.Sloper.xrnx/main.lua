@@ -1,6 +1,6 @@
 --[[=======================================================-\
 --||                                                       ||
---||     Sloper v0.3 by Cas Marrav (for Renoise 2.8)       ||
+--||     Sloper v0.5 by Cas Marrav (for Renoise 2.8)       ||
 --||                                                       ||
 --||                                                       ||
 --\-=======================================================]]
@@ -48,7 +48,7 @@ local SLOPE_COS = 4
 local SLOPE_ATN = 5
 
 local SLOPE_NAMES = { "Linear", "Exponential", "SquareRoot", "Cosine Half", "ArcTangent" }
-local SLOPE_FORMULAS = { "X", "X^Y", "X^(1/Y)", "(math.cos((1-X)*math.pi)/2+.5)^Y", "(math.atan(1-T*2)/2+.5)^Y" }
+local SLOPE_FORMULAS = { "X", "X^Y", "X^(1/Y)", "(math.cos((1-X)*math.pi)/2+.5)^Y", "(math.atan(1-X*2)/2+.5)^Y" }
 
 local LEFT = renoise.SampleBuffer.CHANNEL_LEFT
 local RIGHT = renoise.SampleBuffer.CHANNEL_RIGHT
@@ -199,7 +199,7 @@ local function key_dialog(d,k)
       end
     elseif k.name == "del" then
       reset_q()
-    elseif k.character ~= nil then
+    elseif k.character ~= nil and k.modifiers == "" then
       if tab == TAB_ST then
       elseif tab == TAB_SP then
         local new_q = q_sp .. k.character
@@ -226,6 +226,8 @@ local function key_dialog(d,k)
           vhi.value = num
         end
       end
+    else
+      return k
     end
   end
 end
