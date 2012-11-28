@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- ShowParams v2 by Cas Marrav (for Renoise 2.8)           --
+-- ShowParams v3 by Cas Marrav (for Renoise 2.8)           --
 -------------------------------------------------------------
 
 -- lil To Do list thing
@@ -231,6 +231,14 @@ end
 renoise.tool():add_menu_entry {
   name = "Main Menu:Tools:CasTools:Show Parameters...",
   invoke = show_dialog
+}
+renoise.tool():add_menu_entry {
+  name = "Mixer:Show Parameters...",
+  invoke = show_dialog
+}
+renoise.tool():add_menu_entry {
+  name = "Mixer:Toggle Parameters",
+  invoke = toggle_mixer_params
 }
 renoise.tool():add_keybinding {
   name = "Mixer:Tools:Show Parameters...",
