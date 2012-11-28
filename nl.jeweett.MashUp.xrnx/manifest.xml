@@ -2,12 +2,12 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Mash Up</Name>
   <Id>nl.jeweett.MashUp</Id>
-  <Version>1</Version>
+  <Version>1.5</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas Marrav | Casper</Author>
   <AutoUpgraded>false</AutoUpgraded>
-  <Category>Slices</Category>
-  <Description>Randomly put slices after one another (just choose slice count)</Description>
+  <Category>Sample Editor</Category>
+  <Description>Mash up samples like potatoes.</Description>
   <Homepage>http://music.jeweett.nl</Homepage>
   <Platform/>
   <Icon/>
