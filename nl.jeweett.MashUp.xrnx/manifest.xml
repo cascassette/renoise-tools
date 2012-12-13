@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Mash Up</Name>
   <Id>nl.jeweett.MashUp</Id>
-  <Version>1.5</Version>
+  <Version>1.6</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas Marrav | Casper</Author>
   <AutoUpgraded>false</AutoUpgraded>

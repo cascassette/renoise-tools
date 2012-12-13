@@ -225,7 +225,7 @@ local function key_dialog(d,k)
     local csi = renoise.song().selected_sample_index
     local nii = renoise.song().selected_instrument_index+1
     renoise.song():insert_instrument_at(nii)
-    render_mashup( cii, csi, nii, vb_formula.value, math.floor(vb_times.value), mode, vb_chops.value or 0 )
+    render_mashup( cii, csi, nii, vb_formula.value, math.floor(vb_timesshow.value), mode, vb_chops.value or 0 )
     close_dialog()
   elseif ( k.name == "esc" ) then
     close_dialog()
@@ -337,7 +337,7 @@ function render_mashup( cii, csi, nii, formulastr, nl, mode, chops )
                                     " }"
   local lpm = ci:sample(csi).loop_mode
   -- retrieve proper base_note
-  local bn = 9
+  local bn = 48
   if mode == MODE_AUTOCHOPS then bn = ci:sample_mapping(1, csi).base_note end
   -- compute grain lengths
   local sc
