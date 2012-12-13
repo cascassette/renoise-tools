@@ -1,6 +1,6 @@
 --[[=======================================================-\
 --||                                                       ||
---||     Sloper v0.5 by Cas Marrav (for Renoise 2.8)       ||
+--||     Sloper v1.0 by Cas Marrav (for Renoise 2.8)       ||
 --||                                                       ||
 --||                                                       ||
 --\-=======================================================]]
@@ -8,15 +8,7 @@
 -------------------------------------------------------------
 -- Sloper todo list                                        --
 --                                                         --
---:Must haves                                              --
--- * context menu entry                                    --
--- * mouse operation: change tab function                  --
---:Should haves                                            --
--- * keep window open option (alt+enter?)                  --
 -- * settings document plus saving on exit option          --
---:Could haves                                             --
--- * undo last edit                                        --
--- * save hi/lo positions, default slope type              --
 -------------------------------------------------------------
 
 local vst = nil
@@ -251,7 +243,7 @@ local function show_dialog(out)
   vtab = vb:switch {
     width = "100%",
     items = { "Slope Type", "Param./Shape", "Low", "High", "Direction" },
-    value = TAB_ST,
+    value = TAB_SP,
     notifier = chtab,
   }
   vst = vb:popup {
