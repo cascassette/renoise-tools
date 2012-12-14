@@ -267,6 +267,7 @@ local function update_volumes_gui()
 end
 
 local function key_dialog(d,k)
+  rprint(k)
   if k.name == "right" then
     selected = math.min (selected + 1, #sliders)
     update_sel()
@@ -285,37 +286,37 @@ local function key_dialog(d,k)
     else
       mod_func("vol", -1)
     end
-  elseif k.character == "o" then
+  elseif k.name == "o" then
     if k.modifiers == "shift" then
       mod_func("pan", 5)
     else
       mod_func("pan", 1)
     end
-  elseif k.character == "i" then
+  elseif k.name == "i" then
     if k.modifiers == "shift" then
       mod_func("pan", -5)
     else
       mod_func("pan", -1)
     end
-  elseif k.character == "l" then
+  elseif k.name == "l" then
     if k.modifiers == "shift" then
       mod_func("txp", 12)
     else
       mod_func("txp", 1)
     end
-  elseif k.character == "k" then
+  elseif k.name == "k" then
     if k.modifiers == "shift" then
       mod_func("txp", -12)
     else
       mod_func("txp", -1)
     end
-  elseif k.character == "." then
+  elseif k.name == "period" then
     if k.modifiers == "shift" then
       mod_func("fit", 8)
     else
       mod_func("fit", 1)
     end
-  elseif k.character == "," then
+  elseif k.name == "comma" then
     if k.modifiers == "shift" then
       mod_func("fit", -8)
     else
