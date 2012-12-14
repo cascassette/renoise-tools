@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- InstrMixer v1.11 by Cas Marrav (for Renoise 2.8)        --
+-- InstrMixer v1.12 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 -- Implemented:
@@ -22,6 +22,7 @@
    * Volume >0dB support
    * Basic 'All' mode to mod all samples at once
    * Small 'legend' indicating slider meaning, maybe collapsible
+   * Shift key makes bigga movements
 --]]
 
 -- To do:
@@ -273,21 +274,53 @@ local function key_dialog(d,k)
     selected = math.max (selected - 1, 1)
     update_sel()
   elseif k.name == "up" then
-    mod_func("vol", 1)
+    if k.modifiers == "shift" then
+      mod_func("vol", 5)
+    else
+      mod_func("vol", 1)
+    end
   elseif k.name == "down" then
-    mod_func("vol", -1)
+    if k.modifiers == "shift" then
+      mod_func("vol", -5)
+    else
+      mod_func("vol", -1)
+    end
   elseif k.character == "o" then
-    mod_func("pan", 1)
+    if k.modifiers == "shift" then
+      mod_func("pan", 5)
+    else
+      mod_func("pan", 1)
+    end
   elseif k.character == "i" then
-    mod_func("pan", -1)
+    if k.modifiers == "shift" then
+      mod_func("pan", -5)
+    else
+      mod_func("pan", -1)
+    end
   elseif k.character == "l" then
-    mod_func("txp", 1)
+    if k.modifiers == "shift" then
+      mod_func("txp", 12)
+    else
+      mod_func("txp", 1)
+    end
   elseif k.character == "k" then
-    mod_func("txp", -1)
+    if k.modifiers == "shift" then
+      mod_func("txp", -12)
+    else
+      mod_func("txp", -1)
+    end
   elseif k.character == "." then
-    mod_func("fit", 1)
+    if k.modifiers == "shift" then
+      mod_func("fit", 8)
+    else
+      mod_func("fit", 1)
+    end
   elseif k.character == "," then
-    mod_func("fit", -1)
+    if k.modifiers == "shift" then
+      mod_func("fit", -8)
+    else
+      mod_func("fit", -1)
+    end
   elseif k.character == "[" then
     mod_func("lpm", 1)
   elseif k.character == "p" then
