@@ -1,11 +1,14 @@
 -------------------------------------------------------------
--- Overtune v2.5.92 by Cas Marrav (for Renoise 2.8)        --
+-- Overtune v2.5.95 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
 --    * improve edit function                              --
---    * run edit function over selection only              --
+--      * run edit function over selection only            --
+--      * have x var run over whole sample/selection,      --
+--        or cycle in tones/frequencies/notes              --
 --   Overtune 2.7 ideas                                    --
+--    * use other samples/instr as indexable cycles        --
 --    * render multiple samples for different notes        --
 --    * add real ms decay type variables                   --
 --   Overtune 3.0 ideas                                    --
@@ -89,7 +92,12 @@ local otfuncs = -- basics
                 -- range [0..1] to [-1..1] and vice versa (ac/dc, [0..1] is good for modulating)
                 "local un = function(x) return (x+1)/2 end " ..
                 "local bi = function(x) return x*2-1 end " ..
+                -- range [0..1] to [0..2pi] and vice versa
+                "local tt = function(x) return x/2/pi end " ..
+                "local tx = function(t) return t*2*pi end " ..
                 -- distort (clip, fold, crush, noise) functions
+                "local shape = function(x, p) if x==0 then return x else return (x/abs(x))*abs(x)^p end end " ..
+                "local semishape = function(x, p, z) return shape(x,p)*z + (1-z)*x end " ..
                 "local clip = function(x, y) return max(min(x, y), -y) end " ..
                 "local semiclip = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
                 "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
@@ -111,14 +119,18 @@ local otfuncs = -- basics
                 "local upt = function(x, t) if x >= t then return 0 else return 1 end end " ..
                 -- ramps
                 "local sqrtsqrt = function(x, p) return sqtfunhelp(equ, x, p) end " ..
-                "local ru = function(t, p) return t^p end " ..                   -- ramp (exp)
+                "local ru = function(t, p) return t^p end " ..                               -- ramp (exp)
                 "local rd = function(t, p) return (1-t)^p end " ..
-                "local aru = function(t, p) return 1-(1-t)^p end " ..            -- anti-ramp
+                "local aru = function(t, p) return 1-(1-t)^p end " ..                        -- anti-ramp
                 "local ard = function(t, p) return 1-t^p end " ..
-                "local rru = function(t, p) return 1-sqrtsqrt(1-t, p) end " ..   -- root ramp
+                "local rru = function(t, p) return 1-sqrtsqrt(1-t, p) end " ..               -- root ramp
                 "local rrd = function(t, p) return 1-sqrtsqrt(t, p) end " ..
-                "local raru = function(t, p) return sqrtsqrt(t, p) end " ..      -- root anti-ramp
+                "local raru = function(t, p) return sqrtsqrt(t, p) end " ..                  -- root anti-ramp
                 "local rard = function(t, p) return sqrtsqrt(1-t, p) end " ..
+                "local cosu = function(t, p) return (cos((1-t)*pi)/2+.5)^p end " ..          -- shaped half-cosine ramp
+                "local cosd = function(t, p) return (cos(t*pi)/2+.5)^p end " ..
+                "local atanu = function(t, p) return (math.atan(1-(1-t)*2)/2+.5)^p end " ..  -- shaped atan ramp
+                "local atand = function(t, p) return (math.atan(1-t*2)/2+.5)^p end " ..
                 -- envelope
                 "local env = function(x, t) local y = 0 local pc local pn = nil for i = 1, #t-1 do if pn ~= nil then pc = pn else pc = t[i] end pn = t[i+1] if x < pn[1] and x >= pc[1] then if pn[3] == nil or pn[4] == nil then y = ((x-pc[1])/(pn[1]-pc[1]))*(pn[2]-pc[2])+pc[2] else y = pn[3](((x-pc[1])/(pn[1]-pc[1])),pn[4])*(pn[2]-pc[2])+pc[2] end break end end return y end " ..
                 -- signal duplication
