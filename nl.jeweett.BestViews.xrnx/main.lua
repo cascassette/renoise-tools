@@ -137,6 +137,9 @@ local function se()
   rw = renoise.app().window
   if rw.active_middle_frame ~= renoise.ApplicationWindow.MIDDLE_FRAME_SAMPLE_EDITOR then
     rw.active_middle_frame = renoise.ApplicationWindow.MIDDLE_FRAME_SAMPLE_EDITOR
+    if rw.lower_frame_is_visible then
+      rw.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_INSTRUMENT_PROPERTIES
+    end
   else
     if rw.lower_frame_is_visible and rw.upper_frame_is_visible then
       cv()
