@@ -199,9 +199,9 @@ local function uf()
       rw.active_upper_frame = renoise.ApplicationWindow.UPPER_FRAME_TRACK_SCOPES
     elseif rw.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_MIXER then
       rw.active_upper_frame = renoise.ApplicationWindow.UPPER_FRAME_MASTER_SPECTRUM
-    elseif renoise.ApplicationWindow.MIDDLE_FRAME_KEYZONE_EDITOR then
+    elseif rw.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_KEYZONE_EDITOR then
       rw.active_upper_frame = renoise.ApplicationWindow.UPPER_FRAME_DISK_BROWSER
-    elseif renoise.ApplicationWindow.MIDDLE_FRAME_SAMPLE_EDITOR then
+    elseif rw.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_SAMPLE_EDITOR then
       rw.active_upper_frame = renoise.ApplicationWindow.UPPER_FRAME_MASTER_SCOPES
     end
   end
@@ -225,9 +225,9 @@ local function lf()
       rw.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_TRACK_DSPS
     elseif rw.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_MIXER then
       rw.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_TRACK_DSPS
-    elseif renoise.ApplicationWindow.MIDDLE_FRAME_KEYZONE_EDITOR then
+    elseif rw.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_KEYZONE_EDITOR then
       rw.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_INSTRUMENT_PROPERTIES
-    elseif renoise.ApplicationWindow.MIDDLE_FRAME_SAMPLE_EDITOR then
+    elseif rw.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_SAMPLE_EDITOR then
       rw.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_TRACK_DSPS
     end
   end
