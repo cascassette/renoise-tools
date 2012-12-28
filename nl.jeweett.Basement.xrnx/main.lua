@@ -2128,11 +2128,12 @@ local function pad(number, mm)
       show_insert_dialog()
     end
   elseif number == 10 then
-    if val > 0 then
+    --if val > 0 then
       show_effect_dialog()
-    end
+    --end
   elseif number == 11 then
-    if val > 0 then
+    show_instrument_dialog()
+    --[[if val > 0 then
       if renoise.app().window.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_MIXER then
         --show_mixer_dialog()
       elseif renoise.app().window.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_SAMPLE_EDITOR and
@@ -2141,11 +2142,11 @@ local function pad(number, mm)
       else
         show_instrument_dialog()
       end
-    end
+    end]]
   elseif number == 12 then
-    if val > 0 then
+    --if val > 0 then
       show_hydras_dialog()
-    end
+    --end
   elseif number == 13 then
     if val > 0 then
       if renoise.app().window.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_PATTERN_EDITOR then
@@ -2256,9 +2257,9 @@ local function pad(number, mm)
       pad_update_midframe()
     end
   elseif number == 16 then
-    if val > 0 then
+    --if val > 0 then
       show_default_dialog()
-    end
+    --end
   end
 end
 
@@ -2315,6 +2316,9 @@ local function a(mm)
     veffect_knobs[1].value = nv
     if effect_params[1] ~= nil then
       effect_params[1].value = nv
+      if rs.transport.edit_mode then
+        effect_params[1]:record_value(nv)
+      end
     end
   elseif basement_active_view == BASEMENT_VIEW_INSTRUMENT then
     local nv = mod_midi_value(mm.int_value, vinstrument_knoba.min, vinstrument_knoba.max, true)
@@ -2406,6 +2410,9 @@ local function b(mm)
     veffect_knobs[2].value = nv
     if effect_params[2] ~= nil then
       effect_params[2].value = nv
+      if rs.transport.edit_mode then
+        effect_params[2]:record_value(nv)
+      end
     end
   elseif basement_active_view == BASEMENT_VIEW_INSTRUMENT then
     local nv = mod_midi_value(mm.int_value, vinstrument_knobb.min, vinstrument_knobb.max, true)
@@ -2604,6 +2611,9 @@ local function c(mm)
     veffect_knobs[3].value = nv
     if effect_params[3] ~= nil then
       effect_params[3].value = nv
+      if rs.transport.edit_mode then
+        effect_params[3]:record_value(nv)
+      end
     end
   elseif basement_active_view == BASEMENT_VIEW_INSTRUMENT then
     local nv = mod_midi_value(mm.int_value, vinstrument_knobc.min, vinstrument_knobc.max, true)
@@ -2689,6 +2699,9 @@ local function d(mm)
     veffect_knobs[4].value = nv
     if effect_params[4] ~= nil then
       effect_params[4].value = nv
+      if rs.transport.edit_mode then
+        effect_params[4]:record_value(nv)
+      end
     end
   elseif basement_active_view == BASEMENT_VIEW_INSTRUMENT then
     local nv = mod_midi_value(mm.int_value, vinstrument_knobd.min, vinstrument_knobd.max, false)
@@ -2735,6 +2748,9 @@ local function e(mm)
     veffect_knobs[5].value = nv
     if effect_params[5] ~= nil then
       effect_params[5].value = nv
+      if rs.transport.edit_mode then
+        effect_params[5]:record_value(nv)
+      end
     end
   elseif basement_active_view == BASEMENT_VIEW_INSTRUMENT then
     local nv = mod_midi_value(mm.int_value, vinstrument_knobe.min, vinstrument_knobe.max, true)
@@ -2830,6 +2846,9 @@ local function f(mm)
     veffect_knobs[6].value = nv
     if effect_params[6] ~= nil then
       effect_params[6].value = nv
+      if rs.transport.edit_mode then
+        effect_params[6]:record_value(nv)
+      end
     end
   elseif basement_active_view == BASEMENT_VIEW_INSTRUMENT then
     local nv = mod_midi_value(mm.int_value, vinstrument_knobf.min, vinstrument_knobf.max, true)
@@ -2896,6 +2915,9 @@ local function g(mm)
     veffect_knobs[7].value = nv
     if effect_params[7] ~= nil then
       effect_params[7].value = nv
+      if rs.transport.edit_mode then
+        effect_params[7]:record_value(nv)
+      end
     end
   elseif basement_active_view == BASEMENT_VIEW_INSTRUMENT then
     local nv = mod_midi_value(mm.int_value, vinstrument_knobg.min, vinstrument_knobg.max, true)
@@ -2920,7 +2942,7 @@ local function h(mm)
     test_midi_messages(mm, "Knob H")
   elseif basement_active_view == BASEMENT_VIEW_NONE then
     local pos = nil
-    if rs.transport.follow_player then
+    if rs.transport.follow_player and rs.transport.playing then
       pos = rs.transport.playback_pos
       local nv = mod_midi_value(mm.int_value, 1, rs:pattern(rs.sequencer.pattern_sequence[pos.sequence]).number_of_lines, true)
       rs.transport.playback_pos = renoise.SongPos(pos.sequence, nv)
@@ -2950,6 +2972,9 @@ local function h(mm)
     veffect_knobs[8].value = nv
     if effect_params[8] ~= nil then
       effect_params[8].value = nv
+      if rs.transport.edit_mode then
+        effect_params[8]:record_value(nv)
+      end
     end
   elseif basement_active_view == BASEMENT_VIEW_INSTRUMENT then
     local nv = mod_midi_value(mm.int_value, vinstrument_knobg.min, vinstrument_knobg.max, false)
@@ -3241,7 +3266,7 @@ local function add_hooks()
   renoise.song().transport.follow_player_observable:add_notifier(pad_update_follow)
   renoise.app().window.active_middle_frame_observable:add_notifier(pad_update_midframe)
 end
-local function init()
+function init()
   rs = renoise.song()
   pad_update_all()
   add_hooks()
