@@ -77,6 +77,8 @@ local function selectdialog_go()
   device:parameter(5*(waiting_for_rowid-1)+4).value = pi
   vb.views['parsel'..waiting_for_rowid].value = pi+1
   selectdialog_close()
+  renoise.song().selected_track_index = device.track_index
+  renoise.song().selected_device_index = device.device_index
 end
 local function selectdevicegui()
   local dev = renoise.song().selected_device
