@@ -1,6 +1,6 @@
 --[[=======================================================-\
 --||                                                       ||
---||     Sloper v1.0 by Cas Marrav (for Renoise 2.8)       ||
+--||     Sloper v1.6 by Cas Marrav (for Renoise 2.8)       ||
 --||                                                       ||
 --||                                                       ||
 --\-=======================================================]]
@@ -8,7 +8,15 @@
 -------------------------------------------------------------
 -- Sloper todo list                                        --
 --                                                         --
+--:Must haves                                              --
+-- * context menu entry                                    --
+-- * mouse operation: change tab function                  --
+--:Should haves                                            --
+-- * keep window open option (alt+enter?)                  --
 -- * settings document plus saving on exit option          --
+--:Could haves                                             --
+-- * undo last edit                                        --
+-- * save hi/lo positions, default slope type              --
 -------------------------------------------------------------
 
 local vst = nil
@@ -35,12 +43,14 @@ local TAB_IO = 5
 
 local SLOPE_LIN = 1
 local SLOPE_EXP = 2
-local SLOPE_SQR = 3
-local SLOPE_COS = 4
-local SLOPE_ATN = 5
+local SLOPE_IEX = 3
+local SLOPE_SQR = 4
+local SLOPE_ISQ = 5
+local SLOPE_COS = 6
+local SLOPE_ATN = 7
 
-local SLOPE_NAMES = { "Linear", "Exponential", "SquareRoot", "Cosine Half", "ArcTangent" }
-local SLOPE_FORMULAS = { "X", "X^Y", "X^(1/Y)", "(math.cos((1-X)*math.pi)/2+.5)^Y", "(math.atan(1-X*2)/2+.5)^Y" }
+local SLOPE_NAMES = { "Linear", "Exponential", "Inv. Exp.", "SquareRoot", "Inv. Sqrt.", "Cosine Half", "ArcTangent" }
+local SLOPE_FORMULAS = { "X", "X^Y", "1-(1-X)^Y", "1-(1-X)^(1/Y)", "X^(1/Y)", "(math.cos((1-X)*math.pi)/2+.5)^Y", "(math.atan(1-(1-X)*2)/2+.5)^Y" }
 
 local LEFT = renoise.SampleBuffer.CHANNEL_LEFT
 local RIGHT = renoise.SampleBuffer.CHANNEL_RIGHT
@@ -122,7 +132,7 @@ local function key_dialog(d,k)
       vctl.value = math.min(vctl.value + 1, vctl.max)
     elseif tab == 5 then
       --if vctl.value == 1 then vctl.value = 2 else vctl.value = 1 end
-      vctl.value = (vctl.value+2)%2+1
+      vctl.value = vctl.value%2+1
     end
     if tab < 5 and tab > 1 then
       if q(tab) and q(tab) ~= "" then
@@ -160,7 +170,7 @@ local function key_dialog(d,k)
         vtab.value = tab
       end
     elseif k.name == "space" then
-      vio.value = (vio.value+2)%2+1
+      vio.value = vio.value%2+1
     elseif k.name == "return" then
       slope(vst.value, vsp.value, vlo.value, vhi.value, vio.value)
       if k.modifiers == "shift" then

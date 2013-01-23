@@ -17,7 +17,7 @@
                                                            ]]
 
 -- cycle length calculation
-local SAMPLE_RATE = 44100
+local SAMPLE_RATE = 48000
 local SEMITONE_FACTOR = (2^(1/12))
 local BASE_FREQ = 440               -- A-4
 local BASE_NOTE = 57
@@ -58,6 +58,12 @@ local otfuncs = -- basics
                 "local flr = math.floor " ..
                 "local abs = math.abs " ..
                 "local equ = function(x) return x end " ..
+                -- range [0..1] to [-1..1] and vice versa (ac/dc, [0..1] is good for modulating)
+                "local un = function(x) return (x+1)/2 end " ..
+                "local bi = function(x) return x*2-1 end " ..
+                -- range [0..1] to [0..2pi] and vice versa
+                "local tt = function(x) return x/2/pi end " ..
+                "local tx = function(t) return t*2*pi end " ..
                 -- logic
                 "local ite = function(i, t, e) if i then return t else return e end end " ..
                 "local btoi = function(b) if b then return 1 else return 0 end end " ..
@@ -89,12 +95,6 @@ local otfuncs = -- basics
                 "local sqtsin = function(x, p) return squ(x)*sqtfunhelp(sin, x, p) end " ..
                 "local sqtsaw = function(x, p) return squ(x)*sqtfunhelp(saw, x, p) end " ..
                 "local sqttri = function(x, p) return squ(x)*sqtfunhelp(tri, x, p) end " ..
-                -- range [0..1] to [-1..1] and vice versa (ac/dc, [0..1] is good for modulating)
-                "local un = function(x) return (x+1)/2 end " ..
-                "local bi = function(x) return x*2-1 end " ..
-                -- range [0..1] to [0..2pi] and vice versa
-                "local tt = function(x) return x/2/pi end " ..
-                "local tx = function(t) return t*2*pi end " ..
                 -- distort (clip, fold, crush, noise) functions
                 "local shape = function(x, p) if x==0 then return x else return (x/abs(x))*abs(x)^p end end " ..
                 "local semishape = function(x, p, z) return shape(x,p)*z + (1-z)*x end " ..
@@ -129,8 +129,14 @@ local otfuncs = -- basics
                 "local rard = function(t, p) return sqrtsqrt(1-t, p) end " ..
                 "local cosu = function(t, p) return (cos((1-t)*pi)/2+.5)^p end " ..          -- shaped half-cosine ramp
                 "local cosd = function(t, p) return (cos(t*pi)/2+.5)^p end " ..
+                "local acosu = function(t, p) return (acos((1-t)*2-1)/pi)^p end " ..
+                "local acosd = function(t, p) return (acos(t*2-1)/pi)^p end " ..
                 "local atanu = function(t, p) return (math.atan(1-(1-t)*2)/2+.5)^p end " ..  -- shaped atan ramp
-                "local atand = function(t, p) return (math.atan(1-t*2)/2+.5)^p end " ..
+                "local atand = function(t, p) return (math.atan(1-t*2)/pi*2+.5)^p end " ..
+                "local atanu = function(t, p) return (math.atan(1-(1-t)*2)/pi*2+.5)^p end " ..
+                "local atand = function(t, p) return (math.atan(1-t*2)/pi*2+.5)^p end " ..
+                "local recu = function(t, p) p = 1/p return p/((1-t)+p) end " ..
+                "local recd = function(t, p) p = 1/p return p/(t+p) end " ..
                 -- envelope
                 "local env = function(x, t) local y = 0 local pc local pn = nil for i = 1, #t-1 do if pn ~= nil then pc = pn else pc = t[i] end pn = t[i+1] if x < pn[1] and x >= pc[1] then if pn[3] == nil or pn[4] == nil then y = ((x-pc[1])/(pn[1]-pc[1]))*(pn[2]-pc[2])+pc[2] else y = pn[3](((x-pc[1])/(pn[1]-pc[1])),pn[4])*(pn[2]-pc[2])+pc[2] end break end end return y end " ..
                 -- signal duplication
