@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Broaden Selection</Name>
-  <Id>nl.jeweett.BroadenSelection</Id>
-  <Version>1</Version>
+  <Name>Extend Selection</Name>
+  <Id>nl.jeweett.ExtendSelection</Id>
+  <Version>0.2</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas Marrav | casmarrav@gmail.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
