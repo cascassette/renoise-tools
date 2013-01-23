@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Renoise Device XML Test</Name>
+  <Id>nl.jeweett.RenoiseDeviceXmlTest</Id>
+  <Version>1</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Testing</Category>
+  <Description>Renoise Device XML Test. For coders.</Description>
+  <Homepage>http://music.jeweett.nl</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>
