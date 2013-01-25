@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Overtune v2.5.95 by Cas Marrav (for Renoise 2.8)        --
+-- Overtune v2.5.96 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
@@ -31,6 +31,7 @@ local vb_times
 local vb_stepsshow
 local vb_timesshow
 local vb_power
+local vb_stereo
 local vb_base_note
 local dialog
 
@@ -64,6 +65,8 @@ local otfuncs = -- basics
                 -- range [0..1] to [0..2pi] and vice versa
                 "local tt = function(x) return x/2/pi end " ..
                 "local tx = function(t) return t*2*pi end " ..
+                -- frequency modulation
+                "local mf = function(c,m,a) return c*(1+m*a) end " ..
                 -- logic
                 "local ite = function(i, t, e) if i then return t else return e end end " ..
                 "local btoi = function(b) if b then return 1 else return 0 end end " ..
@@ -208,7 +211,8 @@ local options = renoise.Document.create("OvertunePreferences") {
   stepn = "0",
   steps = 1,
   times = 1,
-  power = true
+  power = true,
+  stereo = false,
 }
 renoise.tool().preferences = options
 
@@ -259,6 +263,7 @@ function try_and_load_1(instr)
     ot.steps = 0+(instr:sample(4).name)
     if #instr.samples >= 5 then ot.times = 0+(instr:sample(5).name) end
     if #instr.samples == 6 then if instr:sample(6).name == "1" then ot.power = true else ot.power = false end end
+    ot.stereo = false
     ot.base_note = 9
   else
     ot = nil
@@ -298,6 +303,7 @@ function try_and_save_2(sample, settings)
                                           "steps="..settings.steps.."," ..
                                           "times="..settings.times.."," ..
                                           "power="..btos(settings.power).."," ..
+                                          "stereo="..btos(settings.stereo).."," ..
                                           "base_note="..settings.base_note .. "}"
   sample.name = name_str
 end
@@ -323,13 +329,16 @@ function key_handler(d, k)
       vb_power.value = not vb_power.value
       focus = 5
     elseif k.name == "6" and k.modifiers == "shift" then
+      vb_stereo.value = not vb_stereo.value
       focus = 6
+    elseif k.name == "7" and k.modifiers == "shift" then
+      focus = 7
     elseif k.name == "return" then
       if k.modifiers == "" then
-        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, base_note=vb_base_note.value } )
+        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, stereo=vb_stereo.value, base_note=vb_base_note.value } )
         if dialog and dialog.visible then dialog:close() end
       elseif k.modifiers == "shift" then
-        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, base_note=vb_base_note.value } )
+        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, stereo=vb_stereo.value, base_note=vb_base_note.value } )
         --[[vb_step1.edit_mode = true
         focus = 1]]
       elseif k.modifiers == "alt" then
@@ -341,9 +350,9 @@ function key_handler(d, k)
       end
     elseif k.name == "space" then
       if k.modifiers == "" then
-        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, base_note=vb_base_note.value } )
+        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, stereo=vb_stereo.value, base_note=vb_base_note.value } )
       elseif k.modifiers == "shift" then
-        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, base_note=vb_base_note.value } )
+        render_overtune( load, { step1=vb_step1.value, stepn=vb_stepn.value, steps=math.floor(vb_stepsshow.value), times=math.floor(vb_timesshow.value), power=vb_power.value, stereo=vb_stereo.value, base_note=vb_base_note.value } )
         if dialog and dialog.visible then dialog:close() end
       end
     elseif k.name == "esc" then
@@ -360,7 +369,7 @@ function key_handler(d, k)
     elseif focus == 4 then
       vb_timesshow.value = math.min(vb_timesshow.value+1, vb_timesshow.max)
       vb_times.value = vb_timesshow.value
-    elseif focus == 6 then
+    elseif focus == 7 then
       vb_base_note.value = math.min(vb_base_note.value+1, vb_base_note.max)
     end
     pass = false
@@ -371,7 +380,7 @@ function key_handler(d, k)
     elseif focus == 4 then
       vb_timesshow.value = math.max(vb_timesshow.value-1, vb_timesshow.min)
       vb_times.value = vb_timesshow.value
-    elseif focus == 6 then
+    elseif focus == 7 then
       vb_base_note.value = math.max(vb_base_note.value-1, vb_base_note.min)
     end
     pass = false
@@ -382,7 +391,7 @@ function key_handler(d, k)
     elseif focus == 4 then
       vb_timesshow.value = math.min(vb_timesshow.value*2, vb_timesshow.max)
       vb_times.value = vb_timesshow.value
-    elseif focus == 6 then
+    elseif focus == 7 then
       vb_base_note.value = math.min(vb_base_note.value+12, vb_base_note.max)
     end
     pass = false
@@ -393,7 +402,7 @@ function key_handler(d, k)
     elseif focus == 4 then
       vb_timesshow.value = math.max(math.floor(vb_timesshow.value/2), vb_timesshow.min)
       vb_times.value = vb_timesshow.value
-    elseif focus == 6 then
+    elseif focus == 7 then
       vb_base_note.value = math.max(vb_base_note.value-12, vb_base_note.min)
     end
     pass = false
@@ -423,6 +432,7 @@ function show_dialog()
   vb_stepsshow = vb:valuebox { min = 1, max = 99, value = options.steps.value, width = 50 }
   vb_timesshow = vb:valuebox { min = 1, max = 1024, value = options.times.value, width = 50 }
   vb_power = vb:checkbox { value = options.power.value }
+  vb_stereo = vb:checkbox { value = options.stereo.value }
   --vb_tl = vb:valuebox { min = 20, max = 1604, value = 1604, width = 64 }
   vb_base_note = vb:valuebox { min = 0, max = 119, value = 9, width = 64, tostring = note_number_to_string, tonumber = string_to_note_number }
   --vb_base_noteshow = vb:textfield
@@ -452,6 +462,7 @@ function show_dialog()
       vb_steps.value = ot.steps vb_stepsshow.value = ot.steps
       vb_times.value = ot.times vb_timesshow.value = ot.times
       vb_power.value = ot.power
+      vb_stereo.value = ot.stereo
       vb_base_note.value = ot.base_note
       load = true
     end
@@ -477,7 +488,11 @@ function show_dialog()
             vb_stepn,
             vb_stepsrow,
             vb_timesrow,
-            vb_power,
+            vb:horizontal_aligner {
+              vb_power,
+              vb:text { text = "Stereo:" },
+              vb_stereo,
+            },
             vb_base_note,
           },
         },
@@ -640,6 +655,8 @@ function render_overtune( load, settings )
   local lpe
   local o_times = false
   local name = settings.name
+  local channel_count = 1
+  if settings.stereo then channel_count = 2 end
   rs:describe_undo("Render Overtune")
   -- possibly remove old samples with settings
   if delete_obsolete_samples_on_render then
@@ -663,7 +680,7 @@ function render_overtune( load, settings )
     end
   end
   --try_and_save_1(ci, {step1 = step1, stepn = stepn, steps = steps, times = times, power = power})
-  try_and_save_2(cs, {step1 = settings.step1, stepn = settings.stepn, steps = settings.steps, times = settings.times, power = settings.power, name = name, base_note = settings.base_note})
+  try_and_save_2(cs, {step1 = settings.step1, stepn = settings.stepn, steps = settings.steps, times = settings.times, power = settings.power, stereo = settings.stereo, name = name, base_note = settings.base_note})
   if ci.name == "" then ci.name = "Overtuned" end
   if load then
     cs.volume = vol
@@ -677,31 +694,37 @@ function render_overtune( load, settings )
     formulastr = formulastr .. "+" .. settings.stepn:gsub("N", i)
   end
   --formulastr = "("..formulastr..")/"..settings.steps
-  formula = loadstring(otvars.." return function(X, XX, O, T) ".. "local tl = ".. tl .. " " .. otfuncs .."return ".. formulastr .." end")()
-  local buffer = {}
-  for c = 1, settings.times do
-    --for i = 1, tl do
-    for i = 0, tl-1 do
-      local t = ((c-1)*tl+i)/sl
-      local xx = ((c-1)*tl+i)*2*math.pi / (sl/settings.times)
-      local x = i*2*math.pi/tl
-      local y = formula(x, xx, c, t)
-      if settings.power then md = math.max(md, math.abs(y)) end
-      buffer[1+i+((c-1)*tl)] = y
+  formula = loadstring(otvars.." return function(X, XX, O, T, C) ".. "local tl = ".. tl .. " " .. otfuncs .."return ".. formulastr .." end")()
+  local buffer = {} buffer[1] = {} buffer[2] = {}
+  for channel = 1, channel_count do
+    for c = 1, settings.times do
+      --for i = 1, tl do
+      for i = 0, tl-1 do
+        local t = ((c-1)*tl+i)/sl
+        local xx = ((c-1)*tl+i)*2*math.pi / (sl/settings.times)
+        local x = i*2*math.pi/tl
+        local y = formula(x, xx, c, t, channel-1)
+        if settings.power then md = math.max(md, math.abs(y)) end
+        buffer[channel][1+i+((c-1)*tl)] = y
+      end
     end
   end
   if settings.power then
     local pf = 1 / md
-    for i = 1, sl do
-      buffer[i] = buffer[i]*pf
+    for channel = 1, channel_count do
+      for i = 1, sl do
+        buffer[channel][i] = buffer[channel][i]*pf
+      end
     end
   end
   -- build instrument sample #1
   sb = cs.sample_buffer
-  sb:create_sample_data( SAMPLE_RATE, 32, 1, sl )
+  sb:create_sample_data( SAMPLE_RATE, 32, channel_count, sl )
   sb:prepare_sample_data_changes()
-  for i = 1, sl do
-    sb:set_sample_data( 1, i, buffer[i] )
+  for channel = 1, channel_count do
+    for i = 1, sl do
+      sb:set_sample_data( channel, i, buffer[channel][i] )
+    end
   end
   sb:finalize_sample_data_changes()
   if o_times then
