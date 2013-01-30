@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>AwesomeSawce</Name>
   <Id>nl.jeweett.AwesomeSawce</Id>
-  <Version>1.1</Version>
+  <Version>1.2</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas Marrav | Casper</Author>
   <AutoUpgraded>false</AutoUpgraded>

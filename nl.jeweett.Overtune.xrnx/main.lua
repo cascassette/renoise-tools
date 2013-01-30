@@ -7,6 +7,9 @@
 --      * run edit function over selection only            --
 --      * have x var run over whole sample/selection,      --
 --        or cycle in tones/frequencies/notes              --
+--    * sample rate in instrument, prefs                   --
+--    * re-render every overtune @ SR,[Note]               --
+--    * stereo phase shift in deg                          --
 --   Overtune 2.7 ideas                                    --
 --    * use other samples/instr as indexable cycles        --
 --    * render multiple samples for different notes        --
@@ -65,8 +68,13 @@ local otfuncs = -- basics
                 -- range [0..1] to [0..2pi] and vice versa
                 "local tt = function(x) return x/2/pi end " ..
                 "local tx = function(t) return t*2*pi end " ..
-                -- frequency modulation
-                "local mf = function(c,m,a) return c*(1+m*a) end " ..
+                -- frequency modulation (not really that good, sin(X+sin(X)) works better)
+                --"local fm = function(c,m,a) return c*(1+m*a) end " ..
+                -- ringmod/amplitude modulation
+                "local am = function(c,m,a) return c*(1-a+un(m)*a) end " ..
+                "local rm = function(c,m,a) return c*(1-a+abs(m)*a) end " ..
+                -- semitone factor function
+                "local nf = function(txp) return (2^(txp/12)) end " ..
                 -- logic
                 "local ite = function(i, t, e) if i then return t else return e end end " ..
                 "local btoi = function(b) if b then return 1 else return 0 end end " ..
@@ -289,6 +297,7 @@ function try_and_load_2(sample)
     local tmpname = sn:sub(1,delim_start-1)
     ot = loadstring("return "..sn:sub(delim_end+1))()
     if ot.base_note == nil then ot.base_note = 9 end
+    if ot.stereo == nil then ot.stereo = false end
     ot.name = tmpname
   else
     ot = nil
@@ -629,7 +638,7 @@ function show_edit_dialog()
 end
 
 -------------------------------------------------------------
--- Main: render_overtune() function                        --
+-- Main: render functions                                  --
 -------------------------------------------------------------
 
 function render_overtune( load, settings )

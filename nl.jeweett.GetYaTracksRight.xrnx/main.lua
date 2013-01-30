@@ -39,6 +39,27 @@ local function track_same()
     -- insert send device to submaster
     local send = nt:insert_device_at("Audio/Effects/Native/#Send", 2)
     send:parameter(3).value = rs.send_track_count-1
+    local sendhere = nt:insert_device_at("Audio/Effects/Native/#Send", 3)
+    sendhere.active_preset_data = [[<?xml version="1.0" encoding="UTF-8"?>
+<FilterDevicePreset doc_version="9">
+  <DeviceSlot type="SendDevice">
+    <IsMaximized>true</IsMaximized>
+    <SendAmount>
+      <Value>0.0</Value>
+    </SendAmount>
+    <SendPan>
+      <Value>0.5</Value>
+    </SendPan>
+    <DestSendTrack>
+      <Value>0</Value>
+    </DestSendTrack>
+    <MuteSource>false</MuteSource>
+    <SmoothParameterChanges>true</SmoothParameterChanges>
+  </DeviceSlot>
+</FilterDevicePreset>
+]]
+    sendhere.is_active = false
+    sendhere:parameter(3).value = pos-rs.sequencer_track_count-2
   end
   rs.selected_track_index = pos
   -- dialog to name it??

@@ -1,13 +1,12 @@
 -------------------------------------------------------------
--- AwesomeSawce v0.2 by Cas Marrav (for Renoise 2.8)       --
+-- AwesomeSawce v1.2 by Cas Marrav (for Renoise 2.8)       --
 -------------------------------------------------------------
 
-renoise.tool():add_menu_entry {
-  name = "Main Menu:Tools:CasTools:AwesomeSawce...",
-  invoke = function()
-    show_dialog()
-  end
-}
+--[[ AwesomeSawce 1.3 todo                                 --
+--    * detune in (exact value) semitones                  --
+--    * mix semitones/finetune detuning                    --
+--    * fix samples at the end calculating necessary detune--
+                                                           ]]
 
 SAW_TABLE = {
   0.01,
@@ -424,10 +423,11 @@ function show_dialog()
   local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
   
   local vb_count = vb:valuebox { width = 100, min = 0, max = 7, value = 2 }
-  local vb_detune = vb:slider { width = 100, min = 1, max = 127, value = 55 }
+  local vb_detune = vb:slider { width = 100, min = 1, max = 127, value = 55, notifier = function(val) vb.views['detuneshow'].value = val end }
+  local vb_detuneshow = vb:valuebox { width = 60, min = 1, max = 127, value = 55, id = "detuneshow" }
   local vb_osctype = vb:switch { width = 200, items = { "Saw", "Sine", "User" }, value = 1 }
   local vb_tunedir = vb:switch { width = 200, items = { "Up&Down", "Up", "Down" }, value = 1, active = false }
-  local vb_tuneres = vb:switch { width = 200, items = { "Finetune", "Semitone", "Octave" }, value = 1, active = false }
+  local vb_tuneres = vb:switch { width = 200, items = { "Finetune", "Semitone" }, value = 1 }  -- TODO: reset vb_detune.max
   local vb_tune_slopetype = vb:switch { width = 200, items = { "Linear", "Exponential" }, value = 2 }
   local vb_volume_slopetype = vb:switch { width = 200, items = { "Linear", "Exponential" }, value = 2 }
   local vb_panning_slopetype = vb:switch { width = 200, items = { "Linear", "Exponential" }, value = 2 }
@@ -462,15 +462,22 @@ function show_dialog()
         margin = DDM,
         spacing = CS,
         vb:vertical_aligner {
-        vb:text { text = "Count" },
-        vb:text { text = "Detune" },
+          vb:text { text = "Count" },
+          vb:text { text = "Detune" },
         },  
         vb:vertical_aligner {
-        vb_count,
-        vb_detune,
+          vb:horizontal_aligner {
+            vb_count,
+            vb:space { width = 10 },
+            vb_onetuned,
+            vb:text { text = "One tuned?" },
+          },
+          vb:horizontal_aligner {
+            vb_detune,
+            vb:space { width = 10 },
+            vb_detuneshow,
+          },
         },
-        vb_onetuned,
-        vb:text { text = "One tuned?" },
       },
       vb:row {
         margin = DDM,
@@ -515,7 +522,7 @@ function show_dialog()
                    vb_dialog,
                  {"Bring on the Sawce!", "Cancel"})   -- TODO: make normal dialog with handlers, have a "Try the Sawce!" button
   if dialog_instance == "Bring on the Sawce!" then
-    render_supersawce(vb_count.value, vb_detune.value, vb_tune_slopetype.value, 
+    render_supersawce(vb_count.value, vb_detuneshow.value, vb_tune_slopetype.value, 
       vb_volume_slopetype.value, vb_panning_slopetype.value, 
       vb_width.value, vb_pingpong.value, vb_onetuned.value,
       vb_volume_slopemax.value, vb_volume_stepone.value, vb_osctype.value,
@@ -550,7 +557,7 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
       rk = ci.sample_mappings[1][1].base_note
     else
       sb = ci.samples[1].sample_buffer
-      sb:create_sample_data( 44000, 32, 1, 200 )
+      sb:create_sample_data( 44100, 32, 1, 200 )
       sb:prepare_sample_data_changes()
       local tab
       if osctype == 1 then tab = SAW_TABLE elseif osctype == 2 then tab = SIN_TABLE end
@@ -576,7 +583,11 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
       elseif tune_slopetype == 2 then
         tune = maxdetune * ( ( math.floor((i+1)/2) / count ) ^ 2 )
       end
-      ci.samples[ni].fine_tune = tune * xy
+      if tuneres == 1 then
+        ci.samples[ni].fine_tune = tune * xy
+      elseif tuneres == 2 then
+        ci.samples[ni].transpose = tune * xy
+      end
       -- set volume
       -- explanation:
       -- saw samples will have volume values from 0.0 - 1.0 ( -6.021 dB in renoise )
@@ -630,6 +641,17 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
     end
   end
 end
+
+--------------------------------------------------------------------------------
+-- Menu
+--------------------------------------------------------------------------------
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:Tools:CasTools:AwesomeSawce...",
+  invoke = function()
+    show_dialog()
+  end
+}
 
 --------------------------------------------------------------------------------
 -- Key Binding
