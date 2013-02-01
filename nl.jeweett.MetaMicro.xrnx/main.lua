@@ -96,6 +96,7 @@ local function bind(metadev, trkno, dspno, pmtno, min, max)
     print ("max  : " .. max )
   end
   if not DRY_RUN then
+    if trkno == renoise.song().selected_track_index then trkno = 0 end
     local add = 0
     if metadev.name == "*Formula" then add = 3 end
     --Destination
