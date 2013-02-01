@@ -1,17 +1,8 @@
 -------------------------------------------------------------
--- Dancealot v2.0 by Cas Marrav (for Renoise 2.8)          --
+-- Dancealot v2.4 by Cas Marrav (for Renoise 2.8)          --
 -------------------------------------------------------------
 
 --[[ TODO
-  * add different shortcut for Native + Deprecated?
-    * add Audio/Effects/Native/*Formula
-    * add Audio/Effects/Native/Stutter
-    * add Audio/Effects/Native/Distortion 1
-    * add Audio/Effects/Native/mpReverb 1
-    * add Audio/Effects/Native/Shaper ???
-    * add Audio/Effects/Native/LofiMat 1 ???
-    * add Audio/Effects/Native/Filter 1 ???
-    * add Audio/Effects/Native/Filter 2 ???
   * search (q) functions for Track, Param fields, analogous to MetaMicro
   ]]
 
@@ -77,6 +68,27 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
   local device = rs:track(track_no):insert_device_at(device_path, insert_spot+1)
   if not active then
     device.is_active = false
+  end
+  if device_path == "Audio/Effects/Native/#Send" then
+    -- #Send to Keep Source, zero Amount, by default when inserted
+    device.active_preset_data = [[<?xml version="1.0" encoding="UTF-8"?>
+<FilterDevicePreset doc_version="9">
+  <DeviceSlot type="SendDevice">
+    <IsMaximized>true</IsMaximized>
+    <SendAmount>
+      <Value>0.0</Value>
+    </SendAmount>
+    <SendPan>
+      <Value>0.5</Value>
+    </SendPan>
+    <DestSendTrack>
+      <Value>0</Value>
+    </DestSendTrack>
+    <MuteSource>false</MuteSource>
+    <SmoothParameterChanges>true</SmoothParameterChanges>
+  </DeviceSlot>
+</FilterDevicePreset>
+]]
   end
 end
 
