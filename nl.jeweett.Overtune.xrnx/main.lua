@@ -499,6 +499,7 @@ function show_dialog()
             vb_timesrow,
             vb:horizontal_aligner {
               vb_power,
+              vb:space { width = 10 },
               vb:text { text = "Stereo:" },
               vb_stereo,
             },
