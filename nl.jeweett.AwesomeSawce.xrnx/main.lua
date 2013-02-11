@@ -4,8 +4,12 @@
 
 --[[ AwesomeSawce 1.3 todo                                 --
 --    * detune in (exact value) semitones                  --
+--      * in semitones, make detune steps every step       --
+--    * support for other samples in instrument            --
 --    * mix semitones/finetune detuning                    --
 --    * fix samples at the end calculating necessary detune--
+--      or support for original finetuning                 --
+--    * preferences support like overtune                  --
                                                            ]]
 
 SAW_TABLE = {
@@ -414,8 +418,15 @@ SIN_TABLE = {
   0.00000000000000,
 }
 
+TD_UD = 1
+TD_UP = 2
+TD_DN = 3
+
+TR_FT = 1
+TR_ST = 2
+
 -------------------------------------------------------------
---Main: show_dialog() function
+-- Main: show_dialog() function                            --
 -------------------------------------------------------------
 function show_dialog()
   local vb = renoise.ViewBuilder()
@@ -426,8 +437,8 @@ function show_dialog()
   local vb_detune = vb:slider { width = 100, min = 1, max = 127, value = 55, notifier = function(val) vb.views['detuneshow'].value = val end }
   local vb_detuneshow = vb:valuebox { width = 60, min = 1, max = 127, value = 55, id = "detuneshow" }
   local vb_osctype = vb:switch { width = 200, items = { "Saw", "Sine", "User" }, value = 1 }
-  local vb_tunedir = vb:switch { width = 200, items = { "Up&Down", "Up", "Down" }, value = 1, active = false }
-  local vb_tuneres = vb:switch { width = 200, items = { "Finetune", "Semitone" }, value = 1 }  -- TODO: reset vb_detune.max
+  local vb_tunedir = vb:switch { width = 200, items = { "Up&Down", "Up", "Down" }, value = TD_UD, active = false }
+  local vb_tuneres = vb:switch { width = 200, items = { "Finetune", "Semitone" }, value = TR_FT }  -- TODO: reset vb_detune.max
   local vb_tune_slopetype = vb:switch { width = 200, items = { "Linear", "Exponential" }, value = 2 }
   local vb_volume_slopetype = vb:switch { width = 200, items = { "Linear", "Exponential" }, value = 2 }
   local vb_panning_slopetype = vb:switch { width = 200, items = { "Linear", "Exponential" }, value = 2 }
@@ -531,7 +542,7 @@ function show_dialog()
 end
 
 -------------------------------------------------------------
---Main: render_supersawce() function
+-- Main: render_supersawce() function                      --
 -------------------------------------------------------------
 function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, panning_slopetype, width, pingpong, onetuned, volume_slopemax, volume_stepone, osctype, tunedir, tuneres)
   local vb = renoise.ViewBuilder()
@@ -541,10 +552,14 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
   local sb
   local rk = 45
   local continue = "OK"
-  if osctype ~= 3 and (#ci.samples > 1 or ci.samples[1].sample_buffer.has_sample_data) then
+  local ss = rs.selected_sample
+  local ssi = rs.selected_sample_index
+  if osctype ~= 3 and (#ci.samples > 1 or ci:sample(1).sample_buffer.has_sample_data) then
     continue = renoise.app():show_custom_prompt( "Warning", vb:text { text = "Instrument will be replaced. Continue?" }, { "OK", "Cancel" } )
+  --[[
   elseif osctype == 3 and (#ci.samples > 1) then
     continue = renoise.app():show_custom_prompt( "Warning", vb:text { text = "All instrument samples except #1 will be replaced. Continue?" }, { "OK", "Cancel" } )
+  --]]
   end
   if ( continue == "OK" ) then
     -- start building supersawce
@@ -554,9 +569,9 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
     ci.active_tab = 1
     -- build sawce source sample #1
     if osctype == 3 then
-      rk = ci.sample_mappings[1][1].base_note
+      rk = ci:sample_mapping(1,1).base_note
     else
-      sb = ci.samples[1].sample_buffer
+      sb = ci:sample(1).sample_buffer
       sb:create_sample_data( 44100, 32, 1, 200 )
       sb:prepare_sample_data_changes()
       local tab
@@ -565,74 +580,115 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
         sb:set_sample_data( 1, i, tab[i] )
       end
       sb:finalize_sample_data_changes()
-      ci.samples[1].loop_start = 1
-      ci.samples[1].loop_end = 199
+      ci:sample(1).loop_start = 1
+      ci:sample(1).loop_end = 199
     end
     -- copy that copy cat, a gazillion times
-    for i = 1, count * 2 do
-      -- make a copy
-      local ni = #ci.samples + 1      -- ni: "new index"
-      ci:insert_sample_at(ni)
-      ci.samples[ni]:copy_from(ci.samples[1])
-      -- determine odd or even
-      local xy = ((i%2)-0.5)*2         -- -1, 1, x, y, odd, even, left, right
-      -- set tuning
-      local tune
-      if tune_slopetype == 1 then
-        tune = maxdetune * ( math.floor((i+1)/2) / count )
-      elseif tune_slopetype == 2 then
-        tune = maxdetune * ( ( math.floor((i+1)/2) / count ) ^ 2 )
-      end
-      if tuneres == 1 then
-        ci.samples[ni].fine_tune = tune * xy
-      elseif tuneres == 2 then
-        ci.samples[ni].transpose = tune * xy
-      end
-      -- set volume
-      -- explanation:
-      -- saw samples will have volume values from 0.0 - 1.0 ( -6.021 dB in renoise )
-      -- if 'onetuned' is enabled, that means sample[1] will have 1.0, and
-      -- [2] and [3] will have 1.0 - volume_stepone
-      -- otherwise we'll just divide volume_slopemax in count steps
-      if not onetuned then volume_stepone = 0.0 end
-      local vol
-      if volume_stepone >= volume_slopemax then
-        vol = 1.0 - ( volume_stepone / 100 )
-      else
-        if volume_slopetype == 1 then
-          vol = 1.0 - ( volume_stepone / 100 ) - ( ( volume_slopemax - volume_stepone ) / 100 ) * ( math.floor((i+1)/2) / count )
-        elseif volume_slopetype == 2 then
-          vol = 1.0 - ( volume_stepone / 100 ) - ( ( volume_slopemax - volume_stepone ) / 100 ) * ( ( math.floor((i+1)/2) / count ) ^ 2 )
+    for i = 1, count do
+      if tunedir == TD_UD or tunedir == TD_UP then
+        -- make a copy
+        --local ni = ssi+i-1
+        local ni = #rs.selected_instrument.samples+1
+        ci:insert_sample_at(ni)
+        ci:sample(ni):copy_from(ss)
+        -- set tuning
+        if tuneres == TR_FT then
+          local tune
+          if tune_slopetype == 1 then
+            tune = maxdetune * ( i / count )
+          elseif tune_slopetype == 2 then
+            tune = maxdetune * ( ( i / count ) ^ 2 )
+          end
+          ci:sample(ni).fine_tune = tune
+        elseif tuneres == TR_ST then
+          ci:sample(ni).transpose = maxdetune * i
         end
+        -- set volume
+        if not onetuned then volume_stepone = 0.0 end
+        local vol
+        if volume_stepone >= volume_slopemax then
+          vol = 1.0 - ( volume_stepone / 100 )
+        else
+          if volume_slopetype == 1 then
+            vol = 1.0 - ( volume_stepone / 100 ) - ( ( volume_slopemax - volume_stepone ) / 100 ) * ( i / count )
+          elseif volume_slopetype == 2 then
+            vol = 1.0 - ( volume_stepone / 100 ) - ( ( volume_slopemax - volume_stepone ) / 100 ) * ( ( i / count ) ^ 2 )
+          end
+        end
+        ci:sample(ni).volume = vol
+        -- set panorama
+        local pan
+        if panning_slopetype == 1 then
+          pan = ( width / 100 ) * ( i / count )
+        elseif panning_slopetype == 2 then
+          pan = ( width / 100 ) * ( ( i / count ) ^ 2 )
+        end
+        if pingpong and i%2 == 1 then
+          ci:sample(ni).panning = 0.5 - pan
+        else
+          ci:sample(ni).panning = 0.5 + pan
+        end
+        -- set sample copy's name
+        ci:sample(ni).name = "Step "..i.." up"
       end
-      ci.samples[ni].volume = vol
-      --ci.samples[ni].volume = vol
-      -- set panorama
-      local pan
-      if panning_slopetype == 1 then
-        pan = xy * ( width / 100 ) * ( math.floor((i+1)/2) / count )
-      elseif panning_slopetype == 2 then
-        pan = xy * ( width / 100 ) * ( ( math.floor((i+1)/2) / count ) ^ 2 )
+      if tunedir == TD_UD or tunedir == TD_DN then
+        -- make a copy
+        --local ni = ssi+i
+        local ni = #rs.selected_instrument.samples+1
+        ci:insert_sample_at(ni)
+        ci:sample(ni):copy_from(ss)
+        -- set tuning
+        if tuneres == TR_FT then
+          local tune
+          if tune_slopetype == 1 then
+            tune = -maxdetune * ( i / count )
+          elseif tune_slopetype == 2 then
+            tune = -maxdetune * ( ( i / count ) ^ 2 )
+          end
+          ci:sample(ni).fine_tune = tune
+        elseif tuneres == TR_ST then
+          ci:sample(ni).transpose = maxdetune * i
+        end
+        -- set volume
+        if not onetuned then volume_stepone = 0.0 end
+        local vol
+        if volume_stepone >= volume_slopemax then
+          vol = 1.0 - ( volume_stepone / 100 )
+        else
+          if volume_slopetype == 1 then
+            vol = 1.0 - ( volume_stepone / 100 ) - ( ( volume_slopemax - volume_stepone ) / 100 ) * ( i / count )
+          elseif volume_slopetype == 2 then
+            vol = 1.0 - ( volume_stepone / 100 ) - ( ( volume_slopemax - volume_stepone ) / 100 ) * ( ( i / count ) ^ 2 )
+          end
+        end
+        ci:sample(ni).volume = vol
+        -- set panorama
+        local pan
+        if panning_slopetype == 1 then
+          pan = ( width / 100 ) * ( i / count )
+        elseif panning_slopetype == 2 then
+          pan = ( width / 100 ) * ( ( i / count ) ^ 2 )
+        end
+        if pingpong and i%2 == 1 then
+          ci:sample(ni).panning = 0.5 - pan
+        else
+          ci:sample(ni).panning = 0.5 + pan
+        end
+        -- set sample copy's name
+        ci:sample(ni).name = "Step "..i.." dn"
       end
-      if pingpong and (math.floor((i+1)/2))%2 == 1 then
-    ci.samples[ni].panning = 0.5 - pan
-    else
-    ci.samples[ni].panning = 0.5 + pan
-    end
-    local nm
-    if xy == 1 then nm = " up" else nm = " down" end
-    ci.samples[ni].name = "step "..math.floor((i+1)/2)..nm
     end
     -- do the mappings
-    ci:delete_sample_mapping_at(1, 1)    -- note-on layer, index 1
-    for i = 1, #ci.samples do
+    --ci:delete_sample_mapping_at(1, 1)    -- note-on layer, index 1
+    --for i = 1, #ci.samples do
+    for i = ssi, ssi+count do
       ci:insert_sample_mapping(1, i, rk)
     end
     if not onetuned then
-      ci.samples[1].volume = 0
-      ci.samples[1].name = "BASE (off)"
+      ci:sample(1).volume = 0
+      --ci:sample(1).name = "BASE (off)"
     else
-      ci.samples[1].name = "BASE"
+      --ci:sample(1).name = "BASE"
     end
     if osctype == 2 then
       ci.name = "Awesome Sines"
@@ -642,10 +698,9 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
   end
 end
 
---------------------------------------------------------------------------------
--- Menu
---------------------------------------------------------------------------------
-
+-------------------------------------------------------------
+-- Menu                                                    --
+-------------------------------------------------------------
 renoise.tool():add_menu_entry {
   name = "Main Menu:Tools:CasTools:AwesomeSawce...",
   invoke = function()
@@ -653,10 +708,9 @@ renoise.tool():add_menu_entry {
   end
 }
 
---------------------------------------------------------------------------------
--- Key Binding
---------------------------------------------------------------------------------
-
+-------------------------------------------------------------
+-- Key Binding                                             --
+-------------------------------------------------------------
 renoise.tool():add_keybinding {
   name = "Global:Tools:AwesomeSawce...",
   invoke = show_dialog
