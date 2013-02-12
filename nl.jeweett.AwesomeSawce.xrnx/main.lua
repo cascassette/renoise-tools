@@ -437,7 +437,7 @@ function show_dialog()
   local vb_detune = vb:slider { width = 100, min = 1, max = 127, value = 55, notifier = function(val) vb.views['detuneshow'].value = val end }
   local vb_detuneshow = vb:valuebox { width = 60, min = 1, max = 127, value = 55, id = "detuneshow" }
   local vb_osctype = vb:switch { width = 200, items = { "Saw", "Sine", "User" }, value = 1 }
-  local vb_tunedir = vb:switch { width = 200, items = { "Up&Down", "Up", "Down" }, value = TD_UD, active = false }
+  local vb_tunedir = vb:switch { width = 200, items = { "Up&Down", "Up", "Down" }, value = TD_UD }
   local vb_tuneres = vb:switch { width = 200, items = { "Finetune", "Semitone" }, value = TR_FT }  -- TODO: reset vb_detune.max
   local vb_tune_slopetype = vb:switch { width = 200, items = { "Linear", "Exponential" }, value = 2 }
   local vb_volume_slopetype = vb:switch { width = 200, items = { "Linear", "Exponential" }, value = 2 }
