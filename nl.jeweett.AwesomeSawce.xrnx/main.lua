@@ -647,7 +647,7 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
           end
           ci:sample(ni).fine_tune = tune
         elseif tuneres == TR_ST then
-          ci:sample(ni).transpose = maxdetune * i
+          ci:sample(ni).transpose = -maxdetune * i
         end
         -- set volume
         if not onetuned then volume_stepone = 0.0 end
