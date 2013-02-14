@@ -46,6 +46,7 @@ local otvars =  -- variables
                 "local pi = math.pi " ..
                 "local lowrnd_buf = 0 local lowrnd_step = 0 " ..
                 "local lownoi_buf = 0 local lownoi_step = 0 " ..
+                "local quantz_buf = 0 local quantz_step = 0 " ..
                 "local sf = " .. SEMITONE_FACTOR
 local otfuncs = -- basics
                 "local sin = math.sin " ..
@@ -115,6 +116,8 @@ local otfuncs = -- basics
                 "local semifold = function(x, y, z) return fold(x, y)*z + (1-z)*x end " ..
                 "local crush = function(x, y) return flr(x*y)/y end " ..
                 "local semicrush = function(x, y, z) return (flr(x*y)/y)*z + (1-z)*x end " ..
+                "local quant = function(x, dx) if quantz_step == 0 then quantz_buf = x end quantz_step = mod( quantz_step + 1, dx ) return quantz_buf end " ..
+                "local semiquant = function(x, dx, z) return quant(x,dx)*z + (1-z)*x end " ..
                 "local noise = function(x, y, p) return x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
                 "local lowrnd = function ( t, skip ) if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) return lowrnd_buf end " ..
                 "local lownoise = function ( t, part ) if lownoi_step ~= flr(t*part) then lownoi_buf = rnd() end lownoi_step = flr(t*part) return lownoi_buf end " ..
