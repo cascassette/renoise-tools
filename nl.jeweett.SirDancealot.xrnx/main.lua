@@ -90,6 +90,57 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
 </FilterDevicePreset>
 ]]
   end
+  if device_path == "Audio/Effects/Native/#Multiband Send" then
+    device.active_preset_data = [[<?xml version="1.0" encoding="UTF-8"?>
+<FilterDeviceClipboard doc_version="0">
+  <DeviceSlot type="CrossoverDevice">
+    <IsActive>true</IsActive>
+    <IsSelected>true</IsSelected>
+    <SelectedPresetName>Init</SelectedPresetName>
+    <SelectedPresetIsModified>true</SelectedPresetIsModified>
+    <IsMaximized>true</IsMaximized>
+    <Out1SendAmount>
+      <Value>0.0</Value>
+      <Visualization>Mixer and Device</Visualization>
+    </Out1SendAmount>
+    <Out1DestSendTrack>
+      <Value>0.0</Value>
+      <Visualization>Device only</Visualization>
+    </Out1DestSendTrack>
+    <Out1MuteSource>false</Out1MuteSource>
+    <Out2SendAmount>
+      <Value>0.0</Value>
+      <Visualization>Mixer and Device</Visualization>
+    </Out2SendAmount>
+    <Out2DestSendTrack>
+      <Value>0.0</Value>
+      <Visualization>Device only</Visualization>
+    </Out2DestSendTrack>
+    <Out2MuteSource>false</Out2MuteSource>
+    <Out3SendAmount>
+      <Value>0.0</Value>
+      <Visualization>Mixer and Device</Visualization>
+    </Out3SendAmount>
+    <Out3DestSendTrack>
+      <Value>0.0</Value>
+      <Visualization>Device only</Visualization>
+    </Out3DestSendTrack>
+    <Out3MuteSource>false</Out3MuteSource>
+    <GraphVisible>true</GraphVisible>
+    <LowFrequency>
+      <Value>0.330993205</Value>
+      <Visualization>Device only</Visualization>
+    </LowFrequency>
+    <HighFrequency>
+      <Value>0.783621252</Value>
+      <Visualization>Device only</Visualization>
+    </HighFrequency>
+    <SmoothParameterChanges>true</SmoothParameterChanges>
+    <CrossoverType>LR2</CrossoverType>
+  </DeviceSlot>
+</FilterDeviceClipboard>
+    ]]
+  end
 end
 
 local function dev_find(query, devices, device_indexes)

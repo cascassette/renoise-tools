@@ -15,7 +15,7 @@ local function track_same()
     pos = rs.selected_track_index+1
     nt = rs:insert_track_at(pos)
     nt.color = ot.color
-    nt.color_blend = ot.color_blend
+    --nt.color_blend = ot.color_blend
     --nt.volume_column_visible = ot.volume_column_visible
     --nt.panning_column_visible = ot.panning_column_visible
     nt.delay_column_visible = true --ot.delay_column_visible
@@ -35,6 +35,7 @@ local function track_same()
   elseif ot.type == 3 --[[renoise.Track.TRACK_TYPE_SEND]] or ot.type == 2 --[[renoise.Track.TRACK_TYPE_MASTER]] then
     pos = rs.selected_track_index+1
     nt = rs:insert_track_at(pos)
+    nt.color = ot.color
     nt.visible_effect_columns = ot.visible_effect_columns
     -- insert send device to submaster
     local send = nt:insert_device_at("Audio/Effects/Native/#Send", 2)
