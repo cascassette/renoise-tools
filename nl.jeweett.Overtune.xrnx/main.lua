@@ -149,8 +149,8 @@ local otfuncs = -- basics
                 "local atand = function(t, p) return (math.atan(1-t*2)/pi*2+.5)^p end " ..
                 "local atanu = function(t, p) return (math.atan(1-(1-t)*2)/pi*2+.5)^p end " ..
                 "local atand = function(t, p) return (math.atan(1-t*2)/pi*2+.5)^p end " ..
-                "local recu = function(t, p) p = 1/p return p/((1-t)+p)-(1/((1/p)+1)) end " ..
-                "local recd = function(t, p) p = 1/p return p/(t+p)-(1/((1/p)+1)) end " ..
+                "local recu = function(t, p) local q = 1/p return (p+1)*(q/((1-t)+q)-(1/(p+1)))/p end " ..
+                "local recd = function(t, p) local q = 1/p return (p+1)*(q/(t+q)-(1/(p+1)))/p end " ..
                 -- envelope
                 "local env = function(x, t) local y = 0 local pc local pn = nil for i = 1, #t-1 do if pn ~= nil then pc = pn else pc = t[i] end pn = t[i+1] if x < pn[1] and x >= pc[1] then if pn[3] == nil or pn[4] == nil then y = ((x-pc[1])/(pn[1]-pc[1]))*(pn[2]-pc[2])+pc[2] else y = pn[3](((x-pc[1])/(pn[1]-pc[1])),pn[4])*(pn[2]-pc[2])+pc[2] end break end end return y end " ..
                 -- signal duplication

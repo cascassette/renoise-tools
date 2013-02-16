@@ -24,6 +24,20 @@ local function minusins()
   end
 end
 
+local function mkins()
+  local rs = renoise.song()
+  rs:insert_instrument_at(rs.selected_instrument_index+1)
+  rs.selected_instrument_index = rs.selected_instrument_index+1
+  rs.selected_instrument.active_tab = renoise.Instrument.TAB_SAMPLES
+end
+
+local function rmins()
+  local rs = renoise.song()
+  if #rs.instruments > 1 then
+    rs:delete_instrument_at(rs.selected_instrument_index)
+  end
+end
+
 local function plussmp()
   local rs = renoise.song()
   local ssi = rs.selected_sample_index
@@ -49,6 +63,20 @@ local function minussmp()
   end
 end
 
+local function mksmp()
+  local rs = renoise.song()
+  rs.selected_instrument:insert_sample_at(rs.selected_sample_index+1)
+  rs.selected_sample_index = rs.selected_sample_index+1
+  rs.selected_instrument.active_tab = renoise.Instrument.TAB_SAMPLES
+end
+
+local function rmsmp()
+  local rs = renoise.song()
+  if #rs.selected_instrument.samples > 1 then
+    rs.selected_instrument:delete_sample_at(rs.selected_sample_index)
+  end
+end
+
 
 -- Keys --
 renoise.tool():add_keybinding {
@@ -66,6 +94,22 @@ renoise.tool():add_keybinding {
 renoise.tool():add_keybinding {
   name = "Global:Instruments:Select or remove Prev. Sample",
   invoke = minussmp
+}
+renoise.tool():add_keybinding {
+  name = "Global:Instruments:Add Instrument",
+  invoke = mkins
+}
+renoise.tool():add_keybinding {
+  name = "Global:Instruments:Remove Instrument",
+  invoke = rmins
+}
+renoise.tool():add_keybinding {
+  name = "Global:Instruments:Add Sample",
+  invoke = mksmp
+}
+renoise.tool():add_keybinding {
+  name = "Global:Instruments:Remove Sample",
+  invoke = rmsmp
 }
 
 
