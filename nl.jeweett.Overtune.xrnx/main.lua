@@ -110,8 +110,9 @@ local otfuncs = -- basics
                 -- distort (clip, fold, crush, noise) functions
                 "local shape = function(x, p) if x==0 then return x else return (x/abs(x))*abs(x)^p end end " ..
                 "local semishape = function(x, p, z) return shape(x,p)*z + (1-z)*x end " ..
-                "local clip = function(x, y) return max(min(x, y), -y) end " ..
+                "local clip = function(x, y) return (1/y)*max(min(x, y), -y) end " ..
                 "local semiclip = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
+                "local expand = function(x, y, z, p) local a=abs(x) local s=a/x if a<(y-z) then return x end local b = (a-(y-z))/z local c = z*b^p return x+s*c end " ..
                 "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
                 "local semifold = function(x, y, z) return fold(x, y)*z + (1-z)*x end " ..
                 "local crush = function(x, y) return flr(x*y)/y end " ..
@@ -121,6 +122,11 @@ local otfuncs = -- basics
                 "local noise = function(x, y, p) return x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
                 "local lowrnd = function ( t, skip ) if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) return lowrnd_buf end " ..
                 "local lownoise = function ( t, part ) if lownoi_step ~= flr(t*part) then lownoi_buf = rnd() end lownoi_step = flr(t*part) return lownoi_buf end " ..
+                -- muffle
+                "local muffle = function(x, y, z, p) local a=abs(x) local s=a/x if a<(y-z) then return x end local b = (a-(y-z))/z local c = z*(b/p)^p return x-(s*c)/p end " ..
+                "local ubermuffle = function(x, y, z, p) local a=abs(x) local s=a/x if a<(y-z) then return x end local b = (a-(y-z))/z local c = z*(b/p)^p return x-(s*c) end " ..
+                --"local brutalize = function(x, y, z, p) local m=min(abs(x),y-z) return (x/abs(x))*(m+z/((1/(abs(x)-m))^p)) end " ..
+                --"local muffold = function(x, y, z, p) local a=abs(x) local s=a/x if a<(y-z) then return x end local b = (a-(y-z))/z local c = z*b^p return x-s*c end " ..
                 -- supermin/supermax type 'clip' functions
                 "local supermax = function(x, y) if x >= 0 then return max(x,y) else return min(x,y) end end " ..
                 "local supermin = function(x, y) if x >= 0 then return min(x,y) else return max(x,y) end end " ..
@@ -141,13 +147,15 @@ local otfuncs = -- basics
                 "local rrd = function(t, p) return 1-sqrtsqrt(t, p) end " ..
                 "local raru = function(t, p) return sqrtsqrt(t, p) end " ..                  -- root anti-ramp
                 "local rard = function(t, p) return sqrtsqrt(1-t, p) end " ..
-                "local cosu = function(t, p) return (cos((1-t)*pi)/2+.5)^p end " ..          -- shaped half-cosine ramp
-                "local cosd = function(t, p) return (cos(t*pi)/2+.5)^p end " ..
-                "local acosu = function(t, p) return (acos((1-t)*2-1)/pi)^p end " ..
-                "local acosd = function(t, p) return (acos(t*2-1)/pi)^p end " ..
-                "local atanu = function(t, p) return (math.atan(1-(1-t)*2)/2+.5)^p end " ..  -- shaped atan ramp
-                "local atand = function(t, p) return (math.atan(1-t*2)/pi*2+.5)^p end " ..
-                "local atanu = function(t, p) return (math.atan(1-(1-t)*2)/pi*2+.5)^p end " ..
+                --"local cosu = function(t, p) return (cos((1-t)*pi)/2+.5)^p end " ..          -- shaped half-cosine ramp
+                --"local cosd = function(t, p) return (cos(t*pi)/2+.5)^p end " ..
+                "local cosu = function(t, p) return shape((cos((1-t)*pi)/2+.5)*2-1,1/p)/2+.5 end " ..          -- shaped half-cosine ramp
+                "local cosd = function(t, p) return shape((cos(t*pi)/2+.5)*2-1,1/p)/2+.5 end " ..
+                --"local acosu = function(t, p) return (acos((1-t)*2-1)/pi)^p end " ..
+                --"local acosd = function(t, p) return (acos(t*2-1)/pi)^p end " ..
+                "local acosu = function(t, p) return shape(((acos((1-t)*2-1)/pi)*2-1),p)/2+.5 end " ..
+                "local acosd = function(t, p) return shape(((acos(t*2-1)/pi)*2-1),p)/2+.5 end " ..
+                "local atanu = function(t, p) return (math.atan(1-(1-t)*2)/pi*2+.5)^p end " ..  -- shaped atan ramp
                 "local atand = function(t, p) return (math.atan(1-t*2)/pi*2+.5)^p end " ..
                 "local recu = function(t, p) local q = 1/p return (p+1)*(q/((1-t)+q)-(1/(p+1)))/p end " ..
                 "local recd = function(t, p) local q = 1/p return (p+1)*(q/(t+q)-(1/(p+1)))/p end " ..
@@ -724,6 +732,7 @@ function render_overtune( load, settings )
   end
   if settings.power then
     local pf = 1 / md
+    --print(md)
     for channel = 1, channel_count do
       for i = 1, sl do
         buffer[channel][i] = buffer[channel][i]*pf
