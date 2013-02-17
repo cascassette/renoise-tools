@@ -18,7 +18,7 @@ end
 
 -- Menu --
 renoise.tool():add_menu_entry {
-  name = "Main Menu:Tools:CasTools:Clean Drums",
+  name = "Main Menu:Tools:CasTools:Clean Drums (remove note offs)",
   invoke = cleandrums
 }
 
