@@ -4,6 +4,7 @@
 
 --[[ TODO
   * search (q) functions for Track, Param fields, analogous to MetaMicro
+  * at least 'preset' options for the Filter Type (4Pole,Moog,Bw4n,Bw8n)
   ]]
 
 -- Vars
