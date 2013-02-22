@@ -623,10 +623,22 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
         elseif panning_slopetype == 2 then
           pan = ( width / 100 ) * ( ( i / count ) ^ 2 )
         end
-        if pingpong and i%2 == 1 then
+        --[[if pingpong and i%2 == 1 then
           ci:sample(ni).panning = 0.5 - pan
         else
           ci:sample(ni).panning = 0.5 + pan
+        end]]
+        --[[if pingpong then
+          ci:sample(ni).panning = 0.5 - pan
+        else
+          ci:sample(ni).panning = 0.5 + pan
+        end]]
+        if not pingpong then
+          ci:sample(ni).panning = 0.5 + pan
+        elseif i%2 == 0 then
+          ci:sample(ni).panning = 0.5 + pan
+        else
+          ci:sample(ni).panning = 0.5 - pan
         end
         -- set sample copy's name
         ci:sample(ni).name = "Step "..i.." up"
@@ -669,7 +681,19 @@ function render_supersawce(count, maxdetune, tune_slopetype, volume_slopetype, p
         elseif panning_slopetype == 2 then
           pan = ( width / 100 ) * ( ( i / count ) ^ 2 )
         end
-        if pingpong and i%2 == 1 then
+        --[[if pingpong and i%2 == 1 then
+          ci:sample(ni).panning = 0.5 + pan
+        else
+          ci:sample(ni).panning = 0.5 + pan
+        end]]
+        --[[if pingpong then
+          ci:sample(ni).panning = 0.5 - pan
+        else
+          ci:sample(ni).panning = 0.5 + pan
+        end]]
+        if not pingpong then
+          ci:sample(ni).panning = 0.5 + pan
+        elseif i%2 == 0 then
           ci:sample(ni).panning = 0.5 - pan
         else
           ci:sample(ni).panning = 0.5 + pan
