@@ -91,7 +91,7 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
 </FilterDevicePreset>
 ]]
   end
-  if device_path == "Audio/Effects/Native/#Multiband Send" then
+  if device_path == "Audio/Effects/Native/#Multiband Send" and false then
     device.active_preset_data = [[<?xml version="1.0" encoding="UTF-8"?>
 <FilterDeviceClipboard doc_version="0">
   <DeviceSlot type="CrossoverDevice">
