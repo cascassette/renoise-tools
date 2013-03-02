@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Extend Selection v0.2 by Cas Marrav (for Renoise 2.8)   --
+-- Extend Selection v0.3 by Cas Marrav (for Renoise 2.8)   --
 -------------------------------------------------------------
 
 function set_selection_bounds_h(l, r, lc, rc, solo)
@@ -21,7 +21,7 @@ function set_selection_bounds_h(l, r, lc, rc, solo)
       if rc then nrc = rc else nrc = rs:track(nr).visible_note_columns+rs:track(nr).visible_effect_columns end
     end
     
-    if solo then
+    if solo==1 then
       local pat = rs:pattern(rs.sequencer:pattern(rs.transport.edit_pos.sequence))
       for i = nl, nr do
         if rs:track(i).type == 2 then break end
@@ -43,6 +43,34 @@ function set_selection_bounds_h(l, r, lc, rc, solo)
                 nc.panning_string = ""
                 nc.delay_string = ""
               end
+            end
+          end
+        end
+      end
+    elseif solo==2 then
+      local pat = rs:pattern(rs.sequencer:pattern(rs.transport.edit_pos.sequence))
+      for i = nl, nr do
+        if rs:track(i).type == 2 then break end
+        if i ~= rs.selected_track_index then
+          local ct = rs:track(i)
+          if ct.type == 1 then
+            for j = 1, ct.visible_note_columns do
+              local nc = pat:track(i):line(oldsel.start_line):note_column(j)
+              --nc.note_value = 120
+              nc.note_string = ""
+              nc.instrument_string = ""
+              nc.volume_string = "00"
+              nc.panning_string = ""
+              nc.delay_string = ""
+              for k = oldsel.start_line + 1, oldsel.end_line do
+                nc = pat:track(i):line(k):note_column(j)
+                nc.note_string = ""
+                nc.instrument_string = ""
+                nc.volume_string = "00"
+                nc.panning_string = ""
+                nc.delay_string = ""
+              end
+              nc.volume_string = "80"
             end
           end
         end
@@ -86,28 +114,41 @@ end
 
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Tools:Extend selection to the right",
-  invoke = function() set_selection_bounds_h(nil, #renoise.song().tracks, nil, nil, false) end
+  invoke = function() set_selection_bounds_h(nil, #renoise.song().tracks, nil, nil, 0) end
 }
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Tools:Extend selection to the left",
-  invoke = function() set_selection_bounds_h(1, nil, nil, nil, false) end
+  invoke = function() set_selection_bounds_h(1, nil, nil, nil, 0) end
 }
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Tools:Extend selection left to right",
-  invoke = function() set_selection_bounds_h(1, #renoise.song().tracks, nil, nil, false) end
+  invoke = function() set_selection_bounds_h(1, #renoise.song().tracks, nil, nil, 0) end
 }
 
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Tools:Note solo to the right",
-  invoke = function() set_selection_bounds_h(nil, #renoise.song().tracks, nil, nil, true) end
+  invoke = function() set_selection_bounds_h(nil, #renoise.song().tracks, nil, nil, 1) end
 }
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Tools:Note solo to the left",
-  invoke = function() set_selection_bounds_h(1, nil, nil, nil, true) end
+  invoke = function() set_selection_bounds_h(1, nil, nil, nil, 1) end
 }
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Tools:Note solo left to right",
-  invoke = function() set_selection_bounds_h(1,  #renoise.song().tracks, nil, nil, true) end
+  invoke = function() set_selection_bounds_h(1,  #renoise.song().tracks, nil, nil, 1) end
+}
+
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Tools:NoteVol solo to the right",
+  invoke = function() set_selection_bounds_h(nil, #renoise.song().tracks, nil, nil, 2) end
+}
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Tools:NoteVol solo to the left",
+  invoke = function() set_selection_bounds_h(1, nil, nil, nil, 2) end
+}
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Tools:NoteVol solo left to right",
+  invoke = function() set_selection_bounds_h(1,  #renoise.song().tracks, nil, nil, 2) end
 }
 
 renoise.tool():add_keybinding {
@@ -117,8 +158,8 @@ renoise.tool():add_keybinding {
     local os = renoise.song().selection_in_pattern
     local olt = os.start_track
     local ort = os.end_track
-    if ci <= olt then set_selection_bounds_h(ci, nil, nil, nil, false)
-    elseif ci >= ort then set_selection_bounds_h(nil, ci, nil, nil, false) end
+    if ci <= olt then set_selection_bounds_h(ci, nil, nil, nil, 0)
+    elseif ci >= ort then set_selection_bounds_h(nil, ci, nil, nil, 0) end
   end
 }
 
@@ -132,8 +173,8 @@ renoise.tool():add_keybinding {
     local olc = os.start_column
     local ort = os.end_track
     local orc = os.end_column
-    if cti < olt or cci < olc then set_selection_bounds_h(cti, nil, cci, nil, false)
-    elseif cti > ort or cci > orc then set_selection_bounds_h(nil, cti, nil, cci, false) end
+    if cti < olt or cci < olc then set_selection_bounds_h(cti, nil, cci, nil, 0)
+    elseif cti > ort or cci > orc then set_selection_bounds_h(nil, cti, nil, cci, 0) end
   end
 }
 
