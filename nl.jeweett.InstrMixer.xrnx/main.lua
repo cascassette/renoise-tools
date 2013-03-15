@@ -267,7 +267,7 @@ local function update_volumes_gui()
 end
 
 local function key_dialog(d,k)
-  rprint(k)
+  --rprint(k)
   if k.name == "right" then
     selected = math.min (selected + 1, #sliders)
     update_sel()

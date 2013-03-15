@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Overtune v2.5.96 by Cas Marrav (for Renoise 2.8)        --
+-- Overtune v2.5.97 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
@@ -16,8 +16,11 @@
 --    * add real ms decay type variables                   --
 --   Overtune 3.0 ideas                                    --
 --    * reusable code / envelopes / wave cycles            --
+--    * better interface / logic;                          --
+--        (INF) list of nameable, callable subparts        --
+--        one 'final' formula field to combine them        --
 --                                                         --
-                                                           ]]
+--                                                         ]]
 
 -- cycle length calculation
 local SAMPLE_RATE = 48000
@@ -63,6 +66,11 @@ local otfuncs = -- basics
                 "local flr = math.floor " ..
                 "local abs = math.abs " ..
                 "local equ = function(x) return x end " ..
+                -- just for shorter notation in OT formulas
+                "local sin1 = function(t) return sin(t*2*pi) end " ..
+                "local squ1 = function(t) return squ(t*2*pi) end " ..
+                "local tri1 = function(t) return tri(t*2*pi) end " ..
+                "local saw1 = function(t) return saw(t*2*pi) end " ..
                 -- range [0..1] to [-1..1] and vice versa (ac/dc, [0..1] is good for modulating)
                 "local un = function(x) return (x+1)/2 end " ..
                 "local bi = function(x) return x*2-1 end " ..
@@ -693,11 +701,14 @@ function render_overtune( load, settings )
     txp = cs.transpose
     fit = cs.fine_tune
     lpm = cs.loop_mode
-    o_times = (cs.sample_buffer.number_of_frames/tl) == settings.times
-    if o_times then
-      lps = cs.loop_start
-      lpe = cs.loop_end
-      if lpe < 1 then o_times = false end
+    --oprint(cs.sample_buffer)
+    if cs.sample_buffer.has_sample_data then
+      o_times = (cs.sample_buffer.number_of_frames/tl) == settings.times
+      if o_times then
+        lps = cs.loop_start
+        lpe = cs.loop_end
+        if lpe < 1 then o_times = false end
+      end
     end
   end
   --try_and_save_1(ci, {step1 = step1, stepn = stepn, steps = steps, times = times, power = power})
