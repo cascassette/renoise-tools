@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Overtune v2.5.97 by Cas Marrav (for Renoise 2.8)        --
+-- Overtune v2.5.98 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
@@ -62,7 +62,7 @@ local otfuncs = -- basics
                 "local max = math.max " ..
                 "local min = math.min " ..
                 "local mod = math.mod " ..
-                "local rnd = math.random " ..
+                "local rnd = function() return 2*math.random()-1 end " ..
                 "local flr = math.floor " ..
                 "local abs = math.abs " ..
                 "local equ = function(x) return x end " ..
@@ -140,6 +140,7 @@ local otfuncs = -- basics
                 "local supermin = function(x, y) if x >= 0 then return min(x,y) else return max(x,y) end end " ..
                 -- morph between two functions
                 "local morph = function(x, y, z) return ((1-z)*x+z*y) end " ..
+                "local mix = function(f1, f2, x, a) return ((1-a)*f1(x)+(a)*f2(x)) end " ..
                 --"local mix = function(x, ztab, functab) local factor = 0 if #ztab ~= #functab then return 0 else for _,f in ztab do factor = factor + f end local res = 0 for i = 1, #ztab do print(''..i..'. type: '..type(functab[i])) if type(functab[i]) == 'function' then res = res + ztab[i] * functab[i](x) elseif (#functab[i]) == 1 then res = res + ztab[i] * functab[i][1](x) else res = res + ztab[i] * functab[i][1](x, unpack(functab[i][2])) end end return res/factor end end  " ..
                 -- unary [0..1] pulse from/to
                 "local upft = function(x, f, t) if x < f or x >= t then return 0 else return 1 end end " ..
@@ -167,6 +168,9 @@ local otfuncs = -- basics
                 "local atand = function(t, p) return (math.atan(1-t*2)/pi*2+.5)^p end " ..
                 "local recu = function(t, p) local q = 1/p return (p+1)*(q/((1-t)+q)-(1/(p+1)))/p end " ..
                 "local recd = function(t, p) local q = 1/p return (p+1)*(q/(t+q)-(1/(p+1)))/p end " ..
+                -- start later / done quicker
+                "local sl = function(t,p) return max(t/p-1/p+1,0) end " ..                  -- max(T*4/3-1/3,0)
+                "local dq = function(t,p) return min(t/p,1) end " ..
                 -- envelope
                 "local env = function(x, t) local y = 0 local pc local pn = nil for i = 1, #t-1 do if pn ~= nil then pc = pn else pc = t[i] end pn = t[i+1] if x < pn[1] and x >= pc[1] then if pn[3] == nil or pn[4] == nil then y = ((x-pc[1])/(pn[1]-pc[1]))*(pn[2]-pc[2])+pc[2] else y = pn[3](((x-pc[1])/(pn[1]-pc[1])),pn[4])*(pn[2]-pc[2])+pc[2] end break end end return y end " ..
                 -- signal duplication

@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Dancealot v2.4 by Cas Marrav (for Renoise 2.8)          --
+-- Dancealot v6 by Cas Marrav (for Renoise 2.8)            --
 -------------------------------------------------------------
 
 --[[ TODO
@@ -265,6 +265,9 @@ end
 local function init_avdev(which)
   tracktype = rs.selected_track.type
   avdev = rs.selected_track.available_devices
+  if renoise.app().window.lower_frame_is_visible then
+    renoise.app().window.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_TRACK_DSPS
+  end
   local NATIVE = (which == NATIVE_SWITCH)
   if NATIVE then
     for i = 1, 38 do
