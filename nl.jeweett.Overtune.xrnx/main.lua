@@ -3,17 +3,18 @@
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
+--    * re-render every overtune @ SR,[Note]               --
+--    * stereo phase shift in deg                          --
+--   Overtune 2.7 ideas                                    --
+--    * awesomesawce/detune stuff (+in settings)           --
 --    * improve edit function                              --
 --      * run edit function over selection only            --
 --      * have x var run over whole sample/selection,      --
 --        or cycle in tones/frequencies/notes              --
---    * sample rate in instrument, prefs                   --
---    * re-render every overtune @ SR,[Note]               --
---    * stereo phase shift in deg                          --
---   Overtune 2.7 ideas                                    --
 --    * use other samples/instr as indexable cycles        --
 --    * render multiple samples for different notes        --
---    * add real ms decay type variables                   --
+--      * add real ms decay type variables                 --
+--    * sample rate in instrument, prefs                   --
 --   Overtune 3.0 ideas                                    --
 --    * reusable code / envelopes / wave cycles            --
 --    * better interface / logic;                          --
