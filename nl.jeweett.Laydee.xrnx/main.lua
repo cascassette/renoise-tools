@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Laydee v0.2 by Cas Marrav (for Renoise 2.8)             --
+-- Laydee v1 by Cas Marrav (for Renoise 2.8)               --
 -------------------------------------------------------------
 
 local rs
@@ -21,9 +21,8 @@ local function dedelaytrack()
   local lpb = rs.transport.lpb
   local dedelay_base = MSPM / bpm / lpb / DPL
   local dedelay = dedelay_base * vb.views.laydee.value
-  if dedelay >= -100 and dedelay <= 100 then
-    rs:track(track).output_delay = dedelay
-  end
+  dedelay = math.min(math.max(dedelay, -100), 100)
+  rs:track(track).output_delay = dedelay
 end
 
 
@@ -63,6 +62,7 @@ end
 
 local function laydee_dialog()
   rs = renoise.song()
+  local LPB = rs.transport.lpb
   pattern = rs.sequencer:pattern(rs.transport.edit_pos.sequence)
   line = rs.transport.edit_pos.line
   step = rs.transport.edit_step
@@ -70,14 +70,14 @@ local function laydee_dialog()
   column = rs.selected_note_column_index
   delay = 0
   if rs:track(track).output_delay ~= 0 then
-    local delay_base = MSPM / rs.transport.bpm / rs.transport.lpb / DPL
+    local delay_base = MSPM / rs.transport.bpm / LPB / DPL
     delay = math.floor(rs:track(track).output_delay / delay_base)
   elseif column > 0 then
     delay = -(rs:pattern(pattern):track(track):line(line):note_column(column).delay_value)
   end
   
   vb = renoise.ViewBuilder()
-  local vb_pushback = vb:valuebox { min = -DPL, max = DPL, value = delay, id = "laydee" }
+  local vb_pushback = vb:valuebox { min = -DPL*LPB, max = DPL*LPB, value = delay, id = "laydee" }
   local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
   local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
   local dialog_content = vb:column {
