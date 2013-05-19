@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Overtune v2.5.98 by Cas Marrav (for Renoise 2.8)        --
+-- Overtune v2.5.982 by Cas Marrav (for Renoise 2.8)       --
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
@@ -64,6 +64,7 @@ local otfuncs = -- basics
                 "local min = math.min " ..
                 "local mod = math.mod " ..
                 "local rnd = function() return 2*math.random()-1 end " ..
+                "local urnd = math.random " ..
                 "local flr = math.floor " ..
                 "local abs = math.abs " ..
                 "local equ = function(x) return x end " ..
@@ -121,6 +122,8 @@ local otfuncs = -- basics
                 "local semishape = function(x, p, z) return shape(x,p)*z + (1-z)*x end " ..
                 "local clip = function(x, y) return (1/y)*max(min(x, y), -y) end " ..
                 "local semiclip = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
+                "local clipp = function(x, y) return max(min(x, y), -y) end " ..
+                "local semiclipp = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
                 "local expand = function(x, y, z, p) local a=abs(x) local s=a/x if a<(y-z) then return x end local b = (a-(y-z))/z local c = z*b^p return x+s*c end " ..
                 "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
                 "local semifold = function(x, y, z) return fold(x, y)*z + (1-z)*x end " ..
