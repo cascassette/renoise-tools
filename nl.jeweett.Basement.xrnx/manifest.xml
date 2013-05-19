@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Basement</Name>
   <Id>nl.jeweett.Basement</Id>
-  <Version>5</Version>
+  <Version>6</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas</Author>
   <AutoUpgraded>false</AutoUpgraded>

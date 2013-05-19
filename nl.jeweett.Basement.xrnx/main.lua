@@ -2073,11 +2073,11 @@ local function pad(number, mm)
     end
   elseif number == 5 then
     if val > 0 then
-      if rs.transport.playing then
+      --if rs.transport.playing then
         rs.transport:start(renoise.Transport.PLAYMODE_RESTART_PATTERN)
-      else
-        rs.transport:start(renoise.Transport.PLAYMODE_CONTINUE_PATTERN)
-      end
+      --else
+        --rs.transport:start(renoise.Transport.PLAYMODE_CONTINUE_PATTERN)
+      --end
     else
       pad_update_playing()
     end
@@ -2099,6 +2099,10 @@ local function pad(number, mm)
     if val > 0 then
       if rs.transport.playing then
         rs.transport:stop()
+        --[[local npos = rs.transport.playback_pos
+        if npos.line > 1 then
+          rs.transport.playback_pos = renoise.SongPos(npos.sequence, 1)
+        end]]
       else
         rs.transport:panic()
         rs.transport.loop_pattern = false
@@ -2128,9 +2132,9 @@ local function pad(number, mm)
       show_insert_dialog()
     end
   elseif number == 10 then
-    --if val > 0 then
+    if val > 0 then
       show_effect_dialog()
-    --end
+    end
   elseif number == 11 then
     show_instrument_dialog()
     --[[if val > 0 then
@@ -2144,9 +2148,9 @@ local function pad(number, mm)
       end
     end]]
   elseif number == 12 then
-    --if val > 0 then
+    if val > 0 then
       show_hydras_dialog()
-    --end
+    end
   elseif number == 13 then
     if val > 0 then
       if renoise.app().window.active_middle_frame == renoise.ApplicationWindow.MIDDLE_FRAME_PATTERN_EDITOR then
@@ -2257,9 +2261,9 @@ local function pad(number, mm)
       pad_update_midframe()
     end
   elseif number == 16 then
-    --if val > 0 then
+    if val > 0 then
       show_default_dialog()
-    --end
+    end
   end
 end
 
