@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- Overtune v2.5.982 by Cas Marrav (for Renoise 2.8)       --
+-- Overtune v2.5.983 by Cas Marrav (for Renoise 2.8)       --
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
@@ -48,6 +48,7 @@ local delete_obsolete_samples_on_render = false
 -- ot builtins
 local otvars =  -- variables
                 "local pi = math.pi " ..
+                "local t_buf = -1 " ..
                 "local lowrnd_buf = 0 local lowrnd_step = 0 " ..
                 "local lownoi_buf = 0 local lownoi_step = 0 " ..
                 "local quantz_buf = 0 local quantz_step = 0 " ..
@@ -132,7 +133,8 @@ local otfuncs = -- basics
                 "local quant = function(x, dx) if quantz_step == 0 then quantz_buf = x end quantz_step = mod( quantz_step + 1, dx ) return quantz_buf end " ..
                 "local semiquant = function(x, dx, z) return quant(x,dx)*z + (1-z)*x end " ..
                 "local noise = function(x, y, p) return x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
-                "local lowrnd = function ( t, skip ) if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) return lowrnd_buf end " ..
+                "local lowrnd = function ( t, skip ) if t ~= t_buf then t_buf = t if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) end return lowrnd_buf end " ..
+                "local lowrndstw = function ( t, skip, width ) if t ~= t_buf then t_buf = t if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) else lowrnd_buf = lowrnd_buf + width*rnd() end return lowrnd_buf end " ..
                 "local lownoise = function ( t, part ) if lownoi_step ~= flr(t*part) then lownoi_buf = rnd() end lownoi_step = flr(t*part) return lownoi_buf end " ..
                 -- muffle
                 "local muffle = function(x, y, z, p) local a=abs(x) local s=a/x if a<(y-z) then return x end local b = (a-(y-z))/z local c = z*(b/p)^p return x-(s*c)/p end " ..
@@ -733,13 +735,11 @@ function render_overtune( load, settings )
   for i = 2, settings.steps do
     formulastr = formulastr .. "+" .. settings.stepn:gsub("N", i)
   end
-  --formulastr = "("..formulastr..")/"..settings.steps
   formula = loadstring(otvars.." return function(X, XX, O, T, C) ".. "local tl = ".. tl .. " " .. otfuncs .."return ".. formulastr .." end")()
   local buffer = {} buffer[1] = {} buffer[2] = {}
-  for channel = 1, channel_count do
-    for c = 1, settings.times do
-      --for i = 1, tl do
-      for i = 0, tl-1 do
+  for c = 1, settings.times do
+    for i = 0, tl-1 do
+      for channel = 1, channel_count do
         local t = ((c-1)*tl+i)/sl
         local xx = ((c-1)*tl+i)*2*math.pi / (sl/settings.times)
         local x = i*2*math.pi/tl
@@ -855,6 +855,31 @@ function edit_overtune ( sp, settings )            -- sp = sample pointer
   sb:finalize_sample_data_changes()
 end
 
+function rerender_all_no_sd()
+  local rs = renoise.song()
+  local oi, os
+  oi = rs.selected_instrument_index
+  os = rs.selected_sample_index
+  local num = 0
+  for i = 1, #rs.instruments do
+    rs.selected_instrument_index = i
+    local inst = rs.selected_instrument
+    for s = 1, #inst.samples do
+      rs.selected_sample_index = s
+      local samp = rs.selected_sample
+      if (samp.name:sub(1,12) == "Overtuned !!") and (not samp.sample_buffer.has_sample_data) then
+        num = num + 1
+        renoise.app():show_status("Found Overtuned sample #"..num)
+        local ot = try_and_load_2(samp)
+        render_overtune( true, ot )
+        renoise.app():show_status(tostring(num).." OT samples re-rendered and unfucked")
+      end
+    end
+  end
+  rs.selected_instrument_index = oi
+  rs.selected_sample_index = os
+end
+
 --------------------------------------------------------------------------------
 -- Menu, Key Binding
 --------------------------------------------------------------------------------
@@ -877,6 +902,16 @@ renoise.tool():add_menu_entry {
 renoise.tool():add_keybinding {
   name = "Global:Tools:Overtune Edit...",
   invoke = show_edit_dialog
+}
+
+renoise.tool():add_menu_entry {
+  name = "Main Menu:Tools:CasTools:Overtune Re-render all with no Sample Data",
+  invoke = rerender_all_no_sd
+}
+
+renoise.tool():add_keybinding {
+  name = "Global:Tools:Overtune Re-render all with no Sample Data",
+  invoke = rerender_all_no_sd
 }
 
 --renoise.song().overtune = show_dialog
