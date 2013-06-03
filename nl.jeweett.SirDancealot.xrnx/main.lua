@@ -90,8 +90,7 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
   </DeviceSlot>
 </FilterDevicePreset>
 ]]
-  end
-  if device_path == "Audio/Effects/Native/#Multiband Send" and false then
+  elseif device_path == "Audio/Effects/Native/#Multiband Send" and false then
     device.active_preset_data = [[<?xml version="1.0" encoding="UTF-8"?>
 <FilterDeviceClipboard doc_version="0">
   <DeviceSlot type="CrossoverDevice">
@@ -141,6 +140,46 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
   </DeviceSlot>
 </FilterDeviceClipboard>
     ]]
+  elseif device_path == "Audio/Effects/Native/Filter" then
+    device.active_preset_data = [[<?xml version="1.0" encoding="UTF-8"?>
+<FilterDevicePreset doc_version="9">
+  <DeviceSlot type="Filter3Device">
+    <IsMaximized>true</IsMaximized>
+    <Type>
+      <Value>0.0</Value>
+    </Type>
+    <Frequency>
+      <Value>0.5</Value>
+    </Frequency>
+    <Q>
+      <Value>0.0</Value>
+    </Q>
+    <Gain>
+      <Value>-15</Value>
+    </Gain>
+    <Inertia>
+      <Value>0.0078125</Value>
+    </Inertia>
+    <Model>24dB Moog</Model>
+  </DeviceSlot>
+</FilterDevicePreset>]]
+  elseif device_path == "Audio/Effects/Native/Repeater" then
+    device.active_preset_data = [[<?xml version="1.0" encoding="UTF-8"?>
+<FilterDevicePreset doc_version="9">
+  <DeviceSlot type="RepeaterDevice">
+    <IsMaximized>true</IsMaximized>
+    <Mode>
+      <Value>0.0</Value>
+    </Mode>
+    <Divisor>
+      <Value>0.5</Value>
+    </Divisor>
+    <Hold>false</Hold>
+    <SyncMode>
+      <Value>0.0</Value>
+    </SyncMode>
+  </DeviceSlot>
+</FilterDevicePreset>]]
   end
 end
 
