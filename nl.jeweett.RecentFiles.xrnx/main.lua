@@ -28,12 +28,14 @@ end
 
 local function key_dialog(d, k)
   if (k.character and k.character >= "0" and k.character <= "9") then
+    local num=tonumber(k.character)
+    if num==0 then num=10 end
     if (select==1) then
       d:close()
-      ls(tonumber(k.character))
+      ls(num)
     elseif (select==2) then
       d:close()
-      ll(tonumber(k.character))
+      ll(num)
     end
     --loadstring("l"..select.."("..k.character..")")()
   elseif (k.name == "right") then
