@@ -354,6 +354,10 @@ local function key_dialog(d,k)
     close_dialog()
   elseif k.name == "esc" then
     --restore()
+    if all_mode then
+      all_mode = false
+      renoise.app():show_status("Apply to All: OFF")
+    end
     close_dialog()
   else
     return k
