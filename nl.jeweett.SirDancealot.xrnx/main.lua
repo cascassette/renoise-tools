@@ -180,6 +180,12 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
     </SyncMode>
   </DeviceSlot>
 </FilterDevicePreset>]]
+  elseif device_path == "Audio/Effects/VST/NastyDLAmkII" then
+    device:parameter(11).value=4/6
+  end
+  if device.external_editor_available then
+    device.external_editor_visible = true
+    device.is_maximized = false
   end
 end
 
