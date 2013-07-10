@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- InstrMixer v1.12 by Cas Marrav (for Renoise 2.8)        --
+-- InstrMixer v1.14 by Cas Marrav (for Renoise 2.8)        --
 -------------------------------------------------------------
 
 -- Implemented:
@@ -23,12 +23,13 @@
    * Basic 'All' mode to mod all samples at once
    * Small 'legend' indicating slider meaning, maybe collapsible
    * Shift key makes bigga movements
+   * Fix for all_mode s.t. selected_sample_index does not change
 --]]
 
 -- To do:
 --[[
    * Fix for all_mode s.t. all get set to same as currently selected
-   * Make all mode work with mouse obviously..
+   * Make all mode work with mouse
    * Multi-solo by mixing with mute key ?
    * Backup params before dialog opens => esc to undo ?
    ...
@@ -246,6 +247,7 @@ local function mod_func(str, factor)
     loadstring("renoise.song().selected_instrument:sample("..selected..")."..pmtname[str].." = "..ctrl.value)()
   else
     -- behaviour is now inc/dec for every parameter in all mode; good in volume, not handy in most other cases..
+    local os = selected
     for i=1, #renoise.song().selected_instrument.samples do
       local ctrl = get_selected(str, i)
       if str == "lpm" then
@@ -257,6 +259,8 @@ local function mod_func(str, factor)
       end
       loadstring("renoise.song().selected_instrument:sample("..i..")."..pmtname[str].." = "..ctrl.value)()
     end
+    selected = os
+    update_sel()
   end
 end
 
