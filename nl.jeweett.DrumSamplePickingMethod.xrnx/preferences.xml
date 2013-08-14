@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DSPMPreferences doc_version="0">
+  <weights>{{name='bass',amount=0},{name='claps',amount=0},{name='hats',amount=1},{name='kicks',amount=1},{name='noises',amount=0.51},{name='scratch',amount=0},{name='snares',amount=1},{name='synthkit1',amount=0},{name='synthkit2',amount=0},{name='tom-perc',amount=0.23631578947368},}</weights>
+  <basefolder>c:\CasMarrav\Sound\samples\Cas\drums\</basefolder>
+</DSPMPreferences>
