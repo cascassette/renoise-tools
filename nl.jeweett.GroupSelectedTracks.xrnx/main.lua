@@ -43,6 +43,7 @@ local function group_selected_tracks()
     for i = et, st, -1 do
       rs:add_track_to_group(st, et+1)
     end
+    rs:track(et+1).color = rs:track(st).color
   end
 end
 

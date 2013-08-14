@@ -159,9 +159,18 @@ local function show_dialog()
   vb = renoise.ViewBuilder()
   local vb_dialog = vb:row {
     margin = 5, spacing = 2,
-    vb:chooser { id = "cat", items = categories, notifier = update_ins_list },
-    vb:chooser { id = "ins", items = {'a','b'}, width = 180, active = false },
-    vb:valuebox { id = "otr", min = -2, max = 2, value = 1 },
+    vb:column {
+      vb:text { text = "Cat." },
+      vb:chooser { id = "cat", items = categories, notifier = update_ins_list },
+    },
+    vb:column {
+      vb:text { text = "Inst." },
+      vb:chooser { id = "ins", items = {'a','b'}, width = 180, active = false },
+    },
+    vb:column {
+      vb:text { text = "Txpose" },
+      vb:valuebox { id = "otr", min = -2, max = 2, value = 1 },
+    },
   }
   dialog = renoise.app():show_custom_dialog( "InstruMap", vb_dialog, key_dialog )
   update_ins_list(1)

@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- PushBack Keys v1 by Cas Marrav (for Renoise 2.8)        --
+-- PushBack Keys v1.1 by Cas Marrav (for Renoise 2.8)      --
 -------------------------------------------------------------
 
 -- Vars --
@@ -369,15 +369,15 @@ end
 
 -- Keys --
 renoise.tool():add_keybinding {
-  name = "Global:Tools:Push Back Del",
+  name = "Pattern Editor:Tools:Push Back Del",
   invoke = function() show_dialog(COLUMN_TYPE_DEL) end
 }
 renoise.tool():add_keybinding {
-  name = "Global:Tools:Push Back Vol",
+  name = "Pattern Editor:Tools:Push Back Vol",
   invoke = function() show_dialog(COLUMN_TYPE_VOL) end
 }
 renoise.tool():add_keybinding {
-  name = "Global:Tools:Push Back Pan",
+  name = "Pattern Editor:Tools:Push Back Pan",
   invoke = function() show_dialog(COLUMN_TYPE_PAN) end
 }
 
