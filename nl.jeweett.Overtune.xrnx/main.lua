@@ -49,10 +49,13 @@ local delete_obsolete_samples_on_render = false
 local otvars =  -- variables
                 "local pi = math.pi " ..
                 "local t_buf = -1 " ..
+                "local rndstw_buf = 0 " ..
                 "local lowrnd_buf = 0 local lowrnd_step = 0 " ..
                 "local lownoi_buf = 0 local lownoi_step = 0 " ..
                 "local quantz_buf = 0 local quantz_step = 0 " ..
-                "local sf = " .. SEMITONE_FACTOR
+                "local sf = " .. SEMITONE_FACTOR .. " " ..
+                "local TX = 2*pi " ..
+                "local TT = 1/TX "
 local otfuncs = -- basics
                 "local sin = math.sin " ..
                 "local cos = math.cos " ..
@@ -60,6 +63,9 @@ local otfuncs = -- basics
                 "local asin = math.asin " ..
                 "local acos = math.acos " ..
                 "local atan = math.atan " ..
+                "local sinh = math.sinh " ..
+                "local cosh = math.cosh " ..
+                "local tanh = math.tanh " ..
                 "local sqrt = math.sqrt " ..
                 "local max = math.max " ..
                 "local min = math.min " ..
@@ -69,18 +75,31 @@ local otfuncs = -- basics
                 "local flr = math.floor " ..
                 "local abs = math.abs " ..
                 "local equ = function(x) return x end " ..
+                -- other basic waveforms
+                "local saw = function(x) return 2*atan(tan(x/2))/pi end " ..                -- old one = math.mod(((x-(1/tl))+pi)/pi, 2)-1
+                "local squ = function(x) return (flr(sin(x)/2+1)*2-1) end " ..
+                "local tri = function(x) return abs(1-mod((x+1.5*pi)/pi,2))*2-1 end " ..
+                "local pls = function(x) return (flr(x/2+1)*2-1) end " ..                   -- that is: pulsify
+                "local par = function(x,p) return (-saw(X*2+TX*.5)^p)*squ(X)+squ(X) end " ..
+                "local semipls = function(x,a) return a*pls(x)+(1-a)*x end " ..
+                "local ltan = function(x, y) return max(min(tan(x), y), -y)/y end " ..      -- limit tan
                 -- just for shorter notation in OT formulas
                 "local sin1 = function(t) return sin(t*2*pi) end " ..
                 "local squ1 = function(t) return squ(t*2*pi) end " ..
                 "local tri1 = function(t) return tri(t*2*pi) end " ..
                 "local saw1 = function(t) return saw(t*2*pi) end " ..
+                "local pw1 = function(t,w) if mod(t,1) <= w then return 1 else return -1 end end " ..
                 -- range [0..1] to [-1..1] and vice versa (ac/dc, [0..1] is good for modulating)
                 "local un = function(x) return (x+1)/2 end " ..
                 "local bi = function(x) return x*2-1 end " ..
                 -- range [0..1] to [0..2pi] and vice versa
                 "local tt = function(x) return x/2/pi end " ..
                 "local tx = function(t) return t*2*pi end " ..
-                -- frequency modulation (not really that good, sin(X+sin(X)) works better)
+                -- pulsewidth wave
+                "local pw = function(x,w) return pw1(tt(x),w) end " ..
+                -- frequency modulation
+                "local pm = function(x, p, a) return x+a*p end " ..
+                "local fm = function(x, f, a) return (O-1)*2*pi+x*(1+a*f) end " ..
                 --"local fm = function(c,m,a) return c*(1+m*a) end " ..
                 -- ringmod/amplitude modulation
                 "local am = function(c,m,a) return c*(1-a+un(m)*a) end " ..
@@ -91,13 +110,6 @@ local otfuncs = -- basics
                 "local ite = function(i, t, e) if i then return t else return e end end " ..
                 "local btoi = function(b) if b then return 1 else return 0 end end " ..
                 "local itob = function(i) if i<=0 then return false else return true end end " ..
-                -- other basic waveforms
-                --"local saw = function(x) return math.mod(((x-(1/tl))+pi)/pi, 2)-1 end " ..
-                "local saw = function(x) return 2*atan(tan(x/2))/pi end " ..
-                "local squ = function(x) return (flr(sin(x)/2+1)*2-1) end " ..
-                "local tri = function(x) return abs(1-mod((x+1.5*pi)/pi,2))*2-1 end " ..
-                "local pls = function(x) return (flr(x/2+1)*2-1) end " ..                   -- that is: pulsify
-                "local ltan = function(x, y) return max(min(tan(x), y), -y)/y end " ..      -- limit tan
                 -- exponential sine, saw, tri
                 "local expsin = function(x, p) if p>1 then return (squ(x)^(1-p%2))*sin(x)^p else return squ(x)*abs(sin(x))^p end end " ..
                 "local expsaw = function(x, p) if p>1 then return (squ(x)^(1-p%2))*saw(x)^p else return squ(x)*abs(saw(x))^p end end " ..
@@ -125,16 +137,19 @@ local otfuncs = -- basics
                 "local semiclip = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
                 "local clipp = function(x, y) return max(min(x, y), -y) end " ..
                 "local semiclipp = function(x, y, z) return (max(min(x, y), -y)*z + (1-z)*x) end " ..
+                "local shape_atan = function(x, y) return atan(x*y)*TT*4 end " ..
                 "local expand = function(x, y, z, p) local a=abs(x) local s=a/x if a<(y-z) then return x end local b = (a-(y-z))/z local c = z*b^p return x+s*c end " ..
                 "local fold = function(x, y) return -bi(abs(1-abs(un((1+y)*x)))) end " ..
                 "local semifold = function(x, y, z) return fold(x, y)*z + (1-z)*x end " ..
-                "local crush = function(x, y) return flr(x*y)/y end " ..
-                "local semicrush = function(x, y, z) return (flr(x*y)/y)*z + (1-z)*x end " ..
+                "local crush = function(x, y) return flr(x*y+.5)/y end " ..
+                "local semicrush = function(x, y, z) return (flr(x*y+.5)/y)*z + (1-z)*x end " ..
                 "local quant = function(x, dx) if quantz_step == 0 then quantz_buf = x end quantz_step = mod( quantz_step + 1, dx ) return quantz_buf end " ..
                 "local semiquant = function(x, dx, z) return quant(x,dx)*z + (1-z)*x end " ..
-                "local noise = function(x, y, p) return x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
+                "local semiabs = function(x, a) return (1-a)*x+a*abs(x) end " ..
+                "local noise = function(x, y, p) return (1-y)*x+(ite(x<0, -1, 1))*y*(abs(x)^p)*rnd() end " ..     -- add noise according to amp(x) and factor(y) and curve(p)
                 "local lowrnd = function ( t, skip ) if t ~= t_buf then t_buf = t if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) end return lowrnd_buf end " ..
-                "local lowrndstw = function ( t, skip, width ) if t ~= t_buf then t_buf = t if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) else lowrnd_buf = lowrnd_buf + width*rnd() end return lowrnd_buf end " ..
+                "local lowrndstw = function ( t, skip, width ) if t ~= t_buf then t_buf = t if lowrnd_step == 0 then lowrnd_buf = rnd() end lowrnd_step = mod( lowrnd_step + 1, skip ) else lowrnd_buf = (lowrnd_buf + width*rnd())/(1+width) end return lowrnd_buf end " ..
+                "local rndstw = function( t, width, channel ) if t ~= t_buf then rndstw_buf = rnd() end t_buf = t return rndstw_buf+channel*width*rnd() end " ..
                 "local lownoise = function ( t, part ) if lownoi_step ~= flr(t*part) then lownoi_buf = rnd() end lownoi_step = flr(t*part) return lownoi_buf end " ..
                 -- muffle
                 "local muffle = function(x, y, z, p) local a=abs(x) local s=a/x if a<(y-z) then return x end local b = (a-(y-z))/z local c = z*(b/p)^p return x-(s*c)/p end " ..
@@ -146,7 +161,8 @@ local otfuncs = -- basics
                 "local supermin = function(x, y) if x >= 0 then return min(x,y) else return max(x,y) end end " ..
                 -- morph between two functions
                 "local morph = function(x, y, z) return ((1-z)*x+z*y) end " ..
-                "local mix = function(f1, f2, x, a) return ((1-a)*f1(x)+(a)*f2(x)) end " ..
+                "local mix = function(t) local sum = 0 local ml = 0 for i = 1, #t do ml = ml+t[i][2] sum = sum + t[i][2]*t[i][1] end return sum/ml end " ..
+                "local funmix = function(f1, f2, x, a) return ((1-a)*f1(x)+(a)*f2(x)) end " ..
                 --"local mix = function(x, ztab, functab) local factor = 0 if #ztab ~= #functab then return 0 else for _,f in ztab do factor = factor + f end local res = 0 for i = 1, #ztab do print(''..i..'. type: '..type(functab[i])) if type(functab[i]) == 'function' then res = res + ztab[i] * functab[i](x) elseif (#functab[i]) == 1 then res = res + ztab[i] * functab[i][1](x) else res = res + ztab[i] * functab[i][1](x, unpack(functab[i][2])) end end return res/factor end end  " ..
                 -- unary [0..1] pulse from/to
                 "local upft = function(x, f, t) if x < f or x >= t then return 0 else return 1 end end " ..
@@ -174,6 +190,8 @@ local otfuncs = -- basics
                 "local atand = function(t, p) return (math.atan(1-t*2)/pi*2+.5)^p end " ..
                 "local recu = function(t, p) local q = 1/p return (p+1)*(q/((1-t)+q)-(1/(p+1)))/p end " ..
                 "local recd = function(t, p) local q = 1/p return (p+1)*(q/(t+q)-(1/(p+1)))/p end " ..
+                "local arecu = function(t, p) return 1-recd(t,p) end " ..
+                "local arecd = function(t, p) return 1-recu(t,p) end " ..
                 -- start later / done quicker
                 "local sl = function(t,p) return max(t/p-1/p+1,0) end " ..                  -- max(T*4/3-1/3,0)
                 "local dq = function(t,p) return min(t/p,1) end " ..
@@ -744,7 +762,8 @@ function render_overtune( load, settings )
         local xx = ((c-1)*tl+i)*2*math.pi / (sl/settings.times)
         local x = i*2*math.pi/tl
         local y = formula(x, xx, c, t, channel-1)
-        if settings.power then md = math.max(md, math.abs(y)) end
+        --if settings.power then md = math.max(md, math.abs(y)) end
+        md = math.max(md, math.abs(y))
         buffer[channel][1+i+((c-1)*tl)] = y
       end
     end
@@ -768,6 +787,9 @@ function render_overtune( load, settings )
     end
   end
   sb:finalize_sample_data_changes()
+  if not settings.power then
+    renoise.app():show_status("The max dev was: "..md)
+  end
   if o_times then
     cs.loop_start = lps
     cs.loop_end = lpe

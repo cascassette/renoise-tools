@@ -246,6 +246,11 @@ local function lf2()
   end
 end
 
+local function pm()
+  rw = renoise.app().window
+  rw.pattern_matrix_is_visible = not rw.pattern_matrix_is_visible
+end
+
 -- keys
 renoise.tool():add_keybinding {
   name = "Global:View:Best View Pattern Editor",
@@ -318,6 +323,10 @@ renoise.tool():add_keybinding {
 renoise.tool():add_keybinding {
   name = "Global:View:Best View Middle Frame Rotate Reverse",
   invoke = cfrr
+}
+renoise.tool():add_keybinding {
+  name = "Global:View:Best View Pattern Matrix",
+  invoke = pm
 }
 
 

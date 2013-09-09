@@ -16,6 +16,7 @@ local function make_noterepeat_instrument()
   rs = renoise.song()
   local cs = rs.selected_sample
   local csb = cs.sample_buffer
+  if not csb.has_sample_data then return end
   local bps = rs.transport.bpm/60
   local nii = rs.selected_instrument_index+1
   local ni = rs:insert_instrument_at(nii)

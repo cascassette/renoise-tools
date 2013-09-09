@@ -14,12 +14,22 @@ local categories
 local cw = loadstring("return "..options.weights.value)()
 
 -- per octave set
-local newmapping = { "kicks", "hats", "kicks", "hats", "snares", "snares", "hats", "claps", "noises", "noises", "noises", "noises" }
+local newmapping1 = { "kicks", "hats", "kicks", "hats", "snares", "snares", "hats", "claps", "noises", "noises", "noises", "noises" }
+local newmapping2 = { "kicks", "hats", "kicks", "hats", "snares", "claps", "snares", "claps", "kicks", "hats", "kicks", "hats", "snares", "noises", "snares", "noises" }
+local newmapping3 = { "kicks", "kicks", "hats", "hats", "snares", "snares", "claps", "noises", "kicks", "kicks", "hats", "hats", "snares", "snares", "claps", "noises" }
 
 -- Tools stuff, GUI stuff etc
 local rs
 local vb
 local dialog
+
+-- Sustain function, (stolen from syflom)
+local function sustain_instrument()
+  renoise.song().selected_instrument.sample_envelopes.volume.enabled = true
+  renoise.song().selected_instrument.sample_envelopes.volume.fade_amount = renoise.InstrumentEnvelope.MIN_FADE_AMOUNT
+  renoise.song().selected_instrument.sample_envelopes.volume:clear_points()
+  renoise.song().selected_instrument.sample_envelopes.volume:add_point_at(1,1)
+end
 
 -- Find saved 'amount' values by category name
 local function find_default_weight(c)
@@ -90,7 +100,7 @@ local function dspm(cw, total, shuffle) -- cw for category/weight pairs
   end
 end
 
-local function dspm_oct(total, start_note)
+local function dspm_oct(map, total, start_note)
   rs = renoise.song()
   local note = start_note
   -- prepare instrument
@@ -112,23 +122,30 @@ local function dspm_oct(total, start_note)
   end
   ni.name = "Drumsamples"
   rs.selected_instrument_index = nii
-  for i=1,total*12 do ni:insert_sample_at(1) end
+  for i=1,total*#map do ni:insert_sample_at(1) end
   -- find samples
   local fnlist = {}
+  local reslist = {}
   for i = 1,total do
-    for n = 1,12 do
-      local cat = newmapping[n]
+    for n = 1,#map do
+      local cat = map[n]
+      if reslist[cat] == nil then reslist[cat] = {} end
       if fnlist[cat] == nil then
         fnlist[cat] = os.filenames(options.basefolder.value..cat)
       end
       local si = note-start_note+1
       local fn = fnlist[cat][math.random(#fnlist[cat])]
+      while reslist[cat][fn] ~= nil do   -- make sure every sample only gets picked once
+        fn = fnlist[cat][math.random(#fnlist[cat])]
+      end
+      reslist[cat][fn] = 1
       ni:sample(si).sample_buffer:load_from(options.basefolder.value..cat..[[\]]..fn)
       ni:sample(si).name = cat.."/"..fn
       ni:insert_sample_mapping(1,si,note,{note,note})
       note = note + 1
     end
   end
+  sustain_instrument()
 end
 
 -- Dialog close --
@@ -234,19 +251,35 @@ renoise.tool():add_keybinding {
 }
 renoise.tool():add_keybinding {
   name = "Instrument Box:Edit:DSPM - OctaveSet",
-  invoke = function() dspm_oct(2, 36) end
+  invoke = function() dspm_oct(newmapping1, 2, 36) end
 }
 renoise.tool():add_keybinding {
   name = "Sample Editor:Tools:DSPM - OctaveSet",
-  invoke = function() dspm_oct(2, 36) end
+  invoke = function() dspm_oct(newmapping1, 2, 36) end
 }
 renoise.tool():add_keybinding {
   name = "Instrument Keyzone:Tools:DSPM - OctaveSet",
-  invoke = function() dspm_oct(2, 36) end
+  invoke = function() dspm_oct(newmapping1, 2, 36) end
 }
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Tools:DSPM - OctaveSet",
-  invoke = function() dspm_oct(2, 36) end
+  invoke = function() dspm_oct(newmapping1, 2, 36) end
+}
+renoise.tool():add_keybinding {
+  name = "Instrument Box:Edit:DSPM - NPadSet",
+  invoke = function() dspm_oct(newmapping3, 4, 36) end
+}
+renoise.tool():add_keybinding {
+  name = "Sample Editor:Tools:DSPM - NPadSet",
+  invoke = function() dspm_oct(newmapping3, 4, 36) end
+}
+renoise.tool():add_keybinding {
+  name = "Instrument Keyzone:Tools:DSPM - NPadSet",
+  invoke = function() dspm_oct(newmapping3, 4, 36) end
+}
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Tools:DSPM - NPadSet",
+  invoke = function() dspm_oct(newmapping3, 4, 36) end
 }
 
 

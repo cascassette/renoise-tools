@@ -83,7 +83,7 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
       <Value>0.5</Value>
     </SendPan>
     <DestSendTrack>
-      <Value>0</Value>
+      <Value>]]..(rs.send_track_count-1)..[[</Value>
     </DestSendTrack>
     <MuteSource>false</MuteSource>
     <SmoothParameterChanges>true</SmoothParameterChanges>
@@ -149,7 +149,7 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
       <Value>0.0</Value>
     </Type>
     <Frequency>
-      <Value>0.5</Value>
+      <Value>1.0</Value>
     </Frequency>
     <Q>
       <Value>0.0</Value>
@@ -335,6 +335,40 @@ local function insertfx(track_no, device_path, insert_spot, active, preset_no)
 </FilterDevicePreset>]]
   elseif device_path == "Audio/Effects/VST/NastyDLAmkII" then
     device:parameter(11).value=4/6
+  elseif device_path == "Audio/Effects/Native/*Formula" then
+    device.active_preset_data = [[<?xml version="1.0" encoding="UTF-8"?>
+<FilterDevicePreset doc_version="9">
+  <DeviceSlot type="FormulaMetaDevice">
+    <IsMaximized>true</IsMaximized>
+    <FormulaParagraphs>
+      <FormulaParagraph>mix(A, OUTPUT, (1-B)^3)</FormulaParagraph>
+      <FormulaParagraph/>
+    </FormulaParagraphs>
+    <FunctionsParagraphs>
+      <FunctionsParagraph>function mix(a, b, w) </FunctionsParagraph>
+      <FunctionsParagraph>  return (a*w)+(b*(1-w))</FunctionsParagraph>
+      <FunctionsParagraph>end</FunctionsParagraph>
+      <FunctionsParagraph/>
+    </FunctionsParagraphs>
+    <InputNameA>Input</InputNameA>
+    <InputNameB>Amount</InputNameB>
+    <InputNameC> </InputNameC>
+    <EditorVisible>false</EditorVisible>
+    <PanelVisible>0</PanelVisible>
+    <InputA>
+      <Value>0.0</Value>
+    </InputA>
+    <InputB>
+      <Value>0.380000055</Value>
+    </InputB>
+    <InputC>
+      <Value>0.0</Value>
+    </InputC>
+  </DeviceSlot>
+</FilterDevicePreset>]]
+    device.display_name = "*Inertia"
+  elseif device_path == "Audio/Effects/VST/epicVerb" then
+    device:parameter(8).value = 0.1
   end
   if device.external_editor_available then
     device.external_editor_visible = true
@@ -438,6 +472,20 @@ local function key_dialog(d, k)
     for i = 1, #device_names do found_subset_indexes[i] = i end
     vdsp.items = found_subset
     vdsp.value = 1
+  elseif k.modifiers == "alt" then
+    if k.character == "e" then
+      insertfx(vtrk.value, "Audio/Effects/Native/EQ 10", vpos.value, vact.value, vpre.value)
+      d:close()
+    elseif k.character == "f" then
+      insertfx(vtrk.value, "Audio/Effects/Native/Filter", vpos.value, vact.value, vpre.value)
+      d:close()
+    elseif k.character == "g" then
+      insertfx(vtrk.value, "Audio/Effects/Native/Gainer", vpos.value, vact.value, vpre.value)
+      d:close()
+    elseif k.character == "r" then
+      insertfx(vtrk.value, "Audio/Effects/VST/Reaktor5 FX", vpos.value, vact.value, vpre.value)
+      d:close()
+    end
   elseif k.character ~= nil then
     local nuq = q .. k.character
     local nu_found_subset, nu_found_subset_indexes
@@ -592,6 +640,7 @@ end
 -- Menu entries
 --------------------------------------------------------------------------------
 
+--[[
 renoise.tool():add_menu_entry {
   name = "Main Menu:Tools:CasTools:KB Insert FX...",
   invoke = show_dialog  
@@ -601,6 +650,7 @@ renoise.tool():add_menu_entry {
   name = "Main Menu:Tools:CasTools:KB Insert FX (Native only)...",
   invoke = function() show_dialog(NATIVE_SWITCH) end  
 }
+]]
 
 
 --------------------------------------------------------------------------------
@@ -628,17 +678,6 @@ renoise.tool():add_midi_mapping {
   invoke = show_dialog
 }
 --]]
-
-
-
-
-
-
-
-
-
-
-
 
 
 -- Reload the script whenever this file is saved. 

@@ -8,6 +8,8 @@ local rs
 local dialog = nil
 local vb = nil
 local select = 1
+local ps = "/"
+if (os.platform() == "WINDOWS") then ps = "\\" end
 
 
 -- Main --
@@ -66,19 +68,19 @@ local function showgui()
     }
   for i = 1, #renoise.app().recently_saved_song_files do
     fn = renoise.app().recently_saved_song_files[i]
-    fn = fn:sub(fn:len()-string.find(fn:reverse(),"\\")+2)
+    fn = fn:sub(fn:len()-string.find(fn:reverse(),ps)+2)
     list_s[i] = 
       vb:button { text = ""..i..". "..fn, released = function() ls(i) close_dialog() end }
     vb.views['list_s']:add_child(list_s[i])
   end
   for i = 1, #renoise.app().recently_loaded_song_files do
     fn = renoise.app().recently_loaded_song_files[i]
-    fn = fn:sub(fn:len()-string.find(fn:reverse(),"\\")+2)
+    fn = fn:sub(fn:len()-string.find(fn:reverse(),ps)+2)
     list_l[i] = 
       vb:button { text = ""..i..". "..fn, released = function() ll(i) close_dialog() end }
     vb.views['list_l']:add_child(list_l[i])
   end
-  dialog = renoise.app():show_custom_dialog( "Laydee", dialog_content, key_dialog )
+  dialog = renoise.app():show_custom_dialog( "Recent Files", dialog_content, key_dialog )
 end
 
 
