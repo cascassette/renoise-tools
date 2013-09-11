@@ -15,6 +15,7 @@
 --    * render multiple samples for different notes        --
 --      * add real ms decay type variables                 --
 --    * sample rate in instrument, prefs                   --
+--    * tuning A-440 in instrument, preferences            --
 --   Overtune 3.0 ideas                                    --
 --    * reusable code / envelopes / wave cycles            --
 --    * better interface / logic;                          --
