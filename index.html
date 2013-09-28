@@ -34,7 +34,39 @@
         <h1>
 <a name="renoise-tools-by-cas" class="anchor" href="#renoise-tools-by-cas"><span class="octicon octicon-link"></span></a>Renoise Tools by Cas</h1>
 
-<p>This project consists of a handful of tools to make operating music making software <a href="http://www.renoise.com">Renoise</a> easier. Short descriptions for all of these are also available, on my <a href="http://beatcreators.wordpress.com/tools-for-renoise/">web page</a>.</p>
+<p>This project consists of a handful (40+) of tools to make operating music making software <a href="http://www.renoise.com">Renoise</a> easier. Short descriptions for all of these are also available, on my <a href="http://beatcreators.wordpress.com/tools-for-renoise/">web page</a>.</p>
+
+<h2>
+<a name="how-to-install" class="anchor" href="#how-to-install"><span class="octicon octicon-link"></span></a>How to install</h2>
+
+<p>You can install, and update, all tools right into your Renoise user-scripts folder in a *nix-based OS:</p>
+
+<pre><code>$ cd ~/.renoise/V2.8.1/Scripts/Tools
+$ git clone github.com/casmarrav/renoise-tools
+</code></pre>
+
+<p>Then git will make a folder 'renoise-tools', you will have to manually move everything in there one level up, making sure you don't forget all the .dotfiles (.git dir, .gitignore).
+On Windows the same method can be used; the directory you need to look for is </p>
+
+<pre><code>%HOMEDRIVE%%HOMEPATH%\AppData\Roaming\Renoise\V2.8.1\Scripts\Tools\
+</code></pre>
+
+<p>Of course, if you don't need the auto-updates, you can also download the zip and extract it into the same folder.</p>
+
+<h2>
+<a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h2>
+
+<p>Some of the tools are hard to find inside Renoise once installed: these only add features accessible through keyboard commands. An example of this is the Instrument Mixer, a very handy command window that allows the Renoise user to view and adjust various settings of multiple samples in an instrument at once. A very 'invisible' tool is Auto Select Instrument. It is no more than a variation on the function that is available in Renoise - in that it doesn't switch instruments on a pattern advance/change, only on track change. You can set a custom keyboard shortcut for toggling its functionality on and off in Renoises preferences window.</p>
+
+<h3>
+<a name="overtune-synthsample-generator" class="anchor" href="#overtune-synthsample-generator"><span class="octicon octicon-link"></span></a>Overtune Synth/Sample Generator</h3>
+
+<p>The Overtune tool is pretty complex, which is why it has gotten its <a href="http://beatcreators.wordpress.com/overtune/">own page at my blog</a>.</p>
+
+<hr><h2>
+<a name="support-the-project" class="anchor" href="#support-the-project"><span class="octicon octicon-link"></span></a>Support the project</h2>
+
+<p>I have written over 15K lines of code in this project on my own. If you like this work, consider making a donation via either <a href="http://flattr.com/thing/972338/Tools-for-Renoise">flattr</a> or <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=4WVVF9HQ5THRL&amp;lc=US&amp;item_name=Beat%20Creators%20%2f%20Jeweett%20by%20Cas%20Marrav&amp;currency_code=EUR&amp;bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted">paypal</a>.</p>
 
 <hr><h3>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
