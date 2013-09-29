@@ -2,8 +2,11 @@
 -- InstrMapper v1 by Cas Marrav (for Renoise 2.8)          --
 -------------------------------------------------------------
 
--- Set folder for Maschine (TM) Library "Samples" folder here
+-- Set folder for Maschine (TM) Library "Samples" folder here - example:
 local basefolder = [[c:\CasMarrav\Sound\samples\Maschine\Maschine Library\Samples\Instruments\]]
+
+local ps = [[/]]
+if os.platform() == "WINDOWS" then ps = [[\]] end
 local categories = os.dirnames(basefolder)
 
 -- Tools stuff, GUI stuff etc
@@ -26,7 +29,7 @@ end
 -- Main --
 local function create_mapped_instr(cat, ins, otr)
   local sl -- sample filename list
-  local sample_folder = basefolder..cat..[[\]]..ins..[[ Samples\]]
+  local sample_folder = basefolder..cat..ps..ins.." Samples"..ps
   sl = os.filenames(sample_folder)
   local ml = {} -- mapping list
   -- every mapping entry gets: index(ordered), basenote, filename, lo_note, hi_note  ('note_range'), note_name
