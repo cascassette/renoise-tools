@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <Name>Parameter Randomizer</Name>
+  <Id>nl.jeweett.ParamRand</Id>
+  <Version>1</Version>
+  <ApiVersion>3</ApiVersion>
+  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <AutoUpgraded>false</AutoUpgraded>
+  <Category>Workflow</Category>
+  <Description>Randomizes some parameters in my startup song</Description>
+  <Homepage>http://beatcreators.wordpress.com/tools-for-renoise</Homepage>
+  <Platform/>
+  <Icon/>
+</RenoiseScriptingTool>
