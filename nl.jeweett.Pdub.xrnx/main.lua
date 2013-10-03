@@ -1,5 +1,5 @@
 -------------------------------------------------------------
--- PDub/PCut v0.2 by Cas Marrav (for Renoise 2.8)          --
+-- PDub/PCut v0.3 by Cas Marrav (for Renoise 2.8)          --
 -------------------------------------------------------------
 
 -- Main --
@@ -32,13 +32,36 @@ local function pdub(include_auto)
         end
       end
     end
+    return true
   else
-    local vb = renoise.ViewBuilder()
-    renoise.app:show_custom_prompt("Fault", vb:text { text = "Did not dub: pattern exceeds max length" }, { "OK" })
+    --local vb = renoise.ViewBuilder()
+    --renoise.app:show_custom_prompt("Fault", vb:text { text = "Did not dub: pattern exceeds max length" }, { "OK" })
+    renoise.app:show_status("Failed to PDub: pattern would exceed max length")
+    return false
   end
 end
 
-local function pdub_ia()    -- include automation
+local function selectionpdub()
+  local rs = renoise.song()
+  if rs.sequencer.selection_range[1]==0 and rs.sequencer.selection_range[2]==0 then
+    pdub(true)
+  else
+    local h = {}
+    local p
+    local c = 0
+    for i = rs.sequencer.selection_range[1], rs.sequencer.selection_range[2] do
+      p = rs.sequencer:pattern(i)
+      if not h[p] then
+        rs.selected_sequence_index = i
+        if pdub(true) then c = c + 1 end
+        h[p] = true
+      end
+    end
+    renoise.app():show_status("Successfully PDubbed "..c.." patterns.")
+  end
+end
+
+--[[local function pdub_ia()    -- include automation
   local rs = renoise.song()
   local curpat_index = rs.sequencer.pattern_sequence[rs.transport.edit_pos.sequence]
   local curpat = rs:pattern(curpat_index)
@@ -46,26 +69,36 @@ local function pdub_ia()    -- include automation
   local newpat = rs:pattern(newpat_index)
   newpat.number_of_lines = curpat_number_of_lines
   newpat:copy_from(curpat)
-end
+end]]
 
 local function pcut()
   local rs = renoise.song()
   local ep = rs.transport.edit_pos
-  local cpi = rs.transport.selected_pattern_index
-  local cp = rs.transport.selected_pattern
-  local lc = ep.line      -- rs.selected_line_index
+  local cpi = rs.selected_pattern_index
+  local cp = rs.selected_pattern
+  local lc = ep.line
   local csi = ep.sequence
-  local inserts = table.create()
+  local inserts = {}
   -- think about where to put the 'second halves'
   for i,s in ipairs(rs.sequencer.pattern_sequence) do
     if s == cpi then
-      inserts.add(i)
+      table.insert(inserts, i)
     end
   end
   local first_occ = inserts[1]
-  local add = 0
-  npi = rs.sequencer:insert_new_pattern_at(csi+1)
-  for i = lc,cp.number_of_lines do
+  local npi = rs.sequencer:insert_new_pattern_at(first_occ+1)
+  local np = rs:pattern(npi)
+  np.number_of_lines = cp.number_of_lines+1-lc
+  for ti,t in ipairs(np.tracks) do
+    for i = lc,cp.number_of_lines do
+      t:line(i+1-lc):copy_from(cp:track(ti):line(i))
+    end
+  end
+  cp.number_of_lines = lc-1
+  for i,pi in ipairs(inserts) do
+    if i > 1 then
+      rs.sequencer:insert_sequence_at(pi+i+1,npi)
+    end
   end
 end
 
@@ -93,6 +126,10 @@ renoise.tool():add_keybinding {
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Pattern Operations:PDub + Auto",
   invoke = function() pdub(true) end
+}
+renoise.tool():add_keybinding {
+  name = "Pattern Sequencer:Cloning:PDub Selection + Auto",
+  invoke = selectionpdub
 }
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Pattern Operations:PCut",
