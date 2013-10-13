@@ -37,6 +37,8 @@ end
 
 
 local autoselect = true
+local vstwindow = true
+local rs
 
 
 --------------------------------------------------------------------------------
@@ -44,12 +46,23 @@ local autoselect = true
 --------------------------------------------------------------------------------
 
 local function adjust_inst()
-  local rs = renoise.song()
   rs:capture_nearest_instrument_from_pattern()
 end
 
+local function show_inst()
+  local cii = rs.selected_instrument_index
+  -- hide window for all other windows
+  for idx,ins in ipairs(rs.instruments) do
+    if ins.plugin_properties.plugin_loaded and ins.plugin_properties.plugin_device.external_editor_available then
+      ins.plugin_properties.plugin_device.external_editor_visible = (idx == cii)
+    end
+  end
+end
+
 local function init_or_refresh()
-  local rs = renoise.song()
+
+  rs = renoise.song()
+  
   if autoselect then
     if rs.selected_track_index_observable:has_notifier(adjust_inst) then
       rs.selected_track_index_observable:remove_notifier(adjust_inst)
@@ -60,6 +73,18 @@ local function init_or_refresh()
       rs.selected_track_index_observable:remove_notifier(adjust_inst)
     end
   end
+  
+  if vstwindow then
+    if rs.selected_instrument_observable:has_notifier(show_inst) then
+      rs.selected_instrument_observable:remove_notifier(show_inst)
+    end
+    rs.selected_instrument_observable:add_notifier(show_inst)
+  else
+    if rs.selected_instrument_observable:has_notifier(show_inst) then
+      rs.selected_instrument_observable:remove_notifier(show_inst)
+    end
+  end
+  
 end
 
 local function is_active()
@@ -73,6 +98,17 @@ local function switchitonem()
     adjust_inst()
   else
     renoise.app():show_status("AutoSelect Off")
+  end
+  init_or_refresh()
+end
+
+local function switchvstviewing()
+  vstwindow = not vstwindow
+  if vstwindow then
+    renoise.app():show_status("AutoShowVST On")
+    show_inst()
+  else
+    renoise.app():show_status("AutoShowVST Off")
   end
   init_or_refresh()
 end
@@ -108,6 +144,27 @@ renoise.tool():add_menu_entry {
 renoise.tool():add_keybinding {
   name = "Global:Tools:Auto Select Instrument",
   invoke = switchitonem
+}
+
+renoise.tool():add_keybinding {
+  name = "Global:Tools:Auto Show VST Instrument",
+  invoke = switchvstviewing
+}
+
+renoise.tool():add_keybinding {
+  name = "Global:Tools:Jump to Next Track",
+  invoke = function()
+    local rs = renoise.song()
+    rs.selected_track_index = math.mod(rs.selected_track_index,#rs.tracks)+1
+  end
+}
+
+renoise.tool():add_keybinding {
+  name = "Global:Tools:Jump to Previous Track",
+  invoke = function()
+    local rs = renoise.song()
+    rs.selected_track_index = math.mod(rs.selected_track_index-2,#rs.tracks)+1
+  end
 }
 
 

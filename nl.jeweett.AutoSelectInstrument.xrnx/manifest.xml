@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Auto Select Instrument</Name>
   <Id>nl.jeweett.AutoSelectInstrument</Id>
-  <Version>1</Version>
+  <Version>1.3</Version>
   <ApiVersion>3</ApiVersion>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
   <AutoUpgraded>false</AutoUpgraded>
