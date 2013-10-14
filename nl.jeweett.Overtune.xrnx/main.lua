@@ -3,6 +3,10 @@
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
+--    * overtones always on, step1=stepn(0)                --
+--      * backwards compatible loading function            --
+--    * swap X and XX                                      --
+--    * improve env function                               --
 --    * re-render every overtune @ SR,[Note]               --
 --    * stereo phase shift in deg                          --
 --   Overtune 2.7 ideas                                    --
@@ -17,6 +21,8 @@
 --    * sample rate in instrument, prefs                   --
 --    * tuning A-440 in instrument, preferences            --
 --   Overtune 3.0 ideas                                    --
+--    * sustain phase with proper repeating cycle          --
+--      * way to find 'gcd' among cycle lengths            --
 --    * reusable code / envelopes / wave cycles            --
 --    * better interface / logic;                          --
 --        (INF) list of nameable, callable subparts        --
