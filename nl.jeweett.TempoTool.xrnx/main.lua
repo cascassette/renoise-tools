@@ -13,7 +13,7 @@ local function tempotool()
   if smp.loop_mode ~= 1 then
     dur = (smp.loop_end-smp.loop_start)/sr
   else
-    dur = (smp.number_of_frames)/sr
+    dur = (smp.sample_buffer.number_of_frames)/sr
   end
   dur = (dur / 60)    -- convert to minutes
   dur = dur*(SEMITONE_FACTOR^(-smp.transpose))
