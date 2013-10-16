@@ -3,9 +3,7 @@
 -------------------------------------------------------------
 
 --[[ AwesomeSawce 1.3 todo                                 --
---    * detune in (exact value) semitones                  --
---      * in semitones, make detune steps every step       --
---    * support for other samples in instrument            --
+--    * overall gain adjust                                --
 --    * mix semitones/finetune detuning                    --
 --    * fix samples at the end calculating necessary detune--
 --      or support for original finetuning                 --
