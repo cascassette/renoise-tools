@@ -3,30 +3,31 @@
 -------------------------------------------------------------
 
 --[[ Overtune 2.6 todo                                     --
---    * overtones always on, step1=stepn(0)                --
---      * backwards compatible loading function            --
---    * swap X and XX                                      --
---    * improve env function                               --
---    * re-render every overtune @ SR,[Note]               --
---    * stereo phase shift in deg                          --
+--     * overtones always on, step1=stepn(0)               --
+--       * backwards compatible loading function           --
+--     * swap X and XX                                     --
+--     * improve env function                              --
+--       * multiline edit                                  --
+--     * re-render every overtune @ SR,[Note]              --
+--     * stereo phase shift in deg                         --
 --   Overtune 2.7 ideas                                    --
---    * awesomesawce/detune stuff (+in settings)           --
---    * improve edit function                              --
---      * run edit function over selection only            --
---      * have x var run over whole sample/selection,      --
---        or cycle in tones/frequencies/notes              --
---    * use other samples/instr as indexable cycles        --
---    * render multiple samples for different notes        --
---      * add real ms decay type variables                 --
---    * sample rate in instrument, prefs                   --
---    * tuning A-440 in instrument, preferences            --
+--     * awesomesawce/detune stuff (+in settings)          --
+--     * improve edit function                             --
+--       * run edit function over selection only           --
+--       * have x var run over whole sample/selection,     --
+--         or cycle in tones/frequencies/notes             --
+--     * use other samples/instr as indexable cycles       --
+--     * render multiple samples for different notes       --
+--       * add real ms decay type variables                --
+--     * sample rate in instrument, prefs                  --
+--     * tuning A-440 in instrument, preferences           --
 --   Overtune 3.0 ideas                                    --
---    * sustain phase with proper repeating cycle          --
---      * way to find 'gcd' among cycle lengths            --
---    * reusable code / envelopes / wave cycles            --
---    * better interface / logic;                          --
---        (INF) list of nameable, callable subparts        --
---        one 'final' formula field to combine them        --
+--     * sustain phase with proper repeating cycle         --
+--       * way to find 'gcd' among cycle lengths           --
+--     * reusable code / envelopes / wave cycles           --
+--     * better interface / logic;                         --
+--         (INF) list of nameable, callable subparts       --
+--         one 'final' formula field to combine them       --
 --                                                         --
 --                                                         ]]
 
@@ -62,7 +63,11 @@ local otvars =  -- variables
                 "local quantz_buf = 0 local quantz_step = 0 " ..
                 "local sf = " .. SEMITONE_FACTOR .. " " ..
                 "local TX = 2*pi " ..
-                "local TT = 1/TX "
+                "local TT = 1/TX " ..
+                "local FIFTH = 3/2 " ..
+                "local FOURTH = 4/3 " ..
+                "local MAJTHIRD = 5/4 " ..
+                "local MINTHIRD = 6/5 "
 local otfuncs = -- basics
                 "local sin = math.sin " ..
                 "local cos = math.cos " ..
@@ -805,20 +810,7 @@ function render_overtune( load, settings )
     cs.loop_end = sl
   end
   -- do the mappings
-  if (#ci.sample_mappings==0) then
-    ci:insert_sample_mapping(1, csi, settings.base_note)
-  else
-    local found = false
-    for i,m in ipairs(ci.sample_mappings[1]) do
-      if m.sample_index == csi then
-        m.base_note = settings.base_note
-        found = true
-      end
-    end
-    if not found then
-      ci:insert_sample_mapping(1, csi, settings.base_note)
-    end
-  end
+  cs.sample_mapping.base_note = settings.base_note
   if load then
     cs.volume = vol
     cs.panning = pan
