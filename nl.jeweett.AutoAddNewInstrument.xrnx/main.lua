@@ -18,7 +18,7 @@ local function minusins()
   local sii = rs.selected_instrument_index
   if sii > 1 then
     rs.selected_instrument_index = sii - 1
-    if sii == #rs.instruments and not rs:instrument(sii):sample(1).sample_buffer.has_sample_data and #rs.instruments>10 then
+    if sii == #rs.instruments and #rs:instrument(sii).samples == 0 and #rs.instruments>10 then
       rs:delete_instrument_at(sii)
     end
   end

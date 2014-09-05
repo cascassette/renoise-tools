@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Meta Micro</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.MetaMicro</Id>
-  <Version>0.3</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>0.4</Version>
   <Author>Cas | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Meta Micro</Name>
   <Category>Workflow</Category>
   <Description>Select *Meta device CV destination with keyboard.</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Set Current Line Number By Midi Message</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.MidiSkip</Id>
-  <Version>0.03</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>0.04</Version>
   <Author>E.H.V.A.H. SDC | Casper</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Set Current Line Number By Midi Message</Name>
   <Category>MIDI</Category>
   <Description>Adds a MIDI mapping for setting the current line number (for easier editing and/or live mixing) under Transport &gt;&gt; Playback.</Description>
   <Homepage>http://music.jeweett.nl</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

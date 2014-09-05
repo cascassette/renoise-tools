@@ -53,9 +53,9 @@ end
 
 local function key_dialog(d,k)
   if ( k.name == "up" ) then
-    vb.views.parts.value = vb.views.parts.value + 1
+    vb.views.parts.value = math.min(vb.views.parts.value + 1, vb.views.parts.max)
   elseif ( k.name == "down" ) then
-    vb.views.parts.value = vb.views.parts.value - 1
+    vb.views.parts.value = math.max(vb.views.parts.value - 1, vb.views.parts.min)
   elseif ( k.name == "left" ) then
     vb.views.parts.value = vb.views.parts.value / 2
   elseif ( k.name == "right" ) then
@@ -107,7 +107,7 @@ renoise.tool():add_menu_entry {
 --------------------------------------------------------------------------------
 
 renoise.tool():add_keybinding {
-  name = "Global:Tools:Slice 'n' Exact...",
+  name = "Sample Editor:Slices:Slice 'n' Exact...",
   invoke = show_dialog
 }
 

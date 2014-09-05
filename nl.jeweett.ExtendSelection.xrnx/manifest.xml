@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Extend Selection</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.ExtendSelection</Id>
-  <Version>0.3</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>0.5</Version>
   <Author>Cas Marrav | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Extend Selection</Name>
   <Category>Pattern Editor</Category>
   <Description>Shortcuts to broaden selection to left, right, all tracks.</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

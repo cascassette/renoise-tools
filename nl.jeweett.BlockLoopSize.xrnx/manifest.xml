@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Change Block Loop Size</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.BlockLoopSize</Id>
-  <Version>0.6</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>0.61</Version>
   <Author>Cas</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Change Block Loop Size</Name>
   <Category>Transport</Category>
   <Description>This tool let's you bind block loop size increase/decrease to keyboard shortcuts.
 Bind the shortcuts in the Renoise preferences located in Global &gt; Transport.</Description>
-  <Homepage/>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

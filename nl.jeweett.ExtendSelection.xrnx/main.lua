@@ -21,58 +21,107 @@ function set_selection_bounds_h(l, r, lc, rc, solo)
       if rc then nrc = rc else nrc = rs:track(nr).visible_note_columns+rs:track(nr).visible_effect_columns end
     end
     
-    if solo==1 then
+    if solo ~= 0 then
+      local nclist = {}
+      local nclistpos = 1
       local pat = rs:pattern(rs.sequencer:pattern(rs.transport.edit_pos.sequence))
       for i = nl, nr do
-        if rs:track(i).type == 2 then break end
-        if i ~= rs.selected_track_index then
-          local ct = rs:track(i)
-          if ct.type == 1 then
+        local ct = rs:track(i)
+        if ct.type == 2 then break end
+        if ct.type == 1 then
+          if i < oldsel.start_track or i > oldsel.end_track then
+            -- if track is not in selection; everything
             for j = 1, ct.visible_note_columns do
-              local nc = pat:track(i):line(oldsel.start_line):note_column(j)
-              nc.note_value = 120
-              nc.instrument_string = ""
-              nc.volume_string = ""
-              nc.panning_string = ""
-              nc.delay_string = ""
-              for k = oldsel.start_line + 1, oldsel.end_line do
-                nc = pat:track(i):line(k):note_column(j)
-                nc.note_string = ""
-                nc.instrument_string = ""
-                nc.volume_string = ""
-                nc.panning_string = ""
-                nc.delay_string = ""
-              end
+              nclist[nclistpos] = {i, j}
+              nclistpos = nclistpos + 1
             end
+          elseif i == oldsel.start_track and i == oldsel.end_track then
+            -- if track is both start and end of selection: check columns
+            for j = 1, oldsel.start_column - 1 do
+              nclist[nclistpos] = {i, j}
+              nclistpos = nclistpos + 1
+            end
+            for j = oldsel.end_column + 1, ct.visible_note_columns do
+              nclist[nclistpos] = {i, j}
+              nclistpos = nclistpos + 1
+            end
+          elseif i == oldsel.start_track then
+            -- if track start of selection: check columns
+            for j = 1, oldsel.start_column - 1 do
+              nclist[nclistpos] = {i, j}
+              nclistpos = nclistpos + 1
+            end
+          elseif i == oldsel.end_track then
+            -- if track end of selection: check columns
+            for j = oldsel.end_column + 1, ct.visible_note_columns do
+              nclist[nclistpos] = {i, j}
+              nclistpos = nclistpos + 1
+            end
+          else
+            -- if track is in selection completely: skip
           end
         end
       end
-    elseif solo==2 then
-      local pat = rs:pattern(rs.sequencer:pattern(rs.transport.edit_pos.sequence))
-      for i = nl, nr do
-        if rs:track(i).type == 2 then break end
-        if i ~= rs.selected_track_index then
-          local ct = rs:track(i)
-          if ct.type == 1 then
-            for j = 1, ct.visible_note_columns do
-              local nc = pat:track(i):line(oldsel.start_line):note_column(j)
-              --nc.note_value = 120
-              nc.note_string = ""
-              nc.instrument_string = ""
-              nc.volume_string = "00"
-              nc.panning_string = ""
-              nc.delay_string = ""
-              for k = oldsel.start_line + 1, oldsel.end_line do
-                nc = pat:track(i):line(k):note_column(j)
-                nc.note_string = ""
-                nc.instrument_string = ""
-                nc.volume_string = "00"
-                nc.panning_string = ""
-                nc.delay_string = ""
-              end
-              nc.volume_string = "80"
-            end
+      
+      -- select solo method
+      if solo == 1 then
+        -- method 1 (note off)
+        for i = 1, nclistpos-1 do
+          local ntr = nclist[i][1]
+          local ncl = nclist[i][2]
+          local nc = pat:track(ntr):line(oldsel.start_line):note_column(ncl)
+          nc.note_value = 120
+          nc.instrument_string = ""
+          nc.volume_string = ""
+          nc.panning_string = ""
+          nc.delay_string = ""
+          for k = oldsel.start_line + 1, oldsel.end_line do
+            nc = pat:track(ntr):line(k):note_column(ncl)
+            nc.note_string = ""
+            nc.instrument_string = ""
+            nc.volume_string = ""
+            nc.panning_string = ""
+            nc.delay_string = ""
           end
+        end
+      elseif solo == 2 then
+        -- meth 2 (vol=00)
+        for i = 1, nclistpos-1 do
+          local ntr = nclist[i][1]
+          local ncl = nclist[i][2]
+          local nc = pat:track(ntr):line(oldsel.start_line):note_column(ncl)
+          --nc.note_value = 120
+          nc.note_string = ""
+          nc.instrument_string = ""
+          nc.volume_string = "00"
+          nc.panning_string = ""
+          nc.delay_string = ""
+          for k = oldsel.start_line + 1, oldsel.end_line do
+            nc = pat:track(ntr):line(k):note_column(ncl)
+            nc.note_string = ""
+            nc.instrument_string = ""
+            nc.volume_string = "00"
+            nc.panning_string = ""
+            nc.delay_string = ""
+          end
+          nc.volume_string = "80"
+        end
+      elseif solo == 3 then
+        -- meth 3 (vol fade)
+        local volume_list = {128}
+        local line_count = oldsel.end_line - oldsel.start_line - 1
+        for i = 1, line_count do
+          volume_list[i+1] = math.floor( 128 * ((line_count-i)/line_count) )
+        end
+        volume_list[line_count+2] = 128
+        for i = 1, nclistpos-1 do
+          local ntr = nclist[i][1]
+          local ncl = nclist[i][2]
+          for k = oldsel.start_line, oldsel.end_line do
+            local nc = pat:track(ntr):line(k):note_column(ncl)
+            nc.volume_value = volume_list[k-oldsel.start_line+1]
+          end
+          --nc.volume_string = "80"
         end
       end
     else
@@ -149,6 +198,19 @@ renoise.tool():add_keybinding {
 renoise.tool():add_keybinding {
   name = "Pattern Editor:Tools:NoteVol solo left to right",
   invoke = function() set_selection_bounds_h(1,  #renoise.song().tracks, nil, nil, 2) end
+}
+
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Tools:NoteVol fade to the right",
+  invoke = function() set_selection_bounds_h(nil, #renoise.song().tracks, nil, nil, 3) end
+}
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Tools:NoteVol fade to the left",
+  invoke = function() set_selection_bounds_h(1, nil, nil, nil, 3) end
+}
+renoise.tool():add_keybinding {
+  name = "Pattern Editor:Tools:NoteVol fade left to right",
+  invoke = function() set_selection_bounds_h(1,  #renoise.song().tracks, nil, nil, 3) end
 }
 
 renoise.tool():add_keybinding {

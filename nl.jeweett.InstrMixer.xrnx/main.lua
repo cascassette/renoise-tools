@@ -97,8 +97,8 @@ local function inst_hook()
   if not renoise.song().selected_instrument_index_observable:has_notifier(hook_si) then
     renoise.song().selected_instrument_index_observable:add_notifier(hook_si)
   end
-  if not renoise.song().selected_sample_index_observable:has_notifier(hook_ss) then
-    renoise.song().selected_sample_index_observable:add_notifier(hook_ss)
+  if not renoise.song().selected_sample_observable:has_notifier(hook_ss) then
+    renoise.song().selected_sample_observable:add_notifier(hook_ss)
   end
 end
 
@@ -106,8 +106,8 @@ local function deinst_hook()
   if renoise.song().selected_instrument_index_observable:has_notifier(hook_si) then
     renoise.song().selected_instrument_index_observable:remove_notifier(hook_si)
   end
-  if renoise.song().selected_sample_index_observable:has_notifier(hook_ss) then
-    renoise.song().selected_sample_index_observable:remove_notifier(hook_ss)
+  if renoise.song().selected_sample_observable:has_notifier(hook_ss) then
+    renoise.song().selected_sample_observable:remove_notifier(hook_ss)
   end
 end
 
@@ -149,7 +149,7 @@ local function dubsmp(kz)
   local ci = rs.selected_instrument
   ci:insert_sample_at(csi+1)
   ci:sample(csi+1):copy_from(ci:sample(csi))
-  if kz then
+  --[[if kz then
     local layers = {}
     local count = 0
     for i,l in ipairs(ci.sample_mappings[1]) do
@@ -169,7 +169,7 @@ local function dubsmp(kz)
       sm.note_range = layers[i].note_range
       sm.velocity_range = layers[i].velocity_range
     end
-  end
+  end]]
   hook_si()
   rs.selected_sample_index = csi+1
 end
@@ -453,7 +453,7 @@ end
 
 function instrmixer()
   rs = renoise.song()
-  renoise.app().window.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_INSTRUMENT_PROPERTIES
+  --renoise.app().window.active_lower_frame = renoise.ApplicationWindow.LOWER_FRAME_INSTRUMENT_PROPERTIES
   init_vars()
   show_dialog()
 end

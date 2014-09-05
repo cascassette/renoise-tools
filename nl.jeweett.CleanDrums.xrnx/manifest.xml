@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Clean Drums</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.CleanDrums</Id>
   <Version>0.01</Version>
-  <ApiVersion>3</ApiVersion>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Clean Drums</Name>
   <Category>Workflow</Category>
   <Description>Clears all Note Offs in current track (find keyboard shortcut labeled 'Clean Drums' in the preferences)</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

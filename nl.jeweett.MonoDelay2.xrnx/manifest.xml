@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Mono Delay 2</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.MonoDelay2</Id>
-  <Version>1</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>1.1</Version>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Mono Delay 2</Name>
   <Category>Delay DSP</Category>
   <Description>Adds a 'Set Mono' and 'Unset Mono' option to native Delay devices.</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

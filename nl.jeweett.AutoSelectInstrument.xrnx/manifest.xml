@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Auto Select Instrument</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.AutoSelectInstrument</Id>
   <Version>1.3</Version>
-  <ApiVersion>3</ApiVersion>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Auto Select Instrument</Name>
   <Category>Instrument, Pattern Editor</Category>
   <Description>Select the instrument used in the current track.</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

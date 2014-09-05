@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>MixDown Track</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.MixDownTrack</Id>
-  <Version>0.2</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>0.3</Version>
   <Author>Cas</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>MixDown Track</Name>
   <Category>Mixer</Category>
   <Description>This tool has several options to create a 'sub-master' track in the mixer. Having this approach has several advantages:
       * Do mid-side processing, multiband compressing, etc. directly in the same renoise song file as the composition
@@ -15,7 +15,4 @@
   
       Cas Marrav
   2012</Description>
-  <Homepage/>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

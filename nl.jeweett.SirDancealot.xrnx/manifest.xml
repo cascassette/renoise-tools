@@ -2,10 +2,9 @@
 <RenoiseScriptingTool doc_version="0">
   <Name>Sir Dancealot</Name>
   <Id>nl.jeweett.SirDancealot</Id>
-  <Version>2.51</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>2.6</Version>
+  <ApiVersion>4</ApiVersion>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
   <Category>Track DSPs</Category>
   <Description>Tell me, sir Lancelot, do you... dance a lot? This tool is very good at quick insertion of FX in the chain of the currently selected track. Forget the mouse, use the keyboard.</Description>
   <Homepage>http://tools.renoise.com</Homepage>

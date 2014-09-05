@@ -114,7 +114,7 @@ for i = 1,8 do
 end
 
 renoise.tool():add_keybinding {
-  name = "Global:Track Muting:Solo Off",
+  name = "Global:Track Muting:Unsolo all",
   invoke = function()
     renoise.song():track(renoise.song().sequencer_track_count+1):solo()
   end

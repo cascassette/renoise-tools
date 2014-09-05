@@ -80,7 +80,7 @@ local function dspm(cw, total, shuffle) -- cw for category/weight pairs
   -- pick random samples
   for i=1,count do
     weights[i] = math.floor(cw[ids[i]]/sum*total)
-    local fnlist = os.filenames(options.basefolder.value .. ids[i])
+    local fnlist = os.filenames(options.basefolder.value .. ids[i], {"*.wav","*.mp3","*.flac","*.aiff"})
     for j=1,weights[i] do
       local fn = fnlist[math.random(#fnlist)]
       ni:sample(smp).sample_buffer:load_from(options.basefolder.value .. ids[i] .. [[\]] .. fn)
@@ -131,7 +131,7 @@ local function dspm_oct(map, total, start_note)
       local cat = map[n]
       if reslist[cat] == nil then reslist[cat] = {} end
       if fnlist[cat] == nil then
-        fnlist[cat] = os.filenames(options.basefolder.value..cat)
+        fnlist[cat] = os.filenames(options.basefolder.value..cat, {"*.wav","*.mp3","*.flac","*.aiff"})
       end
       local si = note-start_note+1
       local fn = fnlist[cat][math.random(#fnlist[cat])]

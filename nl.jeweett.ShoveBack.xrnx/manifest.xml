@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Shove Back</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.ShoveBack</Id>
-  <Version>1.1</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>1.2</Version>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Shove Back</Name>
   <Category>Midi</Category>
   <Description>Shove back the delay column values using edit step</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

@@ -37,7 +37,7 @@ end
 
 
 local autoselect = true
-local vstwindow = true
+local vstwindow = false
 local rs
 
 
@@ -53,7 +53,10 @@ local function show_inst()
   local cii = rs.selected_instrument_index
   -- hide window for all other windows
   for idx,ins in ipairs(rs.instruments) do
-    if ins.plugin_properties.plugin_loaded and ins.plugin_properties.plugin_device.external_editor_available then
+    if ins.plugin_properties.plugin_loaded and
+       ins.plugin_properties.plugin_device.external_editor_available and
+       (ins.plugin_properties.alias_fx_device_index==0) and
+       (ins.plugin_properties.alias_fx_track_index==0) then
       ins.plugin_properties.plugin_device.external_editor_visible = (idx == cii)
     end
   end
@@ -82,6 +85,15 @@ local function init_or_refresh()
   else
     if rs.selected_instrument_observable:has_notifier(show_inst) then
       rs.selected_instrument_observable:remove_notifier(show_inst)
+    end
+  end
+  
+  -- show loopfx window by default
+  local mstt=rs:track(rs.sequencer_track_count+1)
+  for i,d in ipairs(mstt.devices) do
+    if d.display_name == "LoopFX" then
+      d.external_editor_visible = true
+      break
     end
   end
   
@@ -163,7 +175,15 @@ renoise.tool():add_keybinding {
   name = "Global:Tools:Jump to Previous Track",
   invoke = function()
     local rs = renoise.song()
-    rs.selected_track_index = math.mod(rs.selected_track_index-2,#rs.tracks)+1
+    rs.selected_track_index = (rs.selected_track_index-2) % #rs.tracks + 1
+  end
+}
+
+renoise.tool():add_keybinding {
+  name = "Global:Tools:Toggle LoopFX Window",
+  invoke = function()
+    local rs = renoise.song()
+    rs:instrument(#rs.instruments).plugin_properties.plugin_device.external_editor_visible = not rs:instrument(#rs.instruments).plugin_properties.plugin_device.external_editor_visible
   end
 }
 

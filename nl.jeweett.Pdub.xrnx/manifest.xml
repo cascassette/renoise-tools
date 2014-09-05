@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>PDub</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.Pdub</Id>
-  <Version>.3</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>0.4</Version>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>PDub</Name>
   <Category>Keyboard, Pattern Editor</Category>
   <Description>In-Pattern Pattern Duplicator shortcut.</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

@@ -103,7 +103,7 @@ local function bind(metadev, trkno, dspno, pmtno, min, max)
     if not (metadev.name == "*Hydra" or metadev.name == "*XY Pad") then
       metadev:parameter(1+add).value = trkno-1
       metadev:parameter(2+add).value = dspno-1
-      metadev:parameter(3+add).value = pmtno-1
+      metadev:parameter(3+add).value = pmtno
     else
     end
     --Scaling

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Group Selected Tracks</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.GroupSelectedTracks</Id>
-  <Version>0.1</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>0.2</Version>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>Group Selected Tracks</Name>
   <Category>Pattern Editor, Group Tracks</Category>
   <Description>Select tracks in pattern editor =&gt; group shortcut.</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

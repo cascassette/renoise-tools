@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>ShowParams</Name>
+  <ApiVersion>4</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.ShowParams</Id>
-  <Version>3</Version>
-  <ApiVersion>3</ApiVersion>
+  <Version>3.1</Version>
   <Author>Cas | Casper</Author>
-  <AutoUpgraded>false</AutoUpgraded>
+  <Name>ShowParams</Name>
   <Category>Mixer</Category>
   <Description>Show moving parameters in Mixer view: Automated, Controlled, and MIDI Bound.</Description>
   <Homepage>http://music.jeweett.nl</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

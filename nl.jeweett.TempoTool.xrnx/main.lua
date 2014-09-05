@@ -25,7 +25,7 @@ end
 
 -- Menu --
 renoise.tool():add_menu_entry {
-  name = "Sample Editor:\nAdjust Tempo to Sample/Loop\n",
+  name = "Sample Editor:Adjust Tempo to Sample/Loop",
   invoke = tempotool
 }
 
