@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Overtune 2</Name>
+  <ApiVersion>6</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.Overtune</Id>
-  <Version>2.5.989</Version>
-  <ApiVersion>4</ApiVersion>
+  <Version>2.5</Version>
   <Author>Cas Marrav | Casper</Author>
+  <Name>Overtune 2</Name>
   <Category>Overtune</Category>
   <Description>Generate 'custom' harmonic waves etc.</Description>
   <Homepage>http://music.jeweett.nl</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

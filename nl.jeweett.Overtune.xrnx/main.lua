@@ -324,7 +324,7 @@ end
 
 function try_and_load_1(instr)
   local ot = table.create()
-  if (instr:sample(1).name == "Overtuned" and #instr.samples >= 4) then
+  if (#instr.samples > 0 and instr:sample(1).name == "Overtuned" and #instr.samples >= 4) then
     ot.step1 = instr:sample(2).name
     ot.stepn = instr:sample(3).name
     ot.steps = 0+(instr:sample(4).name)
@@ -337,6 +337,7 @@ function try_and_load_1(instr)
   end
   return ot
 end
+
 function try_and_save_1(instr, settings)  -- obsolete
   instr:sample(1).name = "Overtuned"
   instr:sample(2).name = settings.step1
@@ -348,6 +349,7 @@ end
 function btos(bool)
   if bool then return "true" else return "false" end
 end
+
 function try_and_load_2(sample)
   local ot = table.create()
   local sn = sample.name
@@ -363,6 +365,7 @@ function try_and_load_2(sample)
   end
   return ot
 end
+
 function try_and_save_2(sample, settings)
   if not settings.name then settings.name = "Overtuned" end
   local name_str = settings.name .. " !! {" ..
@@ -512,6 +515,9 @@ function show_dialog()
 
   --check for previous settings
   local ci = renoise.song().selected_instrument
+  if #ci.samples == 0 then
+    ci:insert_sample_at(1)
+  end
   local ot = try_and_load_1(ci)
   if ot ~= nil then
     vb_step1.value = ot.step1
@@ -782,7 +788,6 @@ function render_overtune( load, settings )
   end
   if settings.power then
     local pf = 1 / md
-    --print(md)
     for channel = 1, channel_count do
       for i = 1, sl do
         buffer[channel][i] = buffer[channel][i]*pf
@@ -799,6 +804,7 @@ function render_overtune( load, settings )
     end
   end
   sb:finalize_sample_data_changes()
+  cs.loop_mode = 2 -- LOOP_MODE_FORWARD
   if not settings.power then
     renoise.app():show_status("The max dev was: "..md)
   end
