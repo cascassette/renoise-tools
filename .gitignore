@@ -8,6 +8,7 @@
 # ignore tools by others than nl.jeweett aka the great DJ Cas the Wizz Kid
 *.*.*.xrnx/
 !nl.jeweett.*.xrnx/
+!io.sinedub.*.xrnx/
 nl.jeweett.TestGui.xrnx/
 nl.jeweett.TestKeys.xrnx/
 XRNX/
