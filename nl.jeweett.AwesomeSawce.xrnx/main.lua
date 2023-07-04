@@ -430,7 +430,7 @@ function show_dialog()
   local vb = renoise.ViewBuilder()
   local CS = renoise.ViewBuilder.DEFAULT_CONTROL_SPACING
   local DDM = renoise.ViewBuilder.DEFAULT_DIALOG_MARGIN
-  
+
   local vb_count = vb:valuebox { width = 100, min = 0, max = 7, value = 2 }
   local vb_detune = vb:slider { width = 100, min = 1, max = 127, value = 55, notifier = function(val) vb.views['detuneshow'].value = val end }
   local vb_detuneshow = vb:valuebox { width = 60, min = 1, max = 127, value = 55, id = "detuneshow" }
@@ -473,7 +473,7 @@ function show_dialog()
         vb:vertical_aligner {
           vb:text { text = "Count" },
           vb:text { text = "Detune" },
-        },  
+        },
         vb:vertical_aligner {
           vb:horizontal_aligner {
             vb_count,
@@ -531,8 +531,8 @@ function show_dialog()
                    vb_dialog,
                  {"Bring on the Sawce!", "Cancel"})   -- TODO: make normal dialog with handlers, have a "Try the Sawce!" button
   if dialog_instance == "Bring on the Sawce!" then
-    render_supersawce(vb_count.value, vb_detuneshow.value, vb_tune_slopetype.value, 
-      vb_volume_slopetype.value, vb_panning_slopetype.value, 
+    render_supersawce(vb_count.value, vb_detuneshow.value, vb_tune_slopetype.value,
+      vb_volume_slopetype.value, vb_panning_slopetype.value,
       vb_width.value, vb_pingpong.value, vb_onetuned.value,
       vb_volume_slopemax.value, vb_volume_stepone.value, vb_osctype.value,
       vb_tunedir.value, vb_tuneres.value)
