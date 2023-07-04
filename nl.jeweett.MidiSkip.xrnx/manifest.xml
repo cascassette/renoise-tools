@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <ApiVersion>4</ApiVersion>
+  <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.MidiSkip</Id>
-  <Version>0.04</Version>
+  <Version>0.040000000000000001</Version>
   <Author>E.H.V.A.H. SDC | Casper</Author>
   <Name>Set Current Line Number By Midi Message</Name>
   <Category>MIDI</Category>

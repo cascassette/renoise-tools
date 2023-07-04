@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Instrument Mixer</Name>
+  <ApiVersion>6</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.InstrMixer</Id>
   <Version>1.2</Version>
-  <ApiVersion>4</ApiVersion>
   <Author>Cas | casmarrav@gmail.com</Author>
+  <Name>Instrument Mixer</Name>
   <Category>Instrument Editor</Category>
   <Description>Simple window to modify sample specifics in real-time</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>

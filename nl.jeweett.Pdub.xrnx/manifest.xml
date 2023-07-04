@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <ApiVersion>4</ApiVersion>
+  <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.Pdub</Id>
-  <Version>0.4</Version>
+  <Version>0.40000000000000002</Version>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
   <Name>PDub</Name>
   <Category>Keyboard, Pattern Editor</Category>

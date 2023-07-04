@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <ApiVersion>4</ApiVersion>
+  <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.MixDownTrack</Id>
-  <Version>0.3</Version>
+  <Version>0.29999999999999999</Version>
   <Author>Cas</Author>
   <Name>MixDown Track</Name>
   <Category>Mixer</Category>

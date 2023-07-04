@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <ApiVersion>4</ApiVersion>
+  <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.MetaMicro</Id>
-  <Version>0.4</Version>
+  <Version>0.40000000000000002</Version>
   <Author>Cas | casmarrav@gmail.com</Author>
   <Name>Meta Micro</Name>
   <Category>Workflow</Category>

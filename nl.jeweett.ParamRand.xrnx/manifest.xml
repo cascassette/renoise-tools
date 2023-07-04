@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <ApiVersion>4</ApiVersion>
+  <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.ParamRand</Id>
-  <Version>1.1</Version>
+  <Version>1.1000000000000001</Version>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
   <Name>Parameter Randomizer</Name>
   <Category>Workflow</Category>

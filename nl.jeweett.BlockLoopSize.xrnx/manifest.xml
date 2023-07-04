@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <ApiVersion>4</ApiVersion>
+  <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.BlockLoopSize</Id>
-  <Version>0.61</Version>
+  <Version>0.60999999999999999</Version>
   <Author>Cas</Author>
   <Name>Change Block Loop Size</Name>
   <Category>Transport</Category>

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
-  <Name>Sloper</Name>
+  <ApiVersion>6</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.Sloper</Id>
-  <Version>1.1</Version>
-  <ApiVersion>4</ApiVersion>
+  <Version>1.1000000000000001</Version>
   <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <Name>Sloper</Name>
   <Category>Sample Editor</Category>
   <Description>Advanced fade in/out operations</Description>
   <Homepage>http://tools.renoise.com</Homepage>
-  <Platform/>
-  <Icon/>
 </RenoiseScriptingTool>
