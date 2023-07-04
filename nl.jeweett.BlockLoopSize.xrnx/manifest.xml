@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.BlockLoopSize</Id>
   <Version>0.60999999999999999</Version>
-  <Author>Cas</Author>
+  <Author>cascassette@sinedub.io</Author>
   <Name>Change Block Loop Size</Name>
   <Category>Transport</Category>
   <Description>This tool let's you bind block loop size increase/decrease to keyboard shortcuts.

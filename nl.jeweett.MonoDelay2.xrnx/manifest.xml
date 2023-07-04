@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.MonoDelay2</Id>
   <Version>1.1000000000000001</Version>
-  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <Author>cascassette@sinedub.io</Author>
   <Name>Mono Delay 2</Name>
   <Category>Delay DSP</Category>
   <Description>Adds a 'Set Mono' and 'Unset Mono' option to native Delay devices.</Description>

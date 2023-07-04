@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.TempoTool</Id>
   <Version>1.2</Version>
-  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <Author>cascassette@sinedub.io</Author>
   <Name>Tempo Tool</Name>
   <Category>Composition</Category>
   <Description>Sets song tempo according to sample length / loop length, linesync amount, and transpose</Description>

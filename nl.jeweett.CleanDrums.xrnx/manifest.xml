@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.CleanDrums</Id>
   <Version>0.01</Version>
-  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <Author>cascassette@sinedub.io</Author>
   <Name>Clean Drums</Name>
   <Category>Workflow</Category>
   <Description>Clears all Note Offs in current track (find keyboard shortcut labeled 'Clean Drums' in the preferences)</Description>

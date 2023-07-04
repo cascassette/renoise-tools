@@ -4,7 +4,7 @@
   <Id>nl.jeweett.InstrMapper</Id>
   <Version>1.1</Version>
   <ApiVersion>3</ApiVersion>
-  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <Author>cascassette@sinedub.io</Author>
   <AutoUpgraded>false</AutoUpgraded>
   <Category>Instrument</Category>
   <Description>Auto-maps samples from collections with consistent filenames (e.g. Maschine(TM) samplepack) to Renoise instruments</Description>

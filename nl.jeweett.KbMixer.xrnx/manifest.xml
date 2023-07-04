@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.KbMixer</Id>
   <Version>1.1000000000000001</Version>
-  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <Author>cascassette@sinedub.io</Author>
   <Name>KB Mixer</Name>
   <Category>Track Muting</Category>
   <Description>Keyboard shortcuts for muting track #1-8 when on the master track, or subgroup-track #1-8 when in an instrument track. Also solo (and unmute/unsolo all keeys)</Description>

@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.ShowParams</Id>
   <Version>3.1000000000000001</Version>
-  <Author>Cas | Casper</Author>
+  <Author>cascassette@sinedub.io</Author>
   <Name>ShowParams</Name>
   <Category>Mixer</Category>
   <Description>Show moving parameters in Mixer view: Automated, Controlled, and MIDI Bound.</Description>

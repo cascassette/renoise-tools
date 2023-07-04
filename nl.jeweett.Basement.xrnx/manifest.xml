@@ -4,7 +4,7 @@
   <Id>nl.jeweett.Basement</Id>
   <Version>6</Version>
   <ApiVersion>3</ApiVersion>
-  <Author>Cas</Author>
+  <Author>cascassette@sinedub.io</Author>
   <AutoUpgraded>false</AutoUpgraded>
   <Category>MIDI | Track DSPs</Category>
   <Description>Doing everything with 8 knobs and 16 pads.</Description>

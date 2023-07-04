@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>nl.jeweett.ReorganizeEnv</Id>
   <Version>1.01</Version>
-  <Author>Cas | Cas Marrav | casmarrav@gmail.com</Author>
+  <Author>cascassette@sinedub.io</Author>
   <Name>Reorganize Env</Name>
   <Category>Track DSPs</Category>
   <Description>Provides a keyboard shortcut that sees to it that unused envelopes from envelopes.xrnt are minimized and deactivated. Also has an option for a second shortcut that just minimizes all deactivated, or all deactivated and external, devices in the current chain at once.</Description>
