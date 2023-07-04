@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.MidiSkip</Id>
+  <Id>io.sinedub.MidiSkip</Id>
   <Version>0.040000000000000001</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Set Current Line Number By Midi Message</Name>

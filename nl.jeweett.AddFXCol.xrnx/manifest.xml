@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.AddFXCol</Id>
+  <Id>io.sinedub.AddFXCol</Id>
   <Version>0.01</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Add or Remove FX Columns</Name>

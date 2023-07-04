@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.SirDancealot</Id>
+  <Id>io.sinedub.SirDancealot</Id>
   <Version>2.6000000000000001</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Sir Dancealot</Name>

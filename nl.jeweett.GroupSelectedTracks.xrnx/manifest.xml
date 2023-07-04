@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.GroupSelectedTracks</Id>
+  <Id>io.sinedub.GroupSelectedTracks</Id>
   <Version>0.20000000000000001</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Group Selected Tracks</Name>

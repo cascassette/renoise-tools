@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.KbMixer</Id>
+  <Id>io.sinedub.KbMixer</Id>
   <Version>1.1000000000000001</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>KB Mixer</Name>

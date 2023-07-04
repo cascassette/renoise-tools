@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.RenderTrackNoFX</Id>
+  <Id>io.sinedub.RenderTrackNoFX</Id>
   <Version>1.0</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Render Track No FX</Name>

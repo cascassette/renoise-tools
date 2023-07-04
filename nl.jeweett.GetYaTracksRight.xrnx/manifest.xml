@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.GetYaTracksRight</Id>
+  <Id>io.sinedub.GetYaTracksRight</Id>
   <Version>2</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Get Ya Tracks Right</Name>

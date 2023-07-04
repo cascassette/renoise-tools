@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.RecentFiles</Id>
+  <Id>io.sinedub.RecentFiles</Id>
   <Version>2</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Recent Files</Name>

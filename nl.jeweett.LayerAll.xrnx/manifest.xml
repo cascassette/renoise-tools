@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
   <Name>Layer all samples on every key</Name>
-  <Id>nl.jeweett.LayerAll</Id>
+  <Id>io.sinedub.LayerAll</Id>
   <Version>0.2</Version>
   <ApiVersion>3</ApiVersion>
   <Author>cascassette@sinedub.io</Author>

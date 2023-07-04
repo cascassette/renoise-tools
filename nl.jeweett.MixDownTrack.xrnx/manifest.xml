@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.MixDownTrack</Id>
+  <Id>io.sinedub.MixDownTrack</Id>
   <Version>0.29999999999999999</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>MixDown Track</Name>

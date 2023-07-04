@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.PlayAndLoopPattern</Id>
+  <Id>io.sinedub.PlayAndLoopPattern</Id>
   <Version>0.11</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Play and Loop Pattern</Name>

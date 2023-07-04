@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.TempoTool</Id>
+  <Id>io.sinedub.TempoTool</Id>
   <Version>1.2</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Tempo Tool</Name>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
   <Name>Note Repeat</Name>
-  <Id>nl.jeweett.NoteRepeat</Id>
+  <Id>io.sinedub.NoteRepeat</Id>
   <Version>1</Version>
   <ApiVersion>3</ApiVersion>
   <Author>cascassette@sinedub.io</Author>

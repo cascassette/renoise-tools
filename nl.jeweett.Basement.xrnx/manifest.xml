@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
   <Name>Basement</Name>
-  <Id>nl.jeweett.Basement</Id>
+  <Id>io.sinedub.Basement</Id>
   <Version>6</Version>
   <ApiVersion>3</ApiVersion>
   <Author>cascassette@sinedub.io</Author>

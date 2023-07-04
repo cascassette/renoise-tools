@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
   <Name>Drum Sample Picking Method</Name>
-  <Id>nl.jeweett.DrumSamplePickingMethod</Id>
+  <Id>io.sinedub.DrumSamplePickingMethod</Id>
   <Version>0.1</Version>
   <ApiVersion>3</ApiVersion>
   <Author>cascassette@sinedub.io</Author>

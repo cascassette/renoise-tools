@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.MiniTab</Id>
+  <Id>io.sinedub.MiniTab</Id>
   <Version>1.0</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Mini Tab</Name>

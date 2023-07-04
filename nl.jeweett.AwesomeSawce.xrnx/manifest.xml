@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
   <Name>AwesomeSawce</Name>
-  <Id>nl.jeweett.AwesomeSawce</Id>
+  <Id>io.sinedub.AwesomeSawce</Id>
   <Version>1.2</Version>
   <ApiVersion>3</ApiVersion>
   <Author>cascassette@sinedub.io</Author>

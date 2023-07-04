@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.AutoAddNewInstrument</Id>
+  <Id>io.sinedub.AutoAddNewInstrument</Id>
   <Version>1.3999999999999999</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Auto Add New Instrument</Name>

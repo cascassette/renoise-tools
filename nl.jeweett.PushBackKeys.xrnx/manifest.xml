@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.PushBackKeys</Id>
+  <Id>io.sinedub.PushBackKeys</Id>
   <Version>1.2</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Push Back Keys</Name>

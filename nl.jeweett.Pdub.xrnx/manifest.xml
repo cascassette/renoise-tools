@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.Pdub</Id>
+  <Id>io.sinedub.Pdub</Id>
   <Version>0.40000000000000002</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>PDub</Name>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RenoiseScriptingTool doc_version="0">
   <Name>Best Views</Name>
-  <Id>nl.jeweett.BestViews</Id>
+  <Id>io.sinedub.BestViews</Id>
   <Version>1.1</Version>
   <ApiVersion>3</ApiVersion>
   <Author>cascassette@sinedub.io</Author>

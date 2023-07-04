@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.ShowParams</Id>
+  <Id>io.sinedub.ShowParams</Id>
   <Version>3.1000000000000001</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>ShowParams</Name>

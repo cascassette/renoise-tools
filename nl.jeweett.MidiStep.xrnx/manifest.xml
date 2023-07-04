@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.MidiStep</Id>
+  <Id>io.sinedub.MidiStep</Id>
   <Version>1.0</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Midi Step</Name>

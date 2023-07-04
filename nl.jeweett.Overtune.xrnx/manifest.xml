@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.Overtune</Id>
+  <Id>io.sinedub.Overtune</Id>
   <Version>2.5</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Overtune 2</Name>

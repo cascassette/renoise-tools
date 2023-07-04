@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.SliceNExact</Id>
+  <Id>io.sinedub.SliceNExact</Id>
   <Version>1.1000000000000001</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Slice N Exact</Name>

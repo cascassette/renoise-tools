@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.ReorganizeEnv</Id>
+  <Id>io.sinedub.ReorganizeEnv</Id>
   <Version>1.01</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Reorganize Env</Name>

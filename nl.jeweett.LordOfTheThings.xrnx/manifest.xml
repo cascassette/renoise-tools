@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.LordOfTheThings</Id>
+  <Id>io.sinedub.LordOfTheThings</Id>
   <Version>0.20000000000000001</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Lord Of The Things</Name>

@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.ExtendSelection</Id>
+  <Id>io.sinedub.ExtendSelection</Id>
   <Version>0.5</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Extend Selection</Name>

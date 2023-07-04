@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.RenoiseDeviceXmlTest</Id>
+  <Id>io.sinedub.RenoiseDeviceXmlTest</Id>
   <Version>1.0</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Renoise Device XML Test</Name>

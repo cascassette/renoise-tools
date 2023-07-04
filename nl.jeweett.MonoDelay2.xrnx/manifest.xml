@@ -2,7 +2,7 @@
 <RenoiseScriptingTool doc_version="0">
   <ApiVersion>6</ApiVersion>
   <AutoUpgraded>true</AutoUpgraded>
-  <Id>nl.jeweett.MonoDelay2</Id>
+  <Id>io.sinedub.MonoDelay2</Id>
   <Version>1.1000000000000001</Version>
   <Author>cascassette@sinedub.io</Author>
   <Name>Mono Delay 2</Name>
