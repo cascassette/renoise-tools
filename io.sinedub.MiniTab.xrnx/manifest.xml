@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.MiniTab</Id>
   <Version>1.0</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Mini Tab</Name>
   <Category>Pattern Editor</Category>
   <Description>Tab and Shift-Tab replacements that take steps a little smaller then normal Tab, but a little bigger then arrow key Left/Right.</Description>

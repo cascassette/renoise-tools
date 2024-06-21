@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.GroupSelectedTracks</Id>
   <Version>0.20000000000000001</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Group Selected Tracks</Name>
   <Category>Pattern Editor, Group Tracks</Category>
   <Description>Select tracks in pattern editor =&gt; group shortcut.</Description>

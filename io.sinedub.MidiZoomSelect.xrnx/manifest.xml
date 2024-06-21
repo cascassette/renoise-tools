@@ -4,7 +4,7 @@
   <Id>io.sinedub.MidiZoomSelect</Id>
   <Version>1</Version>
   <ApiVersion>3</ApiVersion>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <AutoUpgraded>false</AutoUpgraded>
   <Category>Sample Editor</Category>
   <Description>Select / Zoom sample with midi knob.</Description>

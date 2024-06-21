@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.GetYaTracksRight</Id>
   <Version>2</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Get Ya Tracks Right</Name>
   <Category>Colors, Track Management, Workflow</Category>
   <Description>Extra add new Track shortcut that makes sure it looks the same as the one on the left. Also makes sure any newly added send track sends to the 'MixDown' send track, and an inactive, Keep Source send device is added to every new send track to immediately start routing.</Description>

@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.PushBack</Id>
   <Version>1.2</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Push Back</Name>
   <Category>Midi</Category>
   <Description>Push back the delay column values using edit step</Description>

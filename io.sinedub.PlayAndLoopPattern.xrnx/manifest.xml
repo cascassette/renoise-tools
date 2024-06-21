@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.PlayAndLoopPattern</Id>
   <Version>0.11</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Play and Loop Pattern</Name>
   <Category>Pattern Editor, Pattern Loop</Category>
   <Description>Provides a keyboard shortcut and a midi trigger following the behaviour of the block loop key (NumPad Enter), but for pattern loop.</Description>

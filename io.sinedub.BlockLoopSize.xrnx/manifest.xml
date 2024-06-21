@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.BlockLoopSize</Id>
   <Version>0.60999999999999999</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Change Block Loop Size</Name>
   <Category>Transport</Category>
   <Description>This tool let's you bind block loop size increase/decrease to keyboard shortcuts.

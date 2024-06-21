@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.AutoSelectInstrument</Id>
   <Version>1.3</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Auto Select Instrument</Name>
   <Category>Instrument, Pattern Editor</Category>
   <Description>Select the instrument used in the current track.</Description>

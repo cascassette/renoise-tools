@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.RenoiseDeviceXmlTest</Id>
   <Version>1.0</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Renoise Device XML Test</Name>
   <Category>Testing</Category>
   <Description>Renoise Device XML Test. For coders.</Description>

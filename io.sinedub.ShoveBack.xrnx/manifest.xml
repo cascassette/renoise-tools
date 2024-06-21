@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.ShoveBack</Id>
   <Version>1.2</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Shove Back</Name>
   <Category>Midi</Category>
   <Description>Shove back the delay column values using edit step</Description>

@@ -4,7 +4,7 @@
   <Id>io.sinedub.NoteRepeat</Id>
   <Version>1</Version>
   <ApiVersion>3</ApiVersion>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <AutoUpgraded>false</AutoUpgraded>
   <Category>Sample Editor</Category>
   <Description>Fixes a samples length to a certain amount of lines</Description>

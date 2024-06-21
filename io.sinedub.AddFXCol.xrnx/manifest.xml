@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.AddFXCol</Id>
   <Version>0.01</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Add or Remove FX Columns</Name>
   <Category>Workflow</Category>
   <Description>Keyboard shortcut to change the number of effect columns to and from zero</Description>

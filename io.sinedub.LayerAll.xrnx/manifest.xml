@@ -4,7 +4,7 @@
   <Id>io.sinedub.LayerAll</Id>
   <Version>0.2</Version>
   <ApiVersion>3</ApiVersion>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <AutoUpgraded>false</AutoUpgraded>
   <Category>Instruments/Samples</Category>
   <Description>Layer every sample in an instrument directly with every sample's root key at C-4 (or key used by first sample mapping).</Description>

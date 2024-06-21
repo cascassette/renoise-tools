@@ -4,7 +4,7 @@
   <AutoUpgraded>true</AutoUpgraded>
   <Id>io.sinedub.AutoAddNewInstrument</Id>
   <Version>1.3999999999999999</Version>
-  <Author>cascassette@sinedub.io</Author>
+  <Author>hello@sinedub.io</Author>
   <Name>Auto Add New Instrument</Name>
   <Category>Instrument</Category>
   <Description>If you NumPad+ across the boundary of existing instruments, this tool will add an empty instrument. Samples too! Find the 4 shortcuts by typing 'select or' in the search box.</Description>
